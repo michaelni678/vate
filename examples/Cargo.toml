@@ -1,0 +1,11 @@
+[package]
+name = "examples"
+edition = "2021"
+publish = false
+
+[dev-dependencies]
+vate = { path = "../vate" }
+
+[[example]]
+name = "create_user"
+path = "create_user.rs"
