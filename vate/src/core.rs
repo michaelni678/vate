@@ -42,7 +42,7 @@ impl<E> Report<E> {
 
 #[derive(Clone, Debug)]
 pub enum Accessor {
-    Root,
+    Root(&'static str),
     Field(&'static str),
     Index(usize),
     Key(String),
