@@ -53,7 +53,8 @@ where
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);
-            child_report.message = format!("is \"{target}\", which is not less than or equal to \"{other}\"");
+            child_report.message =
+                format!("is \"{target}\", which is not less than or equal to \"{other}\"");
         }
 
         parent_report.push_child::<C>(child_report)
@@ -82,7 +83,8 @@ where
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);
-            child_report.message = format!("is \"{target}\", which is not greater than \"{other}\"");
+            child_report.message =
+                format!("is \"{target}\", which is not greater than \"{other}\"");
         }
 
         parent_report.push_child::<C>(child_report)
@@ -111,7 +113,8 @@ where
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);
-            child_report.message = format!("is \"{target}\", which is not greater than or equal to \"{other}\"");
+            child_report.message =
+                format!("is \"{target}\", which is not greater than or equal to \"{other}\"");
         }
 
         parent_report.push_child::<C>(child_report)
@@ -121,7 +124,7 @@ where
 pub struct EqualTo<T>(pub T);
 
 impl<T, D, E, U> Validator<T, D, E> for EqualTo<U>
-where 
+where
     T: PartialEq + Display,
     U: Borrow<T> + Display,
 {
@@ -150,7 +153,7 @@ where
 pub struct NotEqualTo<T>(pub T);
 
 impl<T, D, E, U> Validator<T, D, E> for NotEqualTo<U>
-where 
+where
     T: PartialEq + Display,
     U: Borrow<T> + Display,
 {

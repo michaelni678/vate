@@ -1,4 +1,7 @@
-use crate::{core::{Accessor, Collector, Exit, Report, Validator}, Validate};
+use crate::{
+    core::{Accessor, Collector, Exit, Report, Validator},
+    Validate,
+};
 
 pub struct Nested;
 

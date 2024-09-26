@@ -1,5 +1,8 @@
 #![allow(dead_code)]
-use vate::{Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo, InvalidsAndErrors, LengthRange, Nested, NotMissingThen, Report, Validate};
+use vate::{
+    Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo,
+    InvalidsAndErrors, LengthRange, Nested, NotMissingThen, Report, Validate,
+};
 
 /// A request to create a user.
 #[derive(Validate)]

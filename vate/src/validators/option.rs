@@ -16,7 +16,7 @@ impl<T, D, E> Validator<Option<T>, D, E> for NotMissing {
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);
-            child_report.message = format!("is missing");
+            child_report.message = String::from("is missing");
         }
 
         parent_report.push_child::<C>(child_report)
@@ -39,7 +39,7 @@ impl<T, D, E> Validator<Option<T>, D, E> for Missing {
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);
-            child_report.message = format!("is not missing");
+            child_report.message = String::from("is not missing");
         }
 
         parent_report.push_child::<C>(child_report)

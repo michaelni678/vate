@@ -20,16 +20,9 @@ where
 
         let mut child_report = Report::new(accessor.clone());
 
-        let child_result =
-            target.accessor_iter()
-                .try_for_each(|(accessor, blob)| {
-                    validator.run::<C>(
-                        accessor,
-                        &blob,
-                        data,
-                        &mut child_report,
-                    )
-                });
+        let child_result = target.accessor_iter().try_for_each(|(accessor, blob)| {
+            validator.run::<C>(accessor, blob, data, &mut child_report)
+        });
 
         let parent_result = parent_report.push_child::<C>(child_report);
         child_result?;
@@ -45,20 +38,24 @@ pub trait ToAccessorIterator {
 impl<T> ToAccessorIterator for Vec<T> {
     type Blob = T;
     fn accessor_iter(&self) -> impl Iterator<Item = (Accessor, &Self::Blob)> {
-        self.iter().enumerate().map(|(index, blob)| (Accessor::Index(index), blob))
+        self.iter()
+            .enumerate()
+            .map(|(index, blob)| (Accessor::Index(index), blob))
     }
 }
 
 impl<K: ToString, V> ToAccessorIterator for BTreeMap<K, V> {
     type Blob = V;
     fn accessor_iter(&self) -> impl Iterator<Item = (Accessor, &Self::Blob)> {
-        self.iter().map(|(key, value)| (Accessor::Key(key.to_string()), value))
+        self.iter()
+            .map(|(key, value)| (Accessor::Key(key.to_string()), value))
     }
 }
 
 impl<K: ToString, V> ToAccessorIterator for HashMap<K, V> {
     type Blob = V;
     fn accessor_iter(&self) -> impl Iterator<Item = (Accessor, &Self::Blob)> {
-        self.iter().map(|(key, value)| (Accessor::Key(key.to_string()), value))
+        self.iter()
+            .map(|(key, value)| (Accessor::Key(key.to_string()), value))
     }
 }
