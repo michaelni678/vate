@@ -17,16 +17,8 @@ struct Collections {
 fn main() {
     let collections = Collections {
         vec: vec!["hello", "world", "!"],
-        map: BTreeMap::from([
-            ("a", "hello"),
-            ("b", "world"),
-            ("c", "!"),
-        ]),
-        hashmap: HashMap::from([
-            ("a", "hello"),
-            ("b", "world"),
-            ("c", "!"),
-        ]),
+        map: BTreeMap::from([("a", "hello"), ("b", "world"), ("c", "!")]),
+        hashmap: HashMap::from([("a", "hello"), ("b", "world"), ("c", "!")]),
     };
 
     let mut report = Report::new(Accessor::Root("collections"));
