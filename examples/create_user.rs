@@ -57,7 +57,6 @@ struct Credentials {
 }
 
 fn main() {
-    // CreateUser request.
     let create_user = CreateUser {
         profile: Profile {
             name: Name {
@@ -75,12 +74,7 @@ fn main() {
         },
     };
 
-    // Dummy data.
-    let data = ();
-
-    // Validate `create_user`, collecting the invalids and errors.
     let mut report = Report::new(Accessor::Root("create_user"));
-    let _ = create_user.validate::<InvalidsAndErrors>(&data, &mut report);
-
+    let _ = create_user.validate::<InvalidsAndErrors>(&(), &mut report);
     println!("{report:#?}");
 }
