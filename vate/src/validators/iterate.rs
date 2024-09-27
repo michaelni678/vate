@@ -1,13 +1,17 @@
-use std::collections::{BTreeMap, HashMap};
+use std::marker::PhantomData;
 
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
-pub struct Iterate<V>(pub V);
+pub struct Iterate<M, V> {
+    pub mapper: M,
+    pub validator: V,
+}
 
-impl<T, D, E, V> Validator<T, D, E> for Iterate<V>
+impl<T, D, E, M, V> Validator<T, D, E> for Iterate<M, V>
 where
-    T: ToAccessorIterator,
-    V: Validator<T::Blob, D, E>,
+    for<'a> &'a T: IntoIterator<Item = &'a <M as IteratorMapper<'a>>::Before>,
+    for<'a> M: IteratorMapper<'a>,
+    for<'a> V: Validator<&'a <M as IteratorMapper<'a>>::After, D, E>,
 {
     fn run<C: Collector<E>>(
         &self,
@@ -16,12 +20,12 @@ where
         data: &D,
         parent_report: &mut Report<E>,
     ) -> Result<(), Exit<E>> {
-        let Self(validator) = self;
+        let Self { mapper, validator } = self;
 
         let mut child_report = Report::new(accessor.clone());
 
-        let child_result = target.accessor_iter().try_for_each(|(accessor, blob)| {
-            validator.run::<C>(accessor, blob, data, &mut child_report)
+        let child_result = mapper.map(target.into_iter()).try_for_each(|(accessor, after)| {
+            validator.run::<C>(accessor, &after, data, &mut child_report)
         });
 
         let parent_result = parent_report.push_child::<C>(child_report);
@@ -30,32 +34,24 @@ where
     }
 }
 
-pub trait ToAccessorIterator {
-    type Blob;
-    fn accessor_iter(&self) -> impl Iterator<Item = (Accessor, &Self::Blob)>;
+pub trait IteratorMapper<'a> {
+    type Before: 'a;
+    type After: 'a;
+    fn map(&self, iterator: impl Iterator<Item = &'a Self::Before>) -> impl Iterator<Item = (Accessor, &'a Self::After)>;
 }
 
-impl<T> ToAccessorIterator for Vec<T> {
-    type Blob = T;
-    fn accessor_iter(&self) -> impl Iterator<Item = (Accessor, &Self::Blob)> {
-        self.iter()
-            .enumerate()
-            .map(|(index, blob)| (Accessor::Index(index), blob))
+pub struct IndexIteratorMapper<T>(PhantomData<T>);
+
+impl<T> IndexIteratorMapper<T> {
+    pub fn new() -> Self {
+        Self(PhantomData)
     }
 }
 
-impl<K: ToString, V> ToAccessorIterator for BTreeMap<K, V> {
-    type Blob = V;
-    fn accessor_iter(&self) -> impl Iterator<Item = (Accessor, &Self::Blob)> {
-        self.iter()
-            .map(|(key, value)| (Accessor::Key(key.to_string()), value))
-    }
-}
-
-impl<K: ToString, V> ToAccessorIterator for HashMap<K, V> {
-    type Blob = V;
-    fn accessor_iter(&self) -> impl Iterator<Item = (Accessor, &Self::Blob)> {
-        self.iter()
-            .map(|(key, value)| (Accessor::Key(key.to_string()), value))
+impl<'a, T: 'a> IteratorMapper<'a> for IndexIteratorMapper<T> {
+    type Before = T;
+    type After = T;
+    fn map(&self, iterator: impl Iterator<Item = &'a Self::Before>) -> impl Iterator<Item = (Accessor, &'a Self::After)> {
+        iterator.enumerate().map(|(index, after)| (Accessor::Index(index), after))
     }
 }
