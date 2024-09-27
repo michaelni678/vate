@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 use vate::{
-    Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo, IndexIteratorMapper, InvalidsAndErrors, Iterate, LengthRange, Nested, NotMissingThen, Report, Validate
+    Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo,
+    InvalidsAndErrors, LengthRange, Nested, NotMissingThen, Report, Validate,
 };
 
 /// A request to create a user.
@@ -12,9 +13,6 @@ struct CreateUser {
     /// The login credentials of the user to create.
     #[vate(Nested)]
     credentials: Credentials,
-
-    #[vate(Iterate { mapper: IndexIteratorMapper::new(), validator: Alphabetic })]
-    vec: Vec<&'static str>,
 }
 
 /// User profile.
@@ -75,8 +73,6 @@ fn main() {
             password: String::from("health me"),
             confirm_password: String::from("pulp fiction"), // Not equal to `password`.
         },
-
-        vec: vec!["a", "b", "C", "!!!!", "@", "d"],
     };
 
     // Dummy data.

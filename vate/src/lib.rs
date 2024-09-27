@@ -9,7 +9,6 @@ pub use validators::{
     compare::{
         EqualTo, GreaterThan, GreaterThanOrEqualTo, LessThan, LessThanOrEqualTo, NotEqualTo,
     },
-    iterate::{Iterate, IteratorMapper, IndexIteratorMapper},
     nested::Nested,
     option::{Missing, NotMissing, NotMissingThen},
     string::{Alphabetic, Alphanumeric, Ascii, LengthEquals, LengthRange},
