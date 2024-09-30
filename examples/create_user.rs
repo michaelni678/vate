@@ -8,8 +8,6 @@ use vate::{
     NotMissingThen, Report, Validate,
 };
 
-mod common;
-
 /// A request to create a user.
 #[derive(Validate)]
 struct CreateUser {
@@ -98,11 +96,11 @@ fn main() {
     let mut report = Report::new(Accessor::Root("create_user"));
     let _ = create_user.validate::<InvalidsAndErrors>(&(), &mut report);
 
-    common::assert::invalid_at_path(&report, path!(create_user.profile.name.middle));
-    common::assert::invalid_at_path(&report, path!(create_user.profile.hobbies[1]));
-    common::assert::invalid_at_path(&report, path!(create_user.profile.languages["English"]));
-    common::assert::invalid_at_path(&report, path!(create_user.credentials.username));
-    common::assert::invalid_at_path(&report, path!(create_user.credentials.confirm_password));
+    report.is_invalid_at_path(path!(create_user.profile.name.middle));
+    report.is_invalid_at_path(path!(create_user.profile.hobbies[1]));
+    report.is_invalid_at_path(path!(create_user.profile.languages["English"]));
+    report.is_invalid_at_path(path!(create_user.credentials.username));
+    report.is_invalid_at_path(path!(create_user.credentials.confirm_password));
 
     println!("{report:#?}");
 }

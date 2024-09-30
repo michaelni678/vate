@@ -38,6 +38,24 @@ impl<E> Report<E> {
     pub fn push_child<C: Collector<E>>(&mut self, child: Self) -> Result<(), Exit<E>> {
         C::apply(self, child)
     }
+    pub fn is_valid_at_path(&self, path: impl AsRef<[Accessor]>) -> bool {
+        if let Some(Ok(validity)) = self.validity_at_path(path) {
+            return *validity;
+        }
+        false
+    }
+    pub fn is_invalid_at_path(&self, path: impl AsRef<[Accessor]>) -> bool {
+        if let Some(Ok(validity)) = self.validity_at_path(path) {
+            return !*validity;
+        }
+        false
+    }
+    pub fn is_error_at_path(&self, path: impl AsRef<[Accessor]>) -> bool {
+        if let Some(Err(_)) = self.validity_at_path(path) {
+            return true;
+        }
+        false
+    }
     pub fn validity_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<&Result<bool, E>> {
         let (first, rest) = path.as_ref().split_first()?;
         if first != &self.accessor {
