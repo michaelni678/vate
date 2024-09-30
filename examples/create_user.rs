@@ -96,7 +96,4 @@ fn main() {
     let mut report = Report::new(Accessor::Root("create_user"));
     let _ = create_user.validate::<InvalidsAndErrors>(&(), &mut report);
     println!("{report:#?}");
-
-    let path = path!(create_user.profile.name.middle.0[0]["h"]);
-    println!("{path:?}");
 }
