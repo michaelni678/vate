@@ -38,9 +38,20 @@ impl<E> Report<E> {
     pub fn push_child<C: Collector<E>>(&mut self, child: Self) -> Result<(), Exit<E>> {
         C::apply(self, child)
     }
+    pub fn validity_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<&Result<bool, E>> {
+        let (first, rest) = path.as_ref().split_first()?;
+        if first != &self.accessor {
+            return None;
+        } else {
+            if rest.is_empty() {
+                return Some(&self.validity);
+            }
+        }
+        self.children.iter().find_map(|child| child.validity_at_path(rest))
+    }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Accessor {
     Root(&'static str),
     Field(&'static str),
