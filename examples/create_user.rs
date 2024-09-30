@@ -3,9 +3,9 @@
 use std::collections::HashMap;
 
 use vate::{
-    Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo, Indexed,
-    InvalidsAndErrors, Iterate, Keyed, LengthRange, LessThanOrEqualTo, Nested, NotMissingThen,
-    Report, Validate,
+    path, Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo,
+    Indexed, InvalidsAndErrors, Iterate, Keyed, LengthRange, LessThanOrEqualTo, Nested,
+    NotMissingThen, Report, Validate,
 };
 
 /// A request to create a user.
@@ -80,11 +80,11 @@ fn main() {
                 String::from("Eating sweets"),
                 String::from("\u{03A9}"), // Not ascii.
                 String::from("Reading manga"),
-            ], 
+            ],
             languages: HashMap::from([
                 (String::from("Japanese"), 10),
                 (String::from("English"), 0), // Not greater than or equal to 1.
-            ]), 
+            ]),
         },
         credentials: Credentials {
             username: String::from("u$ername"), // Not alphanumeric.
@@ -96,4 +96,7 @@ fn main() {
     let mut report = Report::new(Accessor::Root("create_user"));
     let _ = create_user.validate::<InvalidsAndErrors>(&(), &mut report);
     println!("{report:#?}");
+
+    let path = path!(create_user.profile.name.middle.0[0]["h"]);
+    println!("{path:?}");
 }

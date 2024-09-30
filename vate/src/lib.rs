@@ -14,4 +14,4 @@ pub use validators::{
     option::{Missing, NotMissing, NotMissingThen},
     string::{Alphabetic, Alphanumeric, Ascii, LengthEquals, LengthRange},
 };
-pub use vate_derive::Validate;
+pub use vate_derive::{path, Validate};
