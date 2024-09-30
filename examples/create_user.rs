@@ -3,7 +3,7 @@
 use std::collections::HashMap;
 
 use vate::{
-    path, Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo,
+    Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo,
     Indexed, InvalidsAndErrors, Iterate, Keyed, LengthRange, LessThanOrEqualTo, Nested,
     NotMissingThen, Report, Validate,
 };
