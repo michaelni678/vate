@@ -2,8 +2,8 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 
 pub struct Iterate<V>(pub V);
 
-impl<T, D, E, V> Validator<T, D, E> for Iterate<V> 
-where 
+impl<T, D, E, V> Validator<T, D, E> for Iterate<V>
+where
     for<'a> &'a T: IntoIterator,
     for<'a> V: Validator<<&'a T as IntoIterator>::IntoIter, D, E>,
 {
@@ -21,8 +21,8 @@ where
 
 pub struct Indexed<V>(pub V);
 
-impl<T, D, E, V> Validator<T, D, E> for Indexed<V> 
-where 
+impl<T, D, E, V> Validator<T, D, E> for Indexed<V>
+where
     T: Iterator + Clone,
     V: Validator<T::Item, D, E>,
 {
@@ -37,9 +37,17 @@ where
 
         let mut child_report = Report::new(accessor);
 
-        let child_result = target.clone().enumerate().try_for_each(|(index, target_element)| 
-            validator.run::<C>(Accessor::Index(index), &target_element, data, &mut child_report)
-        );
+        let child_result = target
+            .clone()
+            .enumerate()
+            .try_for_each(|(index, target_element)| {
+                validator.run::<C>(
+                    Accessor::Index(index),
+                    &target_element,
+                    data,
+                    &mut child_report,
+                )
+            });
 
         let parent_result = parent_report.push_child::<C>(child_report);
 
@@ -50,8 +58,8 @@ where
 
 pub struct Keyed<V>(pub V);
 
-impl<'a, T, D, E, Key: 'a, Value: 'a, V> Validator<T, D, E> for Keyed<V> 
-where 
+impl<'a, T, D, E, Key: 'a, Value: 'a, V> Validator<T, D, E> for Keyed<V>
+where
     Key: ToString,
     T: Iterator<Item = (&'a Key, &'a Value)> + Clone,
     V: Validator<Value, D, E>,
@@ -67,9 +75,14 @@ where
 
         let mut child_report = Report::new(accessor);
 
-        let child_result = target.clone().try_for_each(|(key, value)| 
-            validator.run::<C>(Accessor::Key(key.to_string()), &value, data, &mut child_report)
-        );
+        let child_result = target.clone().try_for_each(|(key, value)| {
+            validator.run::<C>(
+                Accessor::Key(key.to_string()),
+                value,
+                data,
+                &mut child_report,
+            )
+        });
 
         let parent_result = parent_report.push_child::<C>(child_report);
 

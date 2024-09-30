@@ -3,7 +3,9 @@
 use std::collections::HashMap;
 
 use vate::{
-    Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo, Indexed, InvalidsAndErrors, Iterate, Keyed, LengthRange, LessThanOrEqualTo, Nested, NotMissingThen, Report, Validate
+    Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo, Indexed,
+    InvalidsAndErrors, Iterate, Keyed, LengthRange, LessThanOrEqualTo, Nested, NotMissingThen,
+    Report, Validate,
 };
 
 /// A request to create a user.
@@ -74,8 +76,15 @@ fn main() {
             },
             age: 29,
             company: Some(String::from("Yorozuya")),
-            hobbies: vec![String::from("Eating sweets"), String::from("\u{03A9}"), String::from("Reading manga")], // [0] is not ascii.
-            languages: HashMap::from([(String::from("Japanese"), 10), (String::from("English"), 0)]), // ["English"] is not greater than or equal to 1.
+            hobbies: vec![
+                String::from("Eating sweets"),
+                String::from("\u{03A9}"), // Not ascii.
+                String::from("Reading manga"),
+            ], 
+            languages: HashMap::from([
+                (String::from("Japanese"), 10),
+                (String::from("English"), 0), // Not greater than or equal to 1.
+            ]), 
         },
         credentials: Credentials {
             username: String::from("u$ername"), // Not alphanumeric.
