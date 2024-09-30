@@ -3,7 +3,9 @@
 use std::collections::HashMap;
 
 use vate::{
-    path, Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo, Indexed, InvalidsAndErrors, Iterate, Keyed, LengthRange, LessThanOrEqualTo, Nested, NotMissingThen, Report, Validate
+    path, Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo,
+    Indexed, InvalidsAndErrors, Iterate, Keyed, LengthRange, LessThanOrEqualTo, Nested,
+    NotMissingThen, Report, Validate,
 };
 
 /// A request to create a user.
@@ -94,11 +96,26 @@ fn main() {
     let mut report = Report::new(Accessor::Root("create_user"));
     let _ = create_user.validate::<InvalidsAndErrors>(&(), &mut report);
 
-    assert_eq!(report.validity_at_path(path!(create_user.profile.name.middle)), Some(&Ok(false)));
-    assert_eq!(report.validity_at_path(path!(create_user.profile.hobbies[1])), Some(&Ok(false)));
-    assert_eq!(report.validity_at_path(path!(create_user.profile.languages["English"])), Some(&Ok(false)));
-    assert_eq!(report.validity_at_path(path!(create_user.credentials.username)), Some(&Ok(false)));
-    assert_eq!(report.validity_at_path(path!(create_user.credentials.confirm_password)), Some(&Ok(false)));
+    assert_eq!(
+        report.validity_at_path(path!(create_user.profile.name.middle)),
+        Some(&Ok(false))
+    );
+    assert_eq!(
+        report.validity_at_path(path!(create_user.profile.hobbies[1])),
+        Some(&Ok(false))
+    );
+    assert_eq!(
+        report.validity_at_path(path!(create_user.profile.languages["English"])),
+        Some(&Ok(false))
+    );
+    assert_eq!(
+        report.validity_at_path(path!(create_user.credentials.username)),
+        Some(&Ok(false))
+    );
+    assert_eq!(
+        report.validity_at_path(path!(create_user.credentials.confirm_password)),
+        Some(&Ok(false))
+    );
 
     println!("{report:#?}");
 }

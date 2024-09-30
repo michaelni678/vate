@@ -42,12 +42,12 @@ impl<E> Report<E> {
         let (first, rest) = path.as_ref().split_first()?;
         if first != &self.accessor {
             return None;
-        } else {
-            if rest.is_empty() {
-                return Some(&self.validity);
-            }
+        } else if rest.is_empty() {
+            return Some(&self.validity);
         }
-        self.children.iter().find_map(|child| child.validity_at_path(rest))
+        self.children
+            .iter()
+            .find_map(|child| child.validity_at_path(rest))
     }
 }
 
