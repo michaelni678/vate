@@ -1,13 +1,13 @@
-use std::{borrow::Borrow, fmt::Display};
+use std::{borrow::Cow, fmt::Display};
 
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
-pub struct LessThan<T>(pub T);
+pub struct LessThan<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for LessThan<U>
-where
-    T: PartialOrd + Display,
-    U: Borrow<T> + Display,
+impl<T:, D, E, U> Validator<T, D, E> for LessThan<'_, U> 
+where 
+    T: PartialOrd<U> + Display,
+    U: Clone + Display,
 {
     fn run<C: Collector<E>>(
         &self,
@@ -20,7 +20,7 @@ where
 
         let mut child_report = Report::new(accessor);
 
-        if target < other.borrow() {
+        if target.lt(other) {
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);
@@ -31,12 +31,12 @@ where
     }
 }
 
-pub struct LessThanOrEqualTo<T>(pub T);
+pub struct LessThanOrEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for LessThanOrEqualTo<U>
-where
-    T: PartialOrd + Display,
-    U: Borrow<T> + Display,
+impl<T, D, E, U> Validator<T, D, E> for LessThanOrEqualTo<'_, U> 
+where 
+    T: PartialOrd<U> + Display,
+    U: Clone + Display,
 {
     fn run<C: Collector<E>>(
         &self,
@@ -49,24 +49,23 @@ where
 
         let mut child_report = Report::new(accessor);
 
-        if target <= other.borrow() {
+        if target.le(other) {
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);
-            child_report.message =
-                format!("is \"{target}\", which is not less than or equal to \"{other}\"");
+            child_report.message = format!("is \"{target}\", which is not less than or equal to \"{other}\"");
         }
 
         parent_report.push_child::<C>(child_report)
     }
 }
 
-pub struct GreaterThan<T>(pub T);
+pub struct GreaterThan<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for GreaterThan<U>
-where
-    T: PartialOrd + Display,
-    U: Borrow<T> + Display,
+impl<T, D, E, U> Validator<T, D, E> for GreaterThan<'_, U> 
+where 
+    T: PartialOrd<U> + Display,
+    U: Clone + Display,
 {
     fn run<C: Collector<E>>(
         &self,
@@ -79,24 +78,23 @@ where
 
         let mut child_report = Report::new(accessor);
 
-        if target > other.borrow() {
+        if target.gt(other) {
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);
-            child_report.message =
-                format!("is \"{target}\", which is not greater than \"{other}\"");
+            child_report.message = format!("is \"{target}\", which is not greater than \"{other}\"");
         }
 
         parent_report.push_child::<C>(child_report)
     }
 }
 
-pub struct GreaterThanOrEqualTo<T>(pub T);
+pub struct GreaterThanOrEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for GreaterThanOrEqualTo<U>
-where
-    T: PartialOrd + Display,
-    U: Borrow<T> + Display,
+impl<T, D, E, U> Validator<T, D, E> for GreaterThanOrEqualTo<'_, U> 
+where 
+    T: PartialOrd<U> + Display,
+    U: Clone + Display,
 {
     fn run<C: Collector<E>>(
         &self,
@@ -109,24 +107,23 @@ where
 
         let mut child_report = Report::new(accessor);
 
-        if target >= other.borrow() {
+        if target.ge(other) {
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);
-            child_report.message =
-                format!("is \"{target}\", which is not greater than or equal to \"{other}\"");
+            child_report.message = format!("is \"{target}\", which is not greater than or equal to \"{other}\"");
         }
 
         parent_report.push_child::<C>(child_report)
     }
 }
 
-pub struct EqualTo<T>(pub T);
+pub struct EqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for EqualTo<U>
-where
-    T: PartialEq + Display,
-    U: Borrow<T> + Display,
+impl<T, D, E, U> Validator<T, D, E> for EqualTo<'_, U> 
+where 
+    T: PartialEq<U> + Display,
+    U: Clone + Display,
 {
     fn run<C: Collector<E>>(
         &self,
@@ -139,7 +136,7 @@ where
 
         let mut child_report = Report::new(accessor);
 
-        if target == other.borrow() {
+        if target.eq(other) {
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);
@@ -150,12 +147,12 @@ where
     }
 }
 
-pub struct NotEqualTo<T>(pub T);
+pub struct NotEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for NotEqualTo<U>
-where
-    T: PartialEq + Display,
-    U: Borrow<T> + Display,
+impl<T, D, E, U> Validator<T, D, E> for NotEqualTo<'_, U> 
+where 
+    T: PartialEq<U> + Display,
+    U: Clone + Display,
 {
     fn run<C: Collector<E>>(
         &self,
@@ -168,7 +165,7 @@ where
 
         let mut child_report = Report::new(accessor);
 
-        if target != other.borrow() {
+        if target.ne(other) {
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);

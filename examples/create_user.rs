@@ -1,12 +1,13 @@
 #![allow(dead_code)]
 
-use std::collections::HashMap;
+use std::{borrow::Cow, collections::HashMap};
 
 use vate::{
-    path, Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo,
-    Indexed, InvalidsAndErrors, Iterate, Keyed, LengthRange, LessThanOrEqualTo, Nested,
-    NotMissingThen, Report, Validate,
+    path, Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo, Indexed, InvalidsAndErrors, Iterate, Keyed, LengthRange, LessThanOrEqualTo, Nested, NotMissingThen, Report, Validate
 };
+
+/// The required age to create an account.
+const REQUIRED_AGE: u8 = 18;
 
 /// A request to create a user.
 #[derive(Validate)]
@@ -25,8 +26,8 @@ struct Profile {
     /// The user's name.
     #[vate(Nested)]
     name: Name,
-    /// The user's age. Must be over 18 to create the account.
-    #[vate(GreaterThanOrEqualTo(18))]
+    /// The user's age. Must be over `REQUIRED_AGE` to create the account.
+    #[vate(GreaterThanOrEqualTo(Cow::Owned(REQUIRED_AGE)))]
     age: u8,
     /// The user's company. This is not validated.
     company: Option<String>,
@@ -34,7 +35,7 @@ struct Profile {
     #[vate(Iterate(Indexed(Ascii)))]
     hobbies: Vec<String>,
     /// The user's languages mapped to fluency. Fluency should be between 1 and 10.
-    #[vate(Iterate(Keyed(Bundle!(GreaterThanOrEqualTo(1), LessThanOrEqualTo(10)))))]
+    #[vate(Iterate(Keyed(Bundle!(GreaterThanOrEqualTo(Cow::Owned(1)), LessThanOrEqualTo(Cow::Owned(1))))))]
     languages: HashMap<String, u8>,
 }
 
@@ -62,7 +63,7 @@ struct Credentials {
     #[vate(Ascii, LengthRange::Chars { min: 8, max: usize::MAX })]
     password: String,
     /// The password confirmation, which must be equal to the password.
-    #[vate(EqualTo(&self.password))]
+    #[vate(EqualTo(Cow::Borrowed(&self.password)))]
     confirm_password: String,
 }
 
