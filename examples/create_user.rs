@@ -1,7 +1,9 @@
 #![allow(dead_code)]
+
+use std::collections::HashMap;
+
 use vate::{
-    Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo,
-    InvalidsAndErrors, LengthRange, Nested, NotMissingThen, Report, Validate,
+    Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo, Indexed, InvalidsAndErrors, Iterate, Keyed, LengthRange, LessThanOrEqualTo, Nested, NotMissingThen, Report, Validate
 };
 
 /// A request to create a user.
@@ -26,18 +28,24 @@ struct Profile {
     age: u8,
     /// The user's company. This is not validated.
     company: Option<String>,
+    /// The user's hobbies. All hobby names must be ascii.
+    #[vate(Iterate(Indexed(Ascii)))]
+    hobbies: Vec<String>,
+    /// The user's languages mapped to fluency. Fluency should be between 1 and 10.
+    #[vate(Iterate(Keyed(Bundle!(GreaterThanOrEqualTo(1), LessThanOrEqualTo(10)))))]
+    languages: HashMap<String, u8>,
 }
 
 /// A name.
 #[derive(Validate)]
 struct Name {
-    /// The user's first name, which must be alphabetic and between 2 and 32 chars.
+    /// The user's first name, which must be alphabetic and between 2 and 32 characters.
     #[vate(Alphabetic, LengthRange::Chars { min: 2, max: 32 })]
     first: String,
-    /// The user's middle name. This is optional, but if provided it must be alphabetic and between 2 and 32 chars.
+    /// The user's middle name. This is optional, but if provided it must be alphabetic and between 2 and 32 characters.
     #[vate(NotMissingThen(Bundle!(Alphabetic, LengthRange::Chars { min: 2, max: 32 })))]
     middle: Option<String>,
-    /// The user's last name, which must be alphabetic and between 2 and 32 chars.
+    /// The user's last name, which must be alphabetic and between 2 and 32 characters.
     #[vate(Alphabetic, LengthRange::Chars { min: 2, max: 32 })]
     last: String,
 }
@@ -66,6 +74,8 @@ fn main() {
             },
             age: 29,
             company: Some(String::from("Yorozuya")),
+            hobbies: vec![String::from("Eating sweets"), String::from("\u{03A9}"), String::from("Reading manga")], // [0] is not ascii.
+            languages: HashMap::from([(String::from("Japanese"), 10), (String::from("English"), 0)]), // ["English"] is not greater than or equal to 1.
         },
         credentials: Credentials {
             username: String::from("u$ername"), // Not alphanumeric.
