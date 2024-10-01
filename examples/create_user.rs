@@ -3,7 +3,9 @@
 use std::{borrow::Cow, collections::HashMap};
 
 use vate::{
-    path, Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo, Indexed, InvalidsAndErrors, Iterate, Keyed, LengthRange, LessThanOrEqualTo, Nested, NotMissingThen, Report, Validate
+    path, Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo,
+    Indexed, InvalidsAndErrors, Iterate, Keyed, LengthRange, LessThanOrEqualTo, Nested,
+    NotMissingThen, Report, Validate,
 };
 
 /// The required age to create an account.

@@ -4,8 +4,8 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 
 pub struct LessThan<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T:, D, E, U> Validator<T, D, E> for LessThan<'_, U> 
-where 
+impl<T, D, E, U> Validator<T, D, E> for LessThan<'_, U>
+where
     T: PartialOrd<U> + Display,
     U: Clone + Display,
 {
@@ -33,8 +33,8 @@ where
 
 pub struct LessThanOrEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for LessThanOrEqualTo<'_, U> 
-where 
+impl<T, D, E, U> Validator<T, D, E> for LessThanOrEqualTo<'_, U>
+where
     T: PartialOrd<U> + Display,
     U: Clone + Display,
 {
@@ -53,7 +53,8 @@ where
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);
-            child_report.message = format!("is \"{target}\", which is not less than or equal to \"{other}\"");
+            child_report.message =
+                format!("is \"{target}\", which is not less than or equal to \"{other}\"");
         }
 
         parent_report.push_child::<C>(child_report)
@@ -62,8 +63,8 @@ where
 
 pub struct GreaterThan<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for GreaterThan<'_, U> 
-where 
+impl<T, D, E, U> Validator<T, D, E> for GreaterThan<'_, U>
+where
     T: PartialOrd<U> + Display,
     U: Clone + Display,
 {
@@ -82,7 +83,8 @@ where
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);
-            child_report.message = format!("is \"{target}\", which is not greater than \"{other}\"");
+            child_report.message =
+                format!("is \"{target}\", which is not greater than \"{other}\"");
         }
 
         parent_report.push_child::<C>(child_report)
@@ -91,8 +93,8 @@ where
 
 pub struct GreaterThanOrEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for GreaterThanOrEqualTo<'_, U> 
-where 
+impl<T, D, E, U> Validator<T, D, E> for GreaterThanOrEqualTo<'_, U>
+where
     T: PartialOrd<U> + Display,
     U: Clone + Display,
 {
@@ -111,7 +113,8 @@ where
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);
-            child_report.message = format!("is \"{target}\", which is not greater than or equal to \"{other}\"");
+            child_report.message =
+                format!("is \"{target}\", which is not greater than or equal to \"{other}\"");
         }
 
         parent_report.push_child::<C>(child_report)
@@ -120,8 +123,8 @@ where
 
 pub struct EqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for EqualTo<'_, U> 
-where 
+impl<T, D, E, U> Validator<T, D, E> for EqualTo<'_, U>
+where
     T: PartialEq<U> + Display,
     U: Clone + Display,
 {
@@ -149,8 +152,8 @@ where
 
 pub struct NotEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for NotEqualTo<'_, U> 
-where 
+impl<T, D, E, U> Validator<T, D, E> for NotEqualTo<'_, U>
+where
     T: PartialEq<U> + Display,
     U: Clone + Display,
 {
