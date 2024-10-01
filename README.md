@@ -24,6 +24,16 @@ let mut report = Report::new(Accessor::Root("create_user"));
 let _ = create_user.validate::<InvalidsAndErrors>(&data, &mut report);
 ```
 
+## Planned Features
+*Feel free to contribute :)*
+- Regex matching. 
+    - Example: `RegexMatch(SOME_REGEX)`
+- Macro to make creating comparison validators more readable.
+    - Example: `Compare!( < 5 )`
+- Email validator
+- Phone number validator
+- URL validator
+
 ## Built-in Validators
 
 ### Bundle
