@@ -78,7 +78,7 @@ pub enum Accessor {
 }
 
 pub trait Collector<E> {
-    fn apply(parent: &mut Report<E>, report: Report<E>) -> Result<(), Exit<E>>;
+    fn apply(parent: &mut Report<E>, child: Report<E>) -> Result<(), Exit<E>>;
 }
 
 #[derive(Debug)]
