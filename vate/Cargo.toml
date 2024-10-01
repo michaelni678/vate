@@ -4,5 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-ghost = "0.1.17"
 vate-derive = { path = "../vate-derive" }
