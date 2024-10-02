@@ -15,7 +15,7 @@ struct CreateUser {
     username: String,
     #[vate(Ascii, LengthRange::Chars { min: 8, max: usize::MAX })]
     password: String,
-    #[vate(EqualTo(Cow::Borrowed(&self.password)))]
+    #[vate(Compare!( == &self.password ))]
     confirm_password: String,
 }
 
@@ -28,11 +28,9 @@ let _ = create_user.validate::<InvalidsAndErrors>(&data, &mut report);
 *Feel free to contribute :)*
 - Regex matching. 
     - Example: `RegexMatch(SOME_REGEX)`
-- Macro to make creating comparison validators more readable.
-    - Example: `Compare!( < 5 )`
-- Email validator
-- Phone number validator
-- URL validator
+- Email validator.
+- Phone number validator.
+- URL validator.
 
 ## Built-in Validators
 
