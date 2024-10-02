@@ -24,10 +24,11 @@ let mut report = Report::new(Accessor::Root("create_user"));
 let _ = create_user.validate::<InvalidsAndErrors>(&data, &mut report);
 ```
 
-## Planned Features
-*Feel free to contribute :)*
-- Regex matching. 
-    - Example: `RegexMatch(SOME_REGEX)`
+## To-Do
+*Feel free to contribute or suggest more features by creating an issue :)*
+- Documentation comments.
+- Tests for everything.
+- Regex matching validator. 
 - Email validator.
 - Phone number validator.
 - URL validator.
