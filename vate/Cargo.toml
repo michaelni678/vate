@@ -1,0 +1,7 @@
+[package]
+name = "vate"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+vate-derive = { path = "../vate-derive" }
