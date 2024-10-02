@@ -17,7 +17,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 /// Compare!( < x ) // Generates LessThan(Cow::Owned(&5)), which is (probably) not what you want.
 /// ```
 /// ... may not work.
-// Note: This macro's name is `UpperCamelCase`, which doesn't conform with typical macro naming conventions. 
+// Note: This macro's name is `UpperCamelCase`, which doesn't conform with typical macro naming conventions.
 // However, it was done to match the naming convention of normal validators.
 #[macro_export]
 macro_rules! Compare {
