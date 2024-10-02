@@ -46,6 +46,13 @@ b: Option<String>,
 ```
 
 ### Compare
+`Compare!` is a macro that simplifies generating the other validators listed below.
+```rust
+#[vate(Compare!( < 5 ))]
+a: u32,
+#[vate(Compare! ( == &self.a ))]
+b: u32,
+```
 `LessThan`, `LessThanOrEqualTo`, `GreaterThan`, `GreaterThanOrEqualTo`, `EqualTo`, and `NotEqualTo` are all validators for comparing one value with another. 
 ```rust
 #[vate(LessThan(Cow::Owned(5)))]

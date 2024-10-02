@@ -2,6 +2,61 @@ use std::{borrow::Cow, fmt::Display};
 
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
+/// Convenience macro for generating comparison validators
+/// `LessThan`, `LessThanOrEqualTo`, `GreaterThan`,
+/// `GreaterThanOrEqualTo`, `EqualTo`, and `NotEqualTo`.
+/// ### Usage
+/// ```no_run
+/// Compare!( < 5 ) // Generates LessThan(Cow::Owned(5))
+/// Compare!( == &self.a ) // Generates EqualTo(Cow::Borrowed(&self.a))
+/// ```
+/// ### Warning
+/// This macro is purely syntactical! Something like...
+/// ```no_run
+/// let x = &5;
+/// Compare!( < x ) // Generates LessThan(Cow::Owned(&5)), which is (probably) not what you want.
+/// ```
+/// ... may not work.
+#[macro_export]
+macro_rules! Compare {
+    ( < & $value:expr) => {
+        ::vate::LessThan(::std::borrow::Cow::Borrowed(&$value))
+    };
+    ( < $value:expr) => {
+        ::vate::LessThan(::std::borrow::Cow::Owned($value))
+    };
+    ( <= & $value:expr) => {
+        ::vate::LessThanOrEqualTo(::std::borrow::Cow::Borrowed(&$value))
+    };
+    ( <= $value:expr) => {
+        ::vate::LessThanOrEqualTo(::std::borrow::Cow::Owned($value))
+    };
+    ( > & $value:expr) => {
+        ::vate::GreaterThan(::std::borrow::Cow::Borrowed(&$value))
+    };
+    ( > $value:expr) => {
+        ::vate::GreaterThan(::std::borrow::Cow::Owned($value))
+    };
+    ( >= & $value:expr) => {
+        ::vate::GreaterThanOrEqualTo(::std::borrow::Cow::Borrowed(&$value))
+    };
+    ( >= $value:expr) => {
+        ::vate::GreaterThanOrEqualTo(::std::borrow::Cow::Owned($value))
+    };
+    ( == & $value:expr) => {
+        ::vate::EqualTo(::std::borrow::Cow::Borrowed(&$value))
+    };
+    ( == $value:expr) => {
+        ::vate::EqualTo(::std::borrow::Cow::Owned($value))
+    };
+    ( != & $value:expr) => {
+        ::vate::NotEqualTo(::std::borrow::Cow::Borrowed(&$value))
+    };
+    ( != $value:expr) => {
+        ::vate::NotEqualTo(::std::borrow::Cow::Owned($value))
+    };
+}
+
 pub struct LessThan<'a, T: Clone>(pub Cow<'a, T>);
 
 impl<T, D, E, U> Validator<T, D, E> for LessThan<'_, U>

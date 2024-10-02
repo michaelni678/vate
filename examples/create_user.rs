@@ -1,11 +1,10 @@
 #![allow(dead_code)]
 
-use std::{borrow::Cow, collections::HashMap};
+use std::collections::HashMap;
 
 use vate::{
-    path, Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, EqualTo, GreaterThanOrEqualTo,
-    Indexed, InvalidsAndErrors, Iterate, Keyed, LengthRange, LessThanOrEqualTo, Nested,
-    NotMissingThen, Report, Validate,
+    path, Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, Compare, Indexed, InvalidsAndErrors,
+    Iterate, Keyed, LengthRange, Nested, NotMissingThen, Report, Validate,
 };
 
 /// The required age to create an account.
@@ -29,7 +28,7 @@ struct Profile {
     #[vate(Nested)]
     name: Name,
     /// The user's age. Must be over `REQUIRED_AGE` to create the account.
-    #[vate(GreaterThanOrEqualTo(Cow::Owned(REQUIRED_AGE)))]
+    #[vate(Compare!( >= REQUIRED_AGE))]
     age: u8,
     /// The user's company. This is not validated.
     company: Option<String>,
@@ -37,7 +36,7 @@ struct Profile {
     #[vate(Iterate(Indexed(Ascii)))]
     hobbies: Vec<String>,
     /// The user's languages mapped to fluency. Fluency should be between 1 and 10.
-    #[vate(Iterate(Keyed(Bundle!(GreaterThanOrEqualTo(Cow::Owned(1)), LessThanOrEqualTo(Cow::Owned(1))))))]
+    #[vate(Iterate(Keyed(Bundle!(Compare!( >= 1 ), Compare!( <= 10 )))))]
     languages: HashMap<String, u8>,
 }
 
@@ -65,7 +64,7 @@ struct Credentials {
     #[vate(Ascii, LengthRange::Chars { min: 8, max: usize::MAX })]
     password: String,
     /// The password confirmation, which must be equal to the password.
-    #[vate(EqualTo(Cow::Borrowed(&self.password)))]
+    #[vate(Compare!( == &self.password ))]
     confirm_password: String,
 }
 
