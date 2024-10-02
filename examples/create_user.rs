@@ -28,7 +28,7 @@ struct Profile {
     #[vate(Nested)]
     name: Name,
     /// The user's age. Must be over `REQUIRED_AGE` to create the account.
-    #[vate(Compare!( >= REQUIRED_AGE))]
+    #[vate(Compare!( >= REQUIRED_AGE ))]
     age: u8,
     /// The user's company. This is not validated.
     company: Option<String>,
