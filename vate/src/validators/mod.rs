@@ -1,3 +1,4 @@
+pub(crate) mod boolean;
 pub(crate) mod bundle;
 pub(crate) mod collection;
 pub(crate) mod compare;

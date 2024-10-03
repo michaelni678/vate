@@ -5,13 +5,16 @@ mod validators;
 pub use collectors::{FirstInvalidAndPrecedingErrors, InvalidsAndErrors};
 pub use core::{Accessor, Collector, Exit, Report, Validate, Validator};
 pub use validators::{
+    boolean::{False, True},
     bundle::Bundle2,
     collection::CollectionIterate,
     compare::{
         CompareEqualTo, CompareGreaterThan, CompareGreaterThanOrEqualTo, CompareLessThan,
         CompareLessThanOrEqualTo, CompareNotEqualTo,
     },
-    iterator::{IteratorIndexed, IteratorKeyed, IteratorLengthEquals, ExactSizeIteratorLengthEquals},
+    iterator::{
+        ExactSizeIteratorLengthEquals, IteratorIndexed, IteratorKeyed, IteratorLengthEquals,
+    },
     nested::Nested,
     option::{OptionNone, OptionSome, OptionSomeThen},
     string::{

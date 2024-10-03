@@ -74,8 +74,8 @@ where
 
 pub struct IteratorLengthEquals(pub usize);
 
-impl<T, D, E> Validator<T, D, E> for IteratorLengthEquals 
-where 
+impl<T, D, E> Validator<T, D, E> for IteratorLengthEquals
+where
     T: Iterator + Clone,
 {
     fn run<C: Collector<E>>(
@@ -103,8 +103,8 @@ where
 
 pub struct ExactSizeIteratorLengthEquals(pub usize);
 
-impl<T, D, E> Validator<T, D, E> for ExactSizeIteratorLengthEquals 
-where 
+impl<T, D, E> Validator<T, D, E> for ExactSizeIteratorLengthEquals
+where
     T: ExactSizeIterator,
 {
     fn run<C: Collector<E>>(
