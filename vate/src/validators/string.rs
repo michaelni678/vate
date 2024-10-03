@@ -94,7 +94,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthEquals {
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);
-            child_report.message = format!("is not {required_len} {unit}s");
+            child_report.message = format!("is not {required_len} {unit}s long");
         }
 
         parent_report.push_child::<C>(child_report)
@@ -126,7 +126,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthRange {
             child_report.validity = Ok(true);
         } else {
             child_report.validity = Ok(false);
-            child_report.message = format!("is not between {min} and {max} {unit}s");
+            child_report.message = format!("is not between {min} and {max} {unit}s long");
         }
 
         parent_report.push_child::<C>(child_report)

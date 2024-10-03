@@ -5,3 +5,6 @@ edition = "2021"
 
 [dependencies]
 vate-derive = { path = "../vate-derive" }
+
+[dev-dependencies]
+vate-derive = { path = "../vate-derive" }

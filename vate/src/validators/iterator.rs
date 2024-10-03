@@ -71,3 +71,61 @@ where
         parent_result
     }
 }
+
+pub struct IteratorLengthEquals(pub usize);
+
+impl<T, D, E> Validator<T, D, E> for IteratorLengthEquals 
+where 
+    T: Iterator + Clone,
+{
+    fn run<C: Collector<E>>(
+        &self,
+        accessor: Accessor,
+        target: &T,
+        _data: &D,
+        parent_report: &mut Report<E>,
+    ) -> Result<(), Exit<E>> {
+        let Self(required_len) = self;
+        let target_len = target.clone().count();
+
+        let mut child_report = Report::new(accessor);
+
+        if *required_len == target_len {
+            child_report.validity = Ok(true);
+        } else {
+            child_report.validity = Ok(false);
+            child_report.message = format!("is not {required_len} items long");
+        }
+
+        parent_report.push_child::<C>(child_report)
+    }
+}
+
+pub struct ExactSizeIteratorLengthEquals(pub usize);
+
+impl<T, D, E> Validator<T, D, E> for ExactSizeIteratorLengthEquals 
+where 
+    T: ExactSizeIterator,
+{
+    fn run<C: Collector<E>>(
+        &self,
+        accessor: Accessor,
+        target: &T,
+        _data: &D,
+        parent_report: &mut Report<E>,
+    ) -> Result<(), Exit<E>> {
+        let Self(required_len) = self;
+        let target_len = target.len();
+
+        let mut child_report = Report::new(accessor);
+
+        if *required_len == target_len {
+            child_report.validity = Ok(true);
+        } else {
+            child_report.validity = Ok(false);
+            child_report.message = format!("is not {required_len} items long");
+        }
+
+        parent_report.push_child::<C>(child_report)
+    }
+}

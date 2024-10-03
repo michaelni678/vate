@@ -6,13 +6,13 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 /// `CompareLessThan`, `CompareLessThanOrEqualTo`, `CompareGreaterThan`,
 /// `CompareGreaterThanOrEqualTo`, `CompareEqualTo`, and `CompareNotEqualTo`.
 /// ### Usage
-/// ```no_run
+/// ```ignore
 /// Compare!( < 5 ) // Generates CompareLessThan(Cow::Owned(5))
 /// Compare!( == &self.a ) // Generates CompareEqualTo(Cow::Borrowed(&self.a))
 /// ```
 /// ### Warning
 /// This macro is purely syntactical! Something like...
-/// ```no_run
+/// ```ignore
 /// let x = &5;
 /// Compare!( < x ) // Generates CompareLessThan(Cow::Owned(&5)), which is (probably) not what you want.
 /// ```
