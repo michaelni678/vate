@@ -7,14 +7,14 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 /// `CompareGreaterThanOrEqualTo`, `CompareEqualTo`, and `CompareNotEqualTo`.
 /// ### Usage
 /// ```ignore
-/// Compare!( < 5 ) // Generates CompareLessThan(Cow::Owned(5))
-/// Compare!( == &self.a ) // Generates CompareEqualTo(Cow::Borrowed(&self.a))
+/// Compare!( < 5 ); // Generates CompareLessThan(Cow::Owned(5))
+/// Compare!( == &self.a ); // Generates CompareEqualTo(Cow::Borrowed(&self.a))
 /// ```
 /// ### Warning
 /// This macro is purely syntactical! Something like...
 /// ```ignore
 /// let x = &5;
-/// Compare!( < x ) // Generates CompareLessThan(Cow::Owned(&5)), which is (probably) not what you want.
+/// Compare!( < x ); // Generates CompareLessThan(Cow::Owned(&5)), which is (probably) not what you want.
 /// ```
 /// ... may not work.
 // Note: This macro's name is `UpperCamelCase`, which doesn't conform with typical macro naming conventions.
