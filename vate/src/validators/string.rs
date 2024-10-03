@@ -1,8 +1,8 @@
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
-pub struct Alphabetic;
+pub struct StringAlphabetic;
 
-impl<T: AsRef<str>, D, E> Validator<T, D, E> for Alphabetic {
+impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAlphabetic {
     fn run<C: Collector<E>>(
         &self,
         accessor: Accessor,
@@ -23,9 +23,9 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for Alphabetic {
     }
 }
 
-pub struct Alphanumeric;
+pub struct StringAlphanumeric;
 
-impl<T: AsRef<str>, D, E> Validator<T, D, E> for Alphanumeric {
+impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAlphanumeric {
     fn run<C: Collector<E>>(
         &self,
         accessor: Accessor,
@@ -46,9 +46,9 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for Alphanumeric {
     }
 }
 
-pub struct Ascii;
+pub struct StringAscii;
 
-impl<T: AsRef<str>, D, E> Validator<T, D, E> for Ascii {
+impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAscii {
     fn run<C: Collector<E>>(
         &self,
         accessor: Accessor,
@@ -69,12 +69,12 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for Ascii {
     }
 }
 
-pub enum LengthEquals {
+pub enum StringLengthEquals {
     Bytes(usize),
     Chars(usize),
 }
 
-impl<T: AsRef<str>, D, E> Validator<T, D, E> for LengthEquals {
+impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthEquals {
     fn run<C: Collector<E>>(
         &self,
         accessor: Accessor,
@@ -101,12 +101,12 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for LengthEquals {
     }
 }
 
-pub enum LengthRange {
+pub enum StringLengthRange {
     Bytes { min: usize, max: usize },
     Chars { min: usize, max: usize },
 }
 
-impl<T: AsRef<str>, D, E> Validator<T, D, E> for LengthRange {
+impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthRange {
     fn run<C: Collector<E>>(
         &self,
         accessor: Accessor,

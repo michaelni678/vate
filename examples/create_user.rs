@@ -3,8 +3,9 @@
 use std::collections::HashMap;
 
 use vate::{
-    path, Accessor, Alphabetic, Alphanumeric, Ascii, Bundle, Compare, Indexed, InvalidsAndErrors,
-    Iterate, Keyed, LengthRange, Nested, NotMissingThen, Report, Validate,
+    path, Accessor, Bundle, Compare, Indexed, InvalidsAndErrors, Iterate, Keyed, Nested,
+    OptionSomeThen, Report, StringAlphabetic, StringAlphanumeric, StringAscii, StringLengthRange,
+    Validate,
 };
 
 /// The required age to create an account.
@@ -33,7 +34,7 @@ struct Profile {
     /// The user's company. This is not validated.
     company: Option<String>,
     /// The user's hobbies. All hobby names must be ascii.
-    #[vate(Iterate(Indexed(Ascii)))]
+    #[vate(Iterate(Indexed(StringAscii)))]
     hobbies: Vec<String>,
     /// The user's languages mapped to fluency. Fluency should be between 1 and 10.
     #[vate(Iterate(Keyed(Bundle!(Compare!( >= 1 ), Compare!( <= 10 )))))]
@@ -44,13 +45,13 @@ struct Profile {
 #[derive(Validate)]
 struct Name {
     /// The user's first name, which must be alphabetic and between 2 and 32 characters.
-    #[vate(Alphabetic, LengthRange::Chars { min: 2, max: 32 })]
+    #[vate(StringAlphabetic, StringLengthRange::Chars { min: 2, max: 32 })]
     first: String,
     /// The user's middle name. This is optional, but if provided it must be alphabetic and between 2 and 32 characters.
-    #[vate(NotMissingThen(Bundle!(Alphabetic, LengthRange::Chars { min: 2, max: 32 })))]
+    #[vate(OptionSomeThen(Bundle!(StringAlphabetic, StringLengthRange::Chars { min: 2, max: 32 })))]
     middle: Option<String>,
     /// The user's last name, which must be alphabetic and between 2 and 32 characters.
-    #[vate(Alphabetic, LengthRange::Chars { min: 2, max: 32 })]
+    #[vate(StringAlphabetic, StringLengthRange::Chars { min: 2, max: 32 })]
     last: String,
 }
 
@@ -58,10 +59,10 @@ struct Name {
 #[derive(Validate)]
 struct Credentials {
     /// The user's username, which must be alphanumeric and between 4 and 20 characters.
-    #[vate(Alphanumeric, LengthRange::Chars { min: 4, max: 20 })]
+    #[vate(StringAlphanumeric, StringLengthRange::Chars { min: 4, max: 20 })]
     username: String,
     /// The user's password, which must be ascii and at least 8 characters long.
-    #[vate(Ascii, LengthRange::Chars { min: 8, max: usize::MAX })]
+    #[vate(StringAscii, StringLengthRange::Chars { min: 8, max: usize::MAX })]
     password: String,
     /// The password confirmation, which must be equal to the password.
     #[vate(Compare!( == &self.password ))]

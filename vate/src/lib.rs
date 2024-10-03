@@ -7,11 +7,14 @@ pub use core::{Accessor, Collector, Exit, Report, Validate, Validator};
 pub use validators::{
     bundle::Bundle2,
     compare::{
-        EqualTo, GreaterThan, GreaterThanOrEqualTo, LessThan, LessThanOrEqualTo, NotEqualTo,
+        CompareEqualTo, CompareGreaterThan, CompareGreaterThanOrEqualTo, CompareLessThan,
+        CompareLessThanOrEqualTo, CompareNotEqualTo,
     },
     iterate::{Indexed, Iterate, Keyed},
     nested::Nested,
-    option::{Missing, NotMissing, NotMissingThen},
-    string::{Alphabetic, Alphanumeric, Ascii, LengthEquals, LengthRange},
+    option::{OptionNone, OptionSome, OptionSomeThen},
+    string::{
+        StringAlphabetic, StringAlphanumeric, StringAscii, StringLengthEquals, StringLengthRange,
+    },
 };
 pub use vate_derive::{path, Validate};

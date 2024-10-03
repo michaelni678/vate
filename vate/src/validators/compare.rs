@@ -3,18 +3,18 @@ use std::{borrow::Cow, fmt::Display};
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
 /// Convenience macro for generating comparison validators
-/// `LessThan`, `LessThanOrEqualTo`, `GreaterThan`,
-/// `GreaterThanOrEqualTo`, `EqualTo`, and `NotEqualTo`.
+/// `CompareLessThan`, `CompareLessThanOrEqualTo`, `CompareGreaterThan`,
+/// `CompareGreaterThanOrEqualTo`, `CompareEqualTo`, and `CompareNotEqualTo`.
 /// ### Usage
 /// ```no_run
-/// Compare!( < 5 ) // Generates LessThan(Cow::Owned(5))
-/// Compare!( == &self.a ) // Generates EqualTo(Cow::Borrowed(&self.a))
+/// Compare!( < 5 ) // Generates CompareLessThan(Cow::Owned(5))
+/// Compare!( == &self.a ) // Generates CompareEqualTo(Cow::Borrowed(&self.a))
 /// ```
 /// ### Warning
 /// This macro is purely syntactical! Something like...
 /// ```no_run
 /// let x = &5;
-/// Compare!( < x ) // Generates LessThan(Cow::Owned(&5)), which is (probably) not what you want.
+/// Compare!( < x ) // Generates CompareLessThan(Cow::Owned(&5)), which is (probably) not what you want.
 /// ```
 /// ... may not work.
 // Note: This macro's name is `UpperCamelCase`, which doesn't conform with typical macro naming conventions.
@@ -22,46 +22,46 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 #[macro_export]
 macro_rules! Compare {
     ( < & $value:expr) => {
-        ::vate::LessThan(::std::borrow::Cow::Borrowed(&$value))
+        ::vate::CompareLessThan(::std::borrow::Cow::Borrowed(&$value))
     };
     ( < $value:expr) => {
-        ::vate::LessThan(::std::borrow::Cow::Owned($value))
+        ::vate::CompareLessThan(::std::borrow::Cow::Owned($value))
     };
     ( <= & $value:expr) => {
-        ::vate::LessThanOrEqualTo(::std::borrow::Cow::Borrowed(&$value))
+        ::vate::CompareLessThanOrEqualTo(::std::borrow::Cow::Borrowed(&$value))
     };
     ( <= $value:expr) => {
-        ::vate::LessThanOrEqualTo(::std::borrow::Cow::Owned($value))
+        ::vate::CompareLessThanOrEqualTo(::std::borrow::Cow::Owned($value))
     };
     ( > & $value:expr) => {
-        ::vate::GreaterThan(::std::borrow::Cow::Borrowed(&$value))
+        ::vate::CompareGreaterThan(::std::borrow::Cow::Borrowed(&$value))
     };
     ( > $value:expr) => {
-        ::vate::GreaterThan(::std::borrow::Cow::Owned($value))
+        ::vate::CompareGreaterThan(::std::borrow::Cow::Owned($value))
     };
     ( >= & $value:expr) => {
-        ::vate::GreaterThanOrEqualTo(::std::borrow::Cow::Borrowed(&$value))
+        ::vate::CompareGreaterThanOrEqualTo(::std::borrow::Cow::Borrowed(&$value))
     };
     ( >= $value:expr) => {
-        ::vate::GreaterThanOrEqualTo(::std::borrow::Cow::Owned($value))
+        ::vate::CompareGreaterThanOrEqualTo(::std::borrow::Cow::Owned($value))
     };
     ( == & $value:expr) => {
-        ::vate::EqualTo(::std::borrow::Cow::Borrowed(&$value))
+        ::vate::CompareEqualTo(::std::borrow::Cow::Borrowed(&$value))
     };
     ( == $value:expr) => {
-        ::vate::EqualTo(::std::borrow::Cow::Owned($value))
+        ::vate::CompareEqualTo(::std::borrow::Cow::Owned($value))
     };
     ( != & $value:expr) => {
-        ::vate::NotEqualTo(::std::borrow::Cow::Borrowed(&$value))
+        ::vate::CompareNotEqualTo(::std::borrow::Cow::Borrowed(&$value))
     };
     ( != $value:expr) => {
-        ::vate::NotEqualTo(::std::borrow::Cow::Owned($value))
+        ::vate::CompareNotEqualTo(::std::borrow::Cow::Owned($value))
     };
 }
 
-pub struct LessThan<'a, T: Clone>(pub Cow<'a, T>);
+pub struct CompareLessThan<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for LessThan<'_, U>
+impl<T, D, E, U> Validator<T, D, E> for CompareLessThan<'_, U>
 where
     T: PartialOrd<U> + Display,
     U: Clone + Display,
@@ -88,9 +88,9 @@ where
     }
 }
 
-pub struct LessThanOrEqualTo<'a, T: Clone>(pub Cow<'a, T>);
+pub struct CompareLessThanOrEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for LessThanOrEqualTo<'_, U>
+impl<T, D, E, U> Validator<T, D, E> for CompareLessThanOrEqualTo<'_, U>
 where
     T: PartialOrd<U> + Display,
     U: Clone + Display,
@@ -118,9 +118,9 @@ where
     }
 }
 
-pub struct GreaterThan<'a, T: Clone>(pub Cow<'a, T>);
+pub struct CompareGreaterThan<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for GreaterThan<'_, U>
+impl<T, D, E, U> Validator<T, D, E> for CompareGreaterThan<'_, U>
 where
     T: PartialOrd<U> + Display,
     U: Clone + Display,
@@ -148,9 +148,9 @@ where
     }
 }
 
-pub struct GreaterThanOrEqualTo<'a, T: Clone>(pub Cow<'a, T>);
+pub struct CompareGreaterThanOrEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for GreaterThanOrEqualTo<'_, U>
+impl<T, D, E, U> Validator<T, D, E> for CompareGreaterThanOrEqualTo<'_, U>
 where
     T: PartialOrd<U> + Display,
     U: Clone + Display,
@@ -178,9 +178,9 @@ where
     }
 }
 
-pub struct EqualTo<'a, T: Clone>(pub Cow<'a, T>);
+pub struct CompareEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for EqualTo<'_, U>
+impl<T, D, E, U> Validator<T, D, E> for CompareEqualTo<'_, U>
 where
     T: PartialEq<U> + Display,
     U: Clone + Display,
@@ -207,9 +207,9 @@ where
     }
 }
 
-pub struct NotEqualTo<'a, T: Clone>(pub Cow<'a, T>);
+pub struct CompareNotEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
-impl<T, D, E, U> Validator<T, D, E> for NotEqualTo<'_, U>
+impl<T, D, E, U> Validator<T, D, E> for CompareNotEqualTo<'_, U>
 where
     T: PartialEq<U> + Display,
     U: Clone + Display,

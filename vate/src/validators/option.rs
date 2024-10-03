@@ -1,8 +1,8 @@
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
-pub struct NotMissing;
+pub struct OptionSome;
 
-impl<T, D, E> Validator<Option<T>, D, E> for NotMissing {
+impl<T, D, E> Validator<Option<T>, D, E> for OptionSome {
     fn run<C: Collector<E>>(
         &self,
         accessor: Accessor,
@@ -23,9 +23,9 @@ impl<T, D, E> Validator<Option<T>, D, E> for NotMissing {
     }
 }
 
-pub struct Missing;
+pub struct OptionNone;
 
-impl<T, D, E> Validator<Option<T>, D, E> for Missing {
+impl<T, D, E> Validator<Option<T>, D, E> for OptionNone {
     fn run<C: Collector<E>>(
         &self,
         accessor: Accessor,
@@ -46,9 +46,9 @@ impl<T, D, E> Validator<Option<T>, D, E> for Missing {
     }
 }
 
-pub struct NotMissingThen<V>(pub V);
+pub struct OptionSomeThen<V>(pub V);
 
-impl<T, D, E, V: Validator<T, D, E>> Validator<Option<T>, D, E> for NotMissingThen<V> {
+impl<T, D, E, V: Validator<T, D, E>> Validator<Option<T>, D, E> for OptionSomeThen<V> {
     fn run<C: Collector<E>>(
         &self,
         accessor: Accessor,
