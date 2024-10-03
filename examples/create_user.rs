@@ -3,9 +3,9 @@
 use std::collections::HashMap;
 
 use vate::{
-    path, Accessor, Bundle, Compare, Indexed, InvalidsAndErrors, Iterate, Keyed, Nested,
-    OptionSomeThen, Report, StringAlphabetic, StringAlphanumeric, StringAscii, StringLengthRange,
-    Validate,
+    path, Accessor, Bundle, CollectionIterate, Compare, InvalidsAndErrors, IteratorIndexed,
+    IteratorKeyed, Nested, OptionSomeThen, Report, StringAlphabetic, StringAlphanumeric,
+    StringAscii, StringLengthRange, Validate,
 };
 
 /// The required age to create an account.
@@ -34,10 +34,10 @@ struct Profile {
     /// The user's company. This is not validated.
     company: Option<String>,
     /// The user's hobbies. All hobby names must be ascii.
-    #[vate(Iterate(Indexed(StringAscii)))]
+    #[vate(CollectionIterate(IteratorIndexed(StringAscii)))]
     hobbies: Vec<String>,
     /// The user's languages mapped to fluency. Fluency should be between 1 and 10.
-    #[vate(Iterate(Keyed(Bundle!(Compare!( >= 1 ), Compare!( <= 10 )))))]
+    #[vate(CollectionIterate(IteratorKeyed(Bundle!(Compare!( >= 1 ), Compare!( <= 10 )))))]
     languages: HashMap<String, u8>,
 }
 

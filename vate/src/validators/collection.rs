@@ -1,8 +1,8 @@
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
-pub struct Iterate<V>(pub V);
+pub struct CollectionIterate<V>(pub V);
 
-impl<T, D, E, V> Validator<T, D, E> for Iterate<V>
+impl<T, D, E, V> Validator<T, D, E> for CollectionIterate<V>
 where
     for<'a> &'a T: IntoIterator,
     for<'a> V: Validator<<&'a T as IntoIterator>::IntoIter, D, E>,

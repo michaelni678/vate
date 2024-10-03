@@ -6,11 +6,12 @@ pub use collectors::{FirstInvalidAndPrecedingErrors, InvalidsAndErrors};
 pub use core::{Accessor, Collector, Exit, Report, Validate, Validator};
 pub use validators::{
     bundle::Bundle2,
+    collection::CollectionIterate,
     compare::{
         CompareEqualTo, CompareGreaterThan, CompareGreaterThanOrEqualTo, CompareLessThan,
         CompareLessThanOrEqualTo, CompareNotEqualTo,
     },
-    iterate::{Indexed, Iterate, Keyed},
+    iterator::{IteratorIndexed, IteratorKeyed},
     nested::Nested,
     option::{OptionNone, OptionSome, OptionSomeThen},
     string::{
