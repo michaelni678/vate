@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
 pub struct IteratorIndexed<V>(pub V);
@@ -5,7 +7,9 @@ pub struct IteratorIndexed<V>(pub V);
 impl<T, D, E, V> Validator<T, D, E> for IteratorIndexed<V>
 where
     T: Iterator + Clone,
-    V: Validator<T::Item, D, E>,
+    T::Item: Deref,
+    <<T as Iterator>::Item as Deref>::Target: Sized,
+    V: Validator<<T::Item as Deref>::Target, D, E>,
 {
     fn run<C: Collector<E>>(
         &self,
@@ -127,5 +131,83 @@ where
         }
 
         parent_report.push_child::<C>(child_report)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::collections::HashMap;
+
+    use vate::{
+        path, Accessor, CollectionIterate, Compare, Everything, ExactSizeIteratorLengthEquals,
+        IteratorIndexed, IteratorKeyed, IteratorLengthEquals, Report, Validate,
+    };
+
+    #[test]
+    fn iterator_indexed() {
+        #[derive(Validate)]
+        struct Example {
+            #[vate(CollectionIterate(IteratorIndexed(Compare!( > 0 ))))]
+            v: Vec<u32>,
+        }
+        let example = Example {
+            v: vec![0, 1, 2, 3, 4],
+        };
+        let mut report = Report::new(Accessor::Root("example"));
+        let _ = example.validate::<Everything>(&(), &mut report);
+        assert!(report.is_invalid_at_path(path!(example.v[0])).unwrap());
+        assert!(report.is_valid_at_path(path!(example.v[1])).unwrap());
+        assert!(report.is_valid_at_path(path!(example.v[2])).unwrap());
+        assert!(report.is_valid_at_path(path!(example.v[3])).unwrap());
+        assert!(report.is_valid_at_path(path!(example.v[4])).unwrap());
+    }
+
+    #[test]
+    fn iterator_keyed() {
+        #[derive(Validate)]
+        struct Example {
+            #[vate(CollectionIterate(IteratorKeyed(Compare!( > 0 ))))]
+            hm: HashMap<&'static str, u32>,
+        }
+        let example = Example {
+            hm: HashMap::from([("a", 0), ("b", 1), ("c", 2), ("d", 3), ("e", 4)]),
+        };
+        let mut report = Report::new(Accessor::Root("example"));
+        let _ = example.validate::<Everything>(&(), &mut report);
+        assert!(report.is_invalid_at_path(path!(example.hm["a"])).unwrap());
+        assert!(report.is_valid_at_path(path!(example.hm["b"])).unwrap());
+        assert!(report.is_valid_at_path(path!(example.hm["c"])).unwrap());
+        assert!(report.is_valid_at_path(path!(example.hm["d"])).unwrap());
+        assert!(report.is_valid_at_path(path!(example.hm["e"])).unwrap());
+    }
+
+    #[test]
+    fn iterator_length_equals() {
+        #[derive(Validate)]
+        struct Example {
+            #[vate(CollectionIterate(IteratorLengthEquals(5)))]
+            v: Vec<u32>,
+        }
+        let example = Example {
+            v: vec![1, 2, 3, 4, 5],
+        };
+        let mut report = Report::new(Accessor::Root("example"));
+        let _ = example.validate::<Everything>(&(), &mut report);
+        assert!(report.is_valid_at_path(path!(example)).unwrap());
+    }
+
+    #[test]
+    fn exact_size_iterator_length_equals() {
+        #[derive(Validate)]
+        struct Example {
+            #[vate(CollectionIterate(ExactSizeIteratorLengthEquals(5)))]
+            v: Vec<u32>,
+        }
+        let example = Example {
+            v: vec![1, 2, 3, 4, 5],
+        };
+        let mut report = Report::new(Accessor::Root("example"));
+        let _ = example.validate::<Everything>(&(), &mut report);
+        assert!(report.is_valid_at_path(path!(example)).unwrap());
     }
 }

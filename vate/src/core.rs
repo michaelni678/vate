@@ -38,24 +38,44 @@ impl<E> Report<E> {
     pub fn push_child<C: Collector<E>>(&mut self, child: Self) -> Result<(), Exit<E>> {
         C::apply(self, child)
     }
-    pub fn is_valid_at_path(&self, path: impl AsRef<[Accessor]>) -> bool {
-        if let Some(Ok(validity)) = self.validity_at_path(path) {
-            return *validity;
+    /// Check if the validity of the path is valid.
+    /// If the path isn't found, `None` is returned. If the path isn't found,
+    /// this does NOT mean the struct does not have this path. It just means it is
+    /// not in the report. This can be due to many reasons, such as because nothing on
+    /// that path was validated, the validation was skipped, etc.
+    pub fn is_valid_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
+        if let Ok(validity) = self.validity_at_path(path)? {
+            return Some(*validity);
         }
-        false
+        Some(false)
     }
-    pub fn is_invalid_at_path(&self, path: impl AsRef<[Accessor]>) -> bool {
-        if let Some(Ok(validity)) = self.validity_at_path(path) {
-            return !*validity;
+    /// Check if the validity of the path is invalid.
+    /// If the path isn't found, `None` is returned. If the path isn't found,
+    /// this does NOT mean the struct does not have this path. It just means it is
+    /// not in the report. This can be due to many reasons, such as because nothing on
+    /// that path was validated, the validation was skipped, etc.
+    pub fn is_invalid_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
+        if let Ok(validity) = self.validity_at_path(path)? {
+            return Some(!*validity);
         }
-        false
+        Some(false)
     }
-    pub fn is_error_at_path(&self, path: impl AsRef<[Accessor]>) -> bool {
-        if let Some(Err(_)) = self.validity_at_path(path) {
-            return true;
+    /// Check if the validity of the path is an error.
+    /// If the path isn't found, `None` is returned. If the path isn't found,
+    /// this does NOT mean the struct does not have this path. It just means it is
+    /// not in the report. This can be due to many reasons, such as because nothing on
+    /// that path was validated, the validation was skipped, etc.
+    pub fn is_error_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
+        if (self.validity_at_path(path)?).is_err() {
+            return Some(true);
         }
-        false
+        Some(false)
     }
+    /// Get the validity of a path in the report.
+    /// If the path isn't found, `None` is returned. If the path isn't found,
+    /// this does NOT mean the struct does not have this path. It just means it is
+    /// not in the report. This can be due to many reasons, such as because nothing on
+    /// that path was validated, the validation was skipped, etc.
     pub fn validity_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<&Result<bool, E>> {
         let (first, rest) = path.as_ref().split_first()?;
         if first != &self.accessor {

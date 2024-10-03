@@ -1,8 +1,10 @@
+extern crate self as vate;
+
 mod collectors;
 mod core;
 mod validators;
 
-pub use collectors::{FirstInvalidAndPrecedingErrors, InvalidsAndErrors};
+pub use collectors::{Everything, FirstInvalidAndPrecedingErrors, InvalidsAndErrors};
 pub use core::{Accessor, Collector, Exit, Report, Validate, Validator};
 pub use validators::{
     boolean::{False, True},

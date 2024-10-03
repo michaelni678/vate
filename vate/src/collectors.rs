@@ -40,3 +40,17 @@ impl<E> Collector<E> for FirstInvalidAndPrecedingErrors {
         Ok(())
     }
 }
+
+pub struct Everything;
+
+impl<E> Collector<E> for Everything {
+    fn apply(parent: &mut Report<E>, child: Report<E>) -> Result<(), Exit<E>> {
+        if let Ok(false) = child.validity {
+            if let Ok(parent_validity) = &mut parent.validity {
+                *parent_validity = false;
+            }
+        }
+        parent.children.push(child);
+        Ok(())
+    }
+}
