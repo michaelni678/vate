@@ -76,41 +76,6 @@ where
     }
 }
 
-pub struct IteratorKeyedPair<V>(pub V);
-
-impl<'a, T, D, E, Key: 'a, Value: 'a, V> Validator<T, D, E> for IteratorKeyedPair<V>
-where
-    Key: ToString,
-    T: Iterator<Item = (&'a Key, &'a Value)> + Clone,
-    V: Validator<(&'a Key, &'a Value), D, E>,
-{
-    fn run<C: Collector<E>>(
-        &self,
-        accessor: Accessor,
-        target: &T,
-        data: &D,
-        parent_report: &mut Report<E>,
-    ) -> Result<(), Exit<E>> {
-        let Self(validator) = self;
-
-        let mut child_report = Report::new(accessor);
-
-        let child_result = target.clone().try_for_each(|(key, value)| {
-            validator.run::<C>(
-                Accessor::Key(key.to_string()),
-                &(key, value),
-                data,
-                &mut child_report,
-            )
-        });
-
-        let parent_result = parent_report.push_child::<C>(child_report);
-
-        child_result?;
-        parent_result
-    }
-}
-
 pub struct IteratorLengthEquals(pub usize);
 
 impl<T, D, E> Validator<T, D, E> for IteratorLengthEquals
@@ -214,11 +179,6 @@ mod tests {
         assert!(report.is_valid_at_path(path!(example.hm["c"])).unwrap());
         assert!(report.is_valid_at_path(path!(example.hm["d"])).unwrap());
         assert!(report.is_valid_at_path(path!(example.hm["e"])).unwrap());
-    }
-
-    #[test]
-    fn iterator_keyed_pair() {
-        todo!();
     }
 
     #[test]
