@@ -35,6 +35,15 @@ let _ = create_user.validate::<InvalidsAndErrors>(&data, &mut report);
 
 ## Built-in Validators
 
+### Boolean
+`True` and `False` validate that a boolean is `true` or `false`.
+```rust
+#[vate(True)]
+a: bool,
+#[vate(False)]
+b: bool,
+```
+
 ### Bundle
 `Bundle!` is a macro that allows multiple validators at the same level. The two examples below are technically equivalent, however the first would require unwrapping the option for both `StringAlphabetic` and `StringAscii` validations, whereas the second example would only require a single unwrap.
 ```rust
@@ -42,6 +51,13 @@ let _ = create_user.validate::<InvalidsAndErrors>(&data, &mut report);
 a: Option<String>,
 #[vate(OptionSomeThen(Bundle!(StringAlphabetic, StringAscii)))]
 b: Option<String>,
+```
+
+### Collection
+`CollectionIterate` iterates a collection, running its inner validator with the iterator.
+```rust
+#[vate(CollectionIterate(IteratorIndexed(Alphabetic)))]
+a: Vec<String>,
 ```
 
 ### Compare
@@ -60,14 +76,20 @@ a: u32,
 b: u32,
 ```
 
-### Iterate
-`Iterate` converts a collection to an iterator, running the inner validator.
-`Indexed` and `Keyed` will iterate over an iterator, passing iterated items to the inner validator. `Indexed` will keep track of the indices of items, generating `Accessor::Index`. `Keyed` expects a key / value tuple pair, where the key generates `Accessor::Key`, and the value is passed to the inner validator.
+### Iterator
+`IteratorIndexed` and `IteratorKeyed` will iterate over an iterator, passing iterated items to the inner validator. `IteratorIndexed` will keep track of the indices of items, generating `Accessor::Index`. `IteratorKeyed` expects a key / value tuple pair, where the key generates `Accessor::Key`, and the value is passed to the inner validator.
 ```rust
-#[vate(Iterate(Indexed(Alphabetic)))]
+#[vate(CollectionIterate(IteratorIndexed(Alphabetic)))]
 a: Vec<String>,
-#[vate(Iterate(Keyed(Alphabetic)))]
+#[vate(CollectionIterate(IteratorKeyed(Alphabetic)))]
 b: HashMap<String, String>,
+```
+`IteratorLengthEquals` counts the number of items in an iterator. When an iterator implements `ExactSizeIterator`, prefer the `ExactSizeIteratorLengthEquals` validator, which also returns the length of the iterator.
+```rust
+#[vate(CollectionIterate(IteratorLengthEquals(5)))]
+a: Vec<String>,
+#[vate(CollectionIterate(ExactSizeIteratorLengthEquals(5)))]
+b: HashMap<String, u32>,
 ```
 
 ### Nested
