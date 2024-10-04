@@ -15,7 +15,8 @@ pub use validators::{
         CompareLessThanOrEqualTo, CompareNotEqualTo,
     },
     iterator::{
-        ExactSizeIteratorLengthEquals, IteratorIndexed, IteratorKeyed, IteratorLengthEquals,
+        ExactSizeIteratorLengthEquals, IteratorIndexed, IteratorKeyed, IteratorKeyedPair,
+        IteratorLengthEquals,
     },
     nested::Nested,
     option::{OptionNone, OptionSome, OptionSomeThen},
