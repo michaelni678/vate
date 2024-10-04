@@ -9,7 +9,3 @@ vate = { path = "../vate" }
 [[example]]
 name = "create_user"
 path = "create_user.rs"
-
-[[example]]
-name = "exam"
-path = "exam.rs"
