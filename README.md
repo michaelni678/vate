@@ -28,7 +28,6 @@ let _ = create_user.validate::<InvalidsAndErrors>(&data, &mut report);
 *Feel free to contribute or suggest more features by creating an issue :)*
 - Documentation comments.
 - Tests for everything.
-- Regex matching validator. 
 - Email validator.
 - Phone number validator.
 - URL validator.
@@ -69,6 +68,7 @@ a: u32,
 #[vate(Compare! ( == &self.a ))]
 b: u32,
 ```
+
 `CompareLessThan`, `CompareLessThanOrEqualTo`, `CompareGreaterThan`, `CompareGreaterThanOrEqualTo`, `CompareEqualTo`, and `CompareNotEqualTo` are all validators for comparing one value with another. 
 ```rust
 #[vate(CompareLessThan(Cow::Owned(5)))]
@@ -85,6 +85,7 @@ a: Vec<String>,
 #[vate(CollectionIterate(IteratorKeyed(Alphabetic)))]
 b: HashMap<String, String>,
 ```
+
 `IteratorLengthEquals` counts the number of items in an iterator. When an iterator implements `ExactSizeIterator`, prefer the `ExactSizeIteratorLengthEquals` validator, which also returns the length of the iterator.
 ```rust
 #[vate(CollectionIterate(IteratorLengthEquals(5)))]
@@ -114,6 +115,7 @@ a: Option<u32>,
 #[vate(OptionNone)]
 b: Option<String>,
 ```
+
 `OptionSomeThen` will run the inner validator with the unwrapped value if it exists. Otherwise, nothing is validated.
 ```rust
 #[vate(OptionSomeThen(StringAlphabetic))]
@@ -141,10 +143,23 @@ a: String,
 #[vate(StringLengthEquals::Chars(8))]
 b: String,
 ```
+
 `StringLengthRange` checks if the length of a string is between `min` and `max` units.
 ```rust
 #[vate(StringLengthRange::Bytes { min: 4, max: 7 })]
 a: String,
 #[vate(StringLengthRange::Chars { min: 2, max: usize::MAX })]
 b: String,
+```
+
+`StringMatchesRegex` checks if a string matches the specified regex.
+```rust
+use std::once_cell::sync::Lazy;
+
+use vate::extras::Regex;
+
+static DNA_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("^[ACGT]+$"));
+
+#[vate(RegexMatchesString(&DNA_REGEX))]
+a: String,
 ```
