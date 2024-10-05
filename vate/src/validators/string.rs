@@ -1,3 +1,4 @@
+use crate::extras::Regex;
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
 pub struct StringAlphabetic;
@@ -127,6 +128,31 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthRange {
         } else {
             child_report.validity = Ok(false);
             child_report.message = format!("is not between {min} and {max} {unit}s long");
+        }
+
+        parent_report.push_child::<C>(child_report)
+    }
+}
+
+pub struct StringMatchesRegex<'a>(pub &'a Regex);
+
+impl<'a, T: AsRef<str>, D, E> Validator<T, D, E> for StringMatchesRegex<'a> {
+    fn run<C: Collector<E>>(
+        &self,
+        accessor: Accessor,
+        target: &T,
+        _data: &D,
+        parent_report: &mut Report<E>,
+    ) -> Result<(), Exit<E>> {
+        let Self(regex) = self;
+
+        let mut child_report = Report::new(accessor);
+
+        if regex.is_match(target.as_ref()) {
+            child_report.validity = Ok(true);
+        } else {
+            child_report.validity = Ok(false);
+            child_report.message = format!("does not match regex {regex}");
         }
 
         parent_report.push_child::<C>(child_report)

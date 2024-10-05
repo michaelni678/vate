@@ -2,14 +2,19 @@
 
 use std::collections::HashMap;
 
+use once_cell::sync::Lazy;
 use vate::{
-    path, Accessor, Bundle, CollectionIterate, Compare, InvalidsAndErrors, IteratorIndexed,
-    IteratorKeyed, Nested, OptionSomeThen, Report, StringAlphabetic, StringAlphanumeric,
-    StringAscii, StringLengthRange, Validate,
+    extras::Regex, path, Accessor, Bundle, CollectionIterate, Compare, InvalidsAndErrors,
+    IteratorIndexed, IteratorKeyed, Nested, OptionSomeThen, Report, StringAlphabetic,
+    StringAlphanumeric, StringAscii, StringLengthRange, StringMatchesRegex, Validate,
 };
 
 /// The required age to create an account.
 const REQUIRED_AGE: u8 = 18;
+
+/// The regex for validating company names.
+static COMPANY_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r#"^[A-Z]([a-zA-Z0-9]|[- @\.#&!])*$"#).unwrap());
 
 /// A request to create a user.
 #[derive(Validate)]
@@ -31,7 +36,8 @@ struct Profile {
     /// The user's age. Must be over `REQUIRED_AGE` to create the account.
     #[vate(Compare!( >= REQUIRED_AGE ))]
     age: u8,
-    /// The user's company. This is not validated.
+    /// The user's company, which must match `COMPANY_REGEX` if `Some`.
+    #[vate(OptionSomeThen(StringMatchesRegex(&COMPANY_REGEX)))]
     company: Option<String>,
     /// The user's hobbies. All hobby names must be ascii.
     #[vate(CollectionIterate(IteratorIndexed(StringAscii)))]
@@ -67,6 +73,10 @@ struct Credentials {
     /// The password confirmation, which must be equal to the password.
     #[vate(Compare!( == &self.password ))]
     confirm_password: String,
+    /// The ID of the device that attempted to create this user.
+    /// This is purposely not validated to demonstrate that not all
+    /// fields need to be validated.
+    device_id: String,
 }
 
 fn main() {
@@ -93,6 +103,7 @@ fn main() {
             username: String::from("u$ername"), // Not alphanumeric.
             password: String::from("health me"),
             confirm_password: String::from("pulp fiction"), // Not equal to `password`.
+            device_id: String::from("ZUR4-J4N41-KAT5URA-D4"),
         },
     };
 

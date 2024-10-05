@@ -21,6 +21,11 @@ pub use validators::{
     option::{OptionNone, OptionSome, OptionSomeThen},
     string::{
         StringAlphabetic, StringAlphanumeric, StringAscii, StringLengthEquals, StringLengthRange,
+        StringMatchesRegex,
     },
 };
 pub use vate_derive::{path, Validate};
+
+pub mod extras {
+    pub use regex::Regex;
+}
