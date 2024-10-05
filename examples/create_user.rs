@@ -103,7 +103,7 @@ fn main() {
             username: String::from("u$ername"), // Not alphanumeric.
             password: String::from("health me"),
             confirm_password: String::from("pulp fiction"), // Not equal to `password`.
-            device_id: String::from("ZUR4-J4N41-KAT5URA-D4"),
+            device_id: String::from("ZuR4-j4N41_kaT5UrA-d4"),
         },
     };
 
