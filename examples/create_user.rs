@@ -110,21 +110,40 @@ fn main() {
     let mut report = Report::new(Accessor::Root("create_user"));
     let _ = create_user.validate::<InvalidsAndErrors>(&(), &mut report);
 
-    assert!(report
-        .is_invalid_at_path(path!(create_user.profile.name.middle))
-        .unwrap());
-    assert!(report
-        .is_invalid_at_path(path!(create_user.profile.hobbies[1]))
-        .unwrap());
-    assert!(report
-        .is_invalid_at_path(path!(create_user.profile.languages["English"]))
-        .unwrap());
-    assert!(report
-        .is_invalid_at_path(path!(create_user.credentials.username))
-        .unwrap());
-    assert!(report
-        .is_invalid_at_path(path!(create_user.credentials.confirm_password))
-        .unwrap());
+    assert_eq!(
+        *report
+            .validity_at_path(path!(create_user.profile.name.middle))
+            .unwrap(),
+        Ok(false)
+    );
+
+    assert_eq!(
+        *report
+            .validity_at_path(path!(create_user.profile.hobbies[1]))
+            .unwrap(),
+        Ok(false)
+    );
+
+    assert_eq!(
+        *report
+            .validity_at_path(path!(create_user.profile.languages["English"]))
+            .unwrap(),
+        Ok(false)
+    );
+
+    assert_eq!(
+        *report
+            .validity_at_path(path!(create_user.credentials.username))
+            .unwrap(),
+        Ok(false)
+    );
+
+    assert_eq!(
+        *report
+            .validity_at_path(path!(create_user.credentials.confirm_password))
+            .unwrap(),
+        Ok(false)
+    );
 
     println!("{report:#?}");
 }
