@@ -150,9 +150,11 @@ mod tests {
             #[vate(CollectionIterate(IteratorIndexed(Compare!( != 2 ))))]
             v: Vec<u32>,
         }
+
         let example = Example {
             v: vec![0, 1, 2, 3, 4],
         };
+
         let mut report = Report::new(Accessor::Root("example"));
         let _ = example.validate::<Everything>(&(), &mut report);
 
@@ -185,9 +187,11 @@ mod tests {
             #[vate(CollectionIterate(IteratorKeyed(Compare!( != 2 ))))]
             hm: HashMap<&'static str, u32>,
         }
+
         let example = Example {
             hm: HashMap::from([("a", 0), ("b", 1), ("c", 2), ("d", 3), ("e", 4)]),
         };
+
         let mut report = Report::new(Accessor::Root("example"));
         let _ = example.validate::<Everything>(&(), &mut report);
 
@@ -220,9 +224,11 @@ mod tests {
             #[vate(CollectionIterate(IteratorLengthEquals(5)))]
             v: Vec<u32>,
         }
+
         let example = Example {
             v: vec![1, 2, 3, 4, 5],
         };
+
         let mut report = Report::new(Accessor::Root("example"));
         let _ = example.validate::<Everything>(&(), &mut report);
 
@@ -236,9 +242,11 @@ mod tests {
             #[vate(CollectionIterate(ExactSizeIteratorLengthEquals(5)))]
             v: Vec<u32>,
         }
+
         let example = Example {
             v: vec![1, 2, 3, 4, 5],
         };
+
         let mut report = Report::new(Accessor::Root("example"));
         let _ = example.validate::<Everything>(&(), &mut report);
 
