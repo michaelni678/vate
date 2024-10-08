@@ -10,10 +10,10 @@ impl<E> Collector<E> for InvalidsAndErrors {
                 if let Ok(parent_validity) = &mut parent.validity {
                     *parent_validity = false;
                 }
-                parent.children.push(child);
+                parent.children.insert(child.into());
             }
             Err(_) => {
-                parent.children.push(child);
+                parent.children.insert(child.into());
             }
         }
         Ok(())
@@ -30,11 +30,11 @@ impl<E> Collector<E> for FirstInvalidAndPrecedingErrors {
                 if let Ok(parent_validity) = &mut parent.validity {
                     *parent_validity = false;
                 }
-                parent.children.push(child);
+                parent.children.insert(child.into());
                 return Err(Exit::Gracefully);
             }
             Err(_) => {
-                parent.children.push(child);
+                parent.children.insert(child.into());
             }
         }
         Ok(())
@@ -50,7 +50,7 @@ impl<E> Collector<E> for Everything {
                 *parent_validity = false;
             }
         }
-        parent.children.push(child);
+        parent.children.insert(child.into());
         Ok(())
     }
 }
