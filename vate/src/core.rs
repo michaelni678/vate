@@ -67,7 +67,7 @@ impl<E> Report<E> {
         matches!(self.get_validity(), Ok(false))
     }
     pub fn is_error(&self) -> bool {
-        matches!(self.get_validity(), Err(_))
+        self.get_validity().is_err()
     }
     pub fn set_message(&mut self, message: impl Into<String>) {
         self.message = message.into();

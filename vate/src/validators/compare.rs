@@ -81,7 +81,9 @@ where
             child_report.set_valid();
         } else {
             child_report.set_invalid();
-            child_report.set_message(format!("is \"{target}\", which is not less than \"{other}\""));
+            child_report.set_message(format!(
+                "is \"{target}\", which is not less than \"{other}\""
+            ));
         }
 
         C::apply(parent_report, child_report)
@@ -110,7 +112,9 @@ where
             child_report.set_valid();
         } else {
             child_report.set_invalid();
-            child_report.set_message(format!("is \"{target}\", which is not less than or equal to \"{other}\""));
+            child_report.set_message(format!(
+                "is \"{target}\", which is not less than or equal to \"{other}\""
+            ));
         }
 
         C::apply(parent_report, child_report)
@@ -139,7 +143,9 @@ where
             child_report.set_valid();
         } else {
             child_report.set_invalid();
-            child_report.set_message(format!("is \"{target}\", which is not greater than \"{other}\""));
+            child_report.set_message(format!(
+                "is \"{target}\", which is not greater than \"{other}\""
+            ));
         }
 
         C::apply(parent_report, child_report)
@@ -168,7 +174,9 @@ where
             child_report.set_valid();
         } else {
             child_report.set_invalid();
-            child_report.set_message(format!("is \"{target}\", which is not greater than or equal to \"{other}\""));
+            child_report.set_message(format!(
+                "is \"{target}\", which is not greater than or equal to \"{other}\""
+            ));
         }
 
         C::apply(parent_report, child_report)
@@ -197,7 +205,9 @@ where
             child_report.set_valid();
         } else {
             child_report.set_invalid();
-            child_report.set_message(format!("is \"{target}\", which is not equal to \"{other}\""));
+            child_report.set_message(format!(
+                "is \"{target}\", which is not equal to \"{other}\""
+            ));
         }
 
         C::apply(parent_report, child_report)
