@@ -5,9 +5,13 @@ use std::{
     ops::Deref,
 };
 
+/// Allows the implementor to be validated.
 pub trait Validate {
+    /// Custom data type passed to validators.
     type Data;
+    /// Error data type that validators may add to a report or return.
     type Error;
+    /// Validate the target.
     fn validate<C: Collector<Self::Error>>(
         &self,
         data: &Self::Data,
@@ -15,7 +19,9 @@ pub trait Validate {
     ) -> Result<(), Exit<Self::Error>>;
 }
 
+/// Defines a validator.
 pub trait Validator<T, D, E> {
+    /// Run the validator.
     fn run<C: Collector<E>>(
         &self,
         accessor: Accessor,
@@ -25,15 +31,21 @@ pub trait Validator<T, D, E> {
     ) -> Result<(), Exit<E>>;
 }
 
+/// A validation report.
 #[derive(Debug)]
 pub struct Report<E> {
+    /// The accessor of the report.
     accessor: Accessor,
+    /// The validity determined after validating.
     validity: Result<bool, E>,
+    /// The message associated with the report.
     message: String,
+    /// The children of this report.
     children: HashSet<ReportHasher<E>>,
 }
 
 impl<E> Report<E> {
+    /// Create a new report.
     pub fn new(accessor: Accessor) -> Self {
         Self {
             accessor,
@@ -42,42 +54,55 @@ impl<E> Report<E> {
             children: HashSet::new(),
         }
     }
+    /// Get the report accessor.
     pub fn get_accessor(&self) -> &Accessor {
         &self.accessor
     }
+    /// Set the validity of the report.
     pub fn set_validity(&mut self, validity: Result<bool, E>) {
         self.validity = validity;
     }
+    /// Set the report validity to valid.
     pub fn set_valid(&mut self) {
         self.set_validity(Ok(true));
     }
+    /// Set the report validity to invalid.
     pub fn set_invalid(&mut self) {
         self.set_validity(Ok(false));
     }
+    /// Set the report validity to an error.
     pub fn set_error(&mut self, error: E) {
         self.set_validity(Err(error));
     }
+    /// Get the validity of this report.
     pub fn get_validity(&self) -> &Result<bool, E> {
         &self.validity
     }
+    /// Check if the validity of this report is valid.
     pub fn is_valid(&self) -> bool {
         matches!(self.get_validity(), Ok(true))
     }
+    /// Check if the validity of this report is invalid.
     pub fn is_invalid(&self) -> bool {
         matches!(self.get_validity(), Ok(false))
     }
+    /// Check if the validity of this report is an error.
     pub fn is_error(&self) -> bool {
         self.get_validity().is_err()
     }
+    /// Set the message of this report.
     pub fn set_message(&mut self, message: impl Into<String>) {
         self.message = message.into();
     }
+    /// Get the message of this report.
     pub fn get_message(&self) -> &String {
         &self.message
     }
+    /// Push a child report to this report.
     pub fn push_child(&mut self, child: impl Into<ReportHasher<E>>) {
         self.children.insert(child.into());
     }
+    /// Get a child report given an accessor.
     pub fn get_child(&self, accessor: &Accessor) -> Option<&Report<E>> {
         self.children.get(accessor).map(|v| &**v)
     }
@@ -102,6 +127,7 @@ impl<E> From<Report<E>> for ReportHasher<E> {
     }
 }
 
+/// For hashing reports.
 #[derive(Debug)]
 pub struct ReportHasher<E>(pub Report<E>);
 
@@ -132,6 +158,7 @@ impl<E> Borrow<Accessor> for ReportHasher<E> {
     }
 }
 
+/// A segment of a path to a validated target.
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum Accessor {
     Root(&'static str),
@@ -140,12 +167,22 @@ pub enum Accessor {
     Key(String),
 }
 
+/// Defines how a parent report collects a child report.
 pub trait Collector<E> {
     fn apply(parent: &mut Report<E>, child: Report<E>) -> Result<(), Exit<E>>;
 }
 
+/// An exit "error" that acts as a control flow within validators, collectors, etc.
+/// For example, the `FirstInvalidAndPrecedingErrors` validator exits gracefully
+/// as soon as the first invalid is encountered. The validators following this invalid
+/// will not be ran, which can be good for performance if you only want the first invalid
+/// anyway.
 #[derive(Debug)]
 pub enum Exit<E> {
+    /// Exit gracefully. Although in the context of `Result<_, Exit<E>>` this is considered
+    /// an error, Exit::Gracefully indicates that this behavior was expected.
     Gracefully,
+    /// Exit with an error. This is different from pushing an error to a report, and
+    /// is intended for force-exiting if a fatal error is encountered.
     WithError(E),
 }
