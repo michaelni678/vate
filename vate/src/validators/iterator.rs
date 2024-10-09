@@ -34,7 +34,7 @@ where
                 )
             });
 
-        let parent_result = parent_report.push_child::<C>(child_report);
+        let parent_result = C::apply(parent_report, child_report);
 
         child_result?;
         parent_result
@@ -69,7 +69,7 @@ where
             )
         });
 
-        let parent_result = parent_report.push_child::<C>(child_report);
+        let parent_result = C::apply(parent_report, child_report);
 
         child_result?;
         parent_result
@@ -95,13 +95,13 @@ where
         let mut child_report = Report::new(accessor);
 
         if *required_len == target_len {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message = format!("is not {required_len} items long");
+            child_report.set_invalid();
+            child_report.set_message(format!("is not {required_len} items long"));
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
 
@@ -124,13 +124,13 @@ where
         let mut child_report = Report::new(accessor);
 
         if *required_len == target_len {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message = format!("is not {required_len} items long");
+            child_report.set_invalid();
+            child_report.set_message(format!("is not {required_len} items long"));
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
 

@@ -15,7 +15,7 @@ impl<T: Validate<Data = D, Error = E>, D, E> Validator<T, D, E> for Nested {
     ) -> Result<(), Exit<E>> {
         let mut child_report = Report::new(accessor);
         let child_result = target.validate::<C>(data, &mut child_report);
-        let parent_result = parent_report.push_child::<C>(child_report);
+        let parent_result = C::apply(parent_report, child_report);
         child_result?;
         parent_result
     }

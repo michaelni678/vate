@@ -27,10 +27,10 @@ pub trait Validator<T, D, E> {
 
 #[derive(Debug)]
 pub struct Report<E> {
-    pub accessor: Accessor,
-    pub validity: Result<bool, E>,
-    pub message: String,
-    pub children: HashSet<ReportHasher<E>>,
+    accessor: Accessor,
+    validity: Result<bool, E>,
+    message: String,
+    children: HashSet<ReportHasher<E>>,
 }
 
 impl<E> Report<E> {
@@ -42,8 +42,44 @@ impl<E> Report<E> {
             children: HashSet::new(),
         }
     }
-    pub fn push_child<C: Collector<E>>(&mut self, child: Self) -> Result<(), Exit<E>> {
-        C::apply(self, child)
+    pub fn get_accessor(&self) -> &Accessor {
+        &self.accessor
+    }
+    pub fn set_validity(&mut self, validity: Result<bool, E>) {
+        self.validity = validity;
+    }
+    pub fn set_valid(&mut self) {
+        self.set_validity(Ok(true));
+    }
+    pub fn set_invalid(&mut self) {
+        self.set_validity(Ok(false));
+    }
+    pub fn set_error(&mut self, error: E) {
+        self.set_validity(Err(error));
+    }
+    pub fn get_validity(&self) -> &Result<bool, E> {
+        &self.validity
+    }
+    pub fn is_valid(&self) -> bool {
+        matches!(self.get_validity(), Ok(true))
+    }
+    pub fn is_invalid(&self) -> bool {
+        matches!(self.get_validity(), Ok(false))
+    }
+    pub fn is_error(&self) -> bool {
+        matches!(self.get_validity(), Err(_))
+    }
+    pub fn set_message(&mut self, message: impl Into<String>) {
+        self.message = message.into();
+    }
+    pub fn get_message(&self) -> &String {
+        &self.message
+    }
+    pub fn push_child(&mut self, child: impl Into<ReportHasher<E>>) {
+        self.children.insert(child.into());
+    }
+    pub fn get_child(&self, accessor: &Accessor) -> Option<&Report<E>> {
+        self.children.get(accessor).map(|v| &**v)
     }
     /// Get the validity of a path in the report.
     /// If the path isn't found, `None` is returned. If the path isn't found,
@@ -53,7 +89,7 @@ impl<E> Report<E> {
     pub fn validity_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<&Result<bool, E>> {
         let (first, rest) = path.as_ref().split_first()?;
         if let Some(next) = rest.first() {
-            self.children.get(next)?.validity_at_path(rest)
+            self.get_child(next)?.validity_at_path(rest)
         } else {
             (*first == self.accessor).then_some(&self.validity)
         }

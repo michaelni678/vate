@@ -13,13 +13,13 @@ impl<D, E> Validator<bool, D, E> for True {
         let mut child_report = Report::new(accessor);
 
         if *target {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message = String::from("is false");
+            child_report.set_invalid();
+            child_report.set_message("is false");
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
 
@@ -36,12 +36,12 @@ impl<D, E> Validator<bool, D, E> for False {
         let mut child_report = Report::new(accessor);
 
         if !*target {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message = String::from("is true");
+            child_report.set_invalid();
+            child_report.set_message("is true");
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }

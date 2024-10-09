@@ -13,13 +13,13 @@ impl<T, D, E> Validator<Option<T>, D, E> for OptionSome {
         let mut child_report = Report::new(accessor);
 
         if target.is_some() {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message = String::from("is missing");
+            child_report.set_invalid();
+            child_report.set_message("is missing");
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
 
@@ -36,13 +36,13 @@ impl<T, D, E> Validator<Option<T>, D, E> for OptionNone {
         let mut child_report = Report::new(accessor);
 
         if target.is_none() {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message = String::from("is not missing");
+            child_report.set_invalid();
+            child_report.set_message("is not missing");
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
 

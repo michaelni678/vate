@@ -14,13 +14,13 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAlphabetic {
         let mut child_report = Report::new(accessor);
 
         if target.as_ref().chars().all(char::is_alphabetic) {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message = String::from("contains non-alphabetic characters");
+            child_report.set_invalid();
+            child_report.set_message("contains non-alphabetic characters");
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
 
@@ -37,13 +37,13 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAlphanumeric {
         let mut child_report = Report::new(accessor);
 
         if target.as_ref().chars().all(char::is_alphanumeric) {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message = String::from("contains non-alphanumeric characters");
+            child_report.set_invalid();
+            child_report.set_message("contains non-alphanumeric characters");
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
 
@@ -60,13 +60,13 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAscii {
         let mut child_report = Report::new(accessor);
 
         if target.as_ref().is_ascii() {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message = String::from("contains non-ascii characters");
+            child_report.set_invalid();
+            child_report.set_message("contains non-ascii characters");
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
 
@@ -92,13 +92,13 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthEquals {
         let mut child_report = Report::new(accessor);
 
         if required_len == target_len {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message = format!("is not {required_len} {unit}s long");
+            child_report.set_invalid();
+            child_report.set_message(format!("is not {required_len} {unit}s long"));
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
 
@@ -124,13 +124,13 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthRange {
         let mut child_report = Report::new(accessor);
 
         if target_len >= min && target_len <= max {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message = format!("is not between {min} and {max} {unit}s long");
+            child_report.set_invalid();
+            child_report.set_message(format!("is not between {min} and {max} {unit}s long"));
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
 
@@ -149,12 +149,12 @@ impl<'a, T: AsRef<str>, D, E> Validator<T, D, E> for StringMatchesRegex<'a> {
         let mut child_report = Report::new(accessor);
 
         if regex.is_match(target.as_ref()) {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message = format!("does not match regex {regex}");
+            child_report.set_invalid();
+            child_report.set_message(format!("does not match regex {regex}"));
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }

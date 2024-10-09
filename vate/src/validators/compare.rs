@@ -78,13 +78,13 @@ where
         let mut child_report = Report::new(accessor);
 
         if target.lt(other) {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message = format!("is \"{target}\", which is not less than \"{other}\"");
+            child_report.set_invalid();
+            child_report.set_message(format!("is \"{target}\", which is not less than \"{other}\""));
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
 
@@ -107,14 +107,13 @@ where
         let mut child_report = Report::new(accessor);
 
         if target.le(other) {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message =
-                format!("is \"{target}\", which is not less than or equal to \"{other}\"");
+            child_report.set_invalid();
+            child_report.set_message(format!("is \"{target}\", which is not less than or equal to \"{other}\""));
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
 
@@ -137,14 +136,13 @@ where
         let mut child_report = Report::new(accessor);
 
         if target.gt(other) {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message =
-                format!("is \"{target}\", which is not greater than \"{other}\"");
+            child_report.set_invalid();
+            child_report.set_message(format!("is \"{target}\", which is not greater than \"{other}\""));
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
 
@@ -167,14 +165,13 @@ where
         let mut child_report = Report::new(accessor);
 
         if target.ge(other) {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message =
-                format!("is \"{target}\", which is not greater than or equal to \"{other}\"");
+            child_report.set_invalid();
+            child_report.set_message(format!("is \"{target}\", which is not greater than or equal to \"{other}\""));
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
 
@@ -197,13 +194,13 @@ where
         let mut child_report = Report::new(accessor);
 
         if target.eq(other) {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message = format!("is \"{target}\", which is not equal to \"{other}\"");
+            child_report.set_invalid();
+            child_report.set_message(format!("is \"{target}\", which is not equal to \"{other}\""));
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
 
@@ -226,12 +223,12 @@ where
         let mut child_report = Report::new(accessor);
 
         if target.ne(other) {
-            child_report.validity = Ok(true);
+            child_report.set_valid();
         } else {
-            child_report.validity = Ok(false);
-            child_report.message = format!("is \"{target}\", which is equal to \"{other}\"");
+            child_report.set_invalid();
+            child_report.set_message(format!("is \"{target}\", which is equal to \"{other}\""));
         }
 
-        parent_report.push_child::<C>(child_report)
+        C::apply(parent_report, child_report)
     }
 }
