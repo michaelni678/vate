@@ -112,13 +112,28 @@ impl<E> Report<E> {
     /// this does NOT mean the struct does not have this path. It just means it is
     /// not in the report. This can be due to many reasons, such as because nothing on
     /// that path was validated, the validation was skipped, etc.
-    pub fn validity_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<&Result<bool, E>> {
+    pub fn get_validity_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<&Result<bool, E>> {
         let (first, rest) = path.as_ref().split_first()?;
         if let Some(next) = rest.first() {
-            self.get_child(next)?.validity_at_path(rest)
+            self.get_child(next)?.get_validity_at_path(rest)
         } else {
             (*first == self.accessor).then_some(&self.validity)
         }
+    }
+    /// Check if the nested report at the path is valid.
+    pub fn is_valid_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
+        let validity = self.get_validity_at_path(path)?;
+        Some(matches!(validity, Ok(true)))
+    }
+    /// Check if the nested report at the path is invalid.
+    pub fn is_invalid_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
+        let validity = self.get_validity_at_path(path)?;
+        Some(matches!(validity, Ok(false)))
+    }
+    /// Check if the nested report at the path is erroneous.
+    pub fn is_error_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
+        let validity = self.get_validity_at_path(path)?;
+        Some(validity.is_err())
     }
     /// A method used by `<Report as Display>::fmt` to stringify the report.
     fn stringify(&self, current_path: Option<Vec<&Accessor>>) -> String {
