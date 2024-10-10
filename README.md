@@ -11,9 +11,9 @@ vate = { git = "https://github.com/michaelni678/vate" }
 ```rust
 #[derive(Validate)]
 struct CreateUser {
-    #[vate(Alphanumeric, LengthRange::Chars { min: 4, max: 20 })]
+    #[vate(StringAlphanumeric, StringLengthRange::Chars { min: 4, max: 20 })]
     username: String,
-    #[vate(Ascii, LengthRange::Chars { min: 8, max: usize::MAX })]
+    #[vate(StringAscii, StringLengthRange::Chars { min: 8, max: usize::MAX })]
     password: String,
     #[vate(Compare!( == &self.password ))]
     confirm_password: String,
@@ -28,20 +28,37 @@ let _ = create_user.validate::<InvalidsAndErrors>(&data, &mut report);
 *Feel free to contribute or suggest more features by creating an issue :)*
 - Documentation comments.
 - Tests for everything.
-- Regex matching validator. 
 - Email validator.
 - Phone number validator.
 - URL validator.
+- Credit card validator.
+- Enum validation.
 
 ## Built-in Validators
 
-### Bundle
-`Bundle!` is a macro that allows multiple validators at the same level. The two examples below are technically equivalent, however the first would require unwrapping the option for both `Alphabetic` and `Ascii` validations, whereas the second example would only require a single unwrap.
+### Boolean
+`True` and `False` validate that a boolean is `true` or `false`.
 ```rust
-#[vate(NotMissingThen(Alphabetic), NotMissingThen(Ascii))]
+#[vate(True)]
+a: bool,
+#[vate(False)]
+b: bool,
+```
+
+### Bundle
+`Bundle!` is a macro that allows multiple validators at the same level. The two examples below are technically equivalent, however the first would require unwrapping the option for both `StringAlphabetic` and `StringAscii` validations, whereas the second example would only require a single unwrap.
+```rust
+#[vate(OptionSomeThen(StringAlphabetic), OptionSomeThen(StringAscii))]
 a: Option<String>,
-#[vate(NotMissingThen(Bundle!(Alphabetic, Ascii)))]
+#[vate(OptionSomeThen(Bundle!(StringAlphabetic, StringAscii)))]
 b: Option<String>,
+```
+
+### Collection
+`CollectionIterate` iterates a collection, running its inner validator with the iterator.
+```rust
+#[vate(CollectionIterate(IteratorIndexed(Alphabetic)))]
+a: Vec<String>,
 ```
 
 ### Compare
@@ -52,22 +69,30 @@ a: u32,
 #[vate(Compare! ( == &self.a ))]
 b: u32,
 ```
-`LessThan`, `LessThanOrEqualTo`, `GreaterThan`, `GreaterThanOrEqualTo`, `EqualTo`, and `NotEqualTo` are all validators for comparing one value with another. 
+
+`CompareLessThan`, `CompareLessThanOrEqualTo`, `CompareGreaterThan`, `CompareGreaterThanOrEqualTo`, `CompareEqualTo`, and `CompareNotEqualTo` are all validators for comparing one value with another. 
 ```rust
-#[vate(LessThan(Cow::Owned(5)))]
+#[vate(CompareLessThan(Cow::Owned(5)))]
 a: u32,
-#[vate(EqualTo(Cow::Borrowed(&self.a)))]
+#[vate(CompareEqualTo(Cow::Borrowed(&self.a)))]
 b: u32,
 ```
 
-### Iterate
-`Iterate` converts a collection to an iterator, running the inner validator.
-`Indexed` and `Keyed` will iterate over an iterator, passing iterated items to the inner validator. `Indexed` will keep track of the indices of items, generating `Accessor::Index`. `Keyed` expects a key / value tuple pair, where the key generates `Accessor::Key`, and the value is passed to the inner validator.
+### Iterator
+`IteratorIndexed` and `IteratorKeyed` will iterate over an iterator, passing iterated items to the inner validator. `IteratorIndexed` will keep track of the indices of items, generating `Accessor::Index`. `IteratorKeyed` expects a key / value tuple pair, where the key generates `Accessor::Key`, and the value is passed to the inner validator.
 ```rust
-#[vate(Iterate(Indexed(Alphabetic)))]
+#[vate(CollectionIterate(IteratorIndexed(Alphabetic)))]
 a: Vec<String>,
-#[vate(Iterate(Keyed(Alphabetic)))]
+#[vate(CollectionIterate(IteratorKeyed(Alphabetic)))]
 b: HashMap<String, String>,
+```
+
+`IteratorLengthEquals` counts the number of items in an iterator. When an iterator implements `ExactSizeIterator`, prefer the `ExactSizeIteratorLengthEquals` validator, which also returns the length of the iterator.
+```rust
+#[vate(CollectionIterate(IteratorLengthEquals(5)))]
+a: Vec<String>,
+#[vate(CollectionIterate(ExactSizeIteratorLengthEquals(5)))]
+b: HashMap<String, u32>,
 ```
 
 ### Nested
@@ -84,44 +109,58 @@ struct B { ... }
 ```
 
 ### Option
-`NotMissing` and `Missing` validate if the option variant is the `Some` or `None` variant.
+`OptionSome` and `OptionNone` validate if the option variant is the `Some` or `None` variant.
 ```rust
-#[vate(NotMissing)]
+#[vate(OptionSome)]
 a: Option<u32>,
-#[vate(Missing)]
+#[vate(OptionNone)]
 b: Option<String>,
 ```
-`NotMissingThen` will run the inner validator with the unwrapped value if it exists. Otherwise, nothing is validated.
+
+`OptionSomeThen` will run the inner validator with the unwrapped value if it exists. Otherwise, nothing is validated.
 ```rust
-#[vate(NotMissingThen(Alphabetic))]
+#[vate(OptionSomeThen(StringAlphabetic))]
 a: Option<String>,
 ```
 
 ### String
-`Alphabetic`, `Alphanumeric`, and `Ascii` check if all characters in a string are alphabetic, alphanumeric, or ascii.
+`StringAlphabetic`, `StringAlphanumeric`, and `StringAscii` check if all characters in a string are alphabetic, alphanumeric, or ascii.
 ```rust
-#[vate(Alphabetic)]
+#[vate(StringAlphabetic)]
 a: String,
-#[vate(Alphanumeric)]
+#[vate(StringAlphanumeric)]
 b: String,
-#[vate(Ascii)]
+#[vate(StringAscii)]
 c: String,
 ```
 At the moment, `vate` supports the string units:
 - Bytes
 - Chars
 
-`LengthEquals` checks if the length of a string is equal to the specified size. 
+`StringLengthEquals` checks if the length of a string is equal to the specified size. 
 ```rust
-#[vate(LengthEquals::Bytes(4))]
+#[vate(StringLengthEquals::Bytes(4))]
 a: String,
-#[vate(LengthEquals::Chars(8))]
+#[vate(StringLengthEquals::Chars(8))]
 b: String,
 ```
-`LengthRange` checks if the length of a string is between `min` and `max` units.
+
+`StringLengthRange` checks if the length of a string is between `min` and `max` units.
 ```rust
-#[vate(LengthRange::Bytes { min: 4, max: 7 })]
+#[vate(StringLengthRange::Bytes { min: 4, max: 7 })]
 a: String,
-#[vate(LengthRange::Chars { min: 2, max: usize::MAX })]
+#[vate(StringLengthRange::Chars { min: 2, max: usize::MAX })]
 b: String,
+```
+
+`StringMatchesRegex` checks if a string matches the specified regex.
+```rust
+use std::once_cell::sync::Lazy;
+
+use vate::extras::Regex;
+
+static DNA_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("^[ACGT]+$"));
+
+#[vate(RegexMatchesString(&DNA_REGEX))]
+a: String,
 ```
