@@ -32,6 +32,7 @@ let _ = create_user.validate::<InvalidsAndErrors>(&data, &mut report);
 - Phone number validator.
 - URL validator.
 - Credit card validator.
+- Enum validation.
 
 ## Built-in Validators
 
