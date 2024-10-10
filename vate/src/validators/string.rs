@@ -153,7 +153,9 @@ impl<'a, T: AsRef<str>, D, E> Validator<T, D, E> for StringMatchesRegex<'a> {
             child_report.set_valid();
         } else {
             child_report.set_invalid();
-            child_report.set_message(format!("is \"{target}\", which does not match regex {regex}"));
+            child_report.set_message(format!(
+                "is \"{target}\", which does not match regex {regex}"
+            ));
         }
 
         C::apply(parent_report, child_report)

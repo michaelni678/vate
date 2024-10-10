@@ -1,5 +1,9 @@
 use std::{
-    borrow::Borrow, collections::HashSet, fmt::{Debug, Display, Formatter, Result as FmtResult}, hash::{Hash, Hasher}, ops::Deref
+    borrow::Borrow,
+    collections::HashSet,
+    fmt::{Debug, Display, Formatter, Result as FmtResult},
+    hash::{Hash, Hasher},
+    ops::Deref,
 };
 
 /// Allows the implementor to be validated.
