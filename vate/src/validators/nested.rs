@@ -20,3 +20,36 @@ impl<T: Validate<Data = D, Error = E>, D, E> Validator<T, D, E> for Nested {
         parent_result
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use vate::{path, Accessor, Everything, Nested, Report, StringAlphabetic, Validate};
+
+    #[test]
+    fn nested() {
+        #[derive(Validate)]
+        struct Example1 {
+            #[vate(Nested)]
+            example2: Example2,
+        }
+
+        #[derive(Validate)]
+        struct Example2 {
+            #[vate(StringAlphabetic)]
+            a: String,
+        }
+
+        let example1 = Example1 {
+            example2: Example2 {
+                a: String::from("0"),
+            },
+        };
+
+        let mut report = Report::new(Accessor::Root("example1"));
+        let _ = example1.validate::<Everything>(&(), &mut report);
+
+        assert!(report
+            .is_invalid_at_path(path!(example1.example2.a))
+            .unwrap());
+    }
+}
