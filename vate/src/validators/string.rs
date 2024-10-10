@@ -145,14 +145,15 @@ impl<'a, T: AsRef<str>, D, E> Validator<T, D, E> for StringMatchesRegex<'a> {
         parent_report: &mut Report<E>,
     ) -> Result<(), Exit<E>> {
         let Self(regex) = self;
+        let target = target.as_ref();
 
         let mut child_report = Report::new(accessor);
 
-        if regex.is_match(target.as_ref()) {
+        if regex.is_match(target) {
             child_report.set_valid();
         } else {
             child_report.set_invalid();
-            child_report.set_message(format!("does not match regex {regex}"));
+            child_report.set_message(format!("is \"{target}\", which does not match regex {regex}"));
         }
 
         C::apply(parent_report, child_report)

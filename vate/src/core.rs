@@ -1,8 +1,5 @@
 use std::{
-    borrow::Borrow,
-    collections::HashSet,
-    hash::{Hash, Hasher},
-    ops::Deref,
+    borrow::Borrow, collections::HashSet, fmt::{Debug, Display, Formatter, Result as FmtResult}, hash::{Hash, Hasher}, ops::Deref
 };
 
 /// Allows the implementor to be validated.
@@ -119,17 +116,44 @@ impl<E> Report<E> {
             (*first == self.accessor).then_some(&self.validity)
         }
     }
+    /// A method used by `<Report as Display>::fmt` to stringify the report.
+    fn stringify(&self, current_path: Option<Vec<&Accessor>>) -> String {
+        let mut stringified = String::new();
+
+        let mut current_path = current_path.unwrap_or_default();
+        current_path.push(&self.accessor);
+
+        if !self.get_message().is_empty() {
+            let mut current_path_string = String::new();
+            for accessor in current_path.iter() {
+                current_path_string.push_str(&accessor.to_string());
+            }
+            stringified.push_str(&format!("{current_path_string} {}\n", self.get_message()));
+        }
+
+        for child in self.children.iter() {
+            stringified.push_str(&child.stringify(Some(current_path.clone())));
+        }
+
+        stringified
+    }
 }
 
-impl<E> From<Report<E>> for ReportHasher<E> {
-    fn from(report: Report<E>) -> Self {
-        Self(report)
+impl<E> Display for Report<E> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        write!(f, "{}", self.stringify(None))
     }
 }
 
 /// For hashing reports.
 #[derive(Debug)]
 pub struct ReportHasher<E>(pub Report<E>);
+
+impl<E> From<Report<E>> for ReportHasher<E> {
+    fn from(report: Report<E>) -> Self {
+        Self(report)
+    }
+}
 
 impl<E> Deref for ReportHasher<E> {
     type Target = Report<E>;
@@ -165,6 +189,17 @@ pub enum Accessor {
     Field(&'static str),
     Index(usize),
     Key(String),
+}
+
+impl Display for Accessor {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            Self::Root(root) => write!(f, "{root}"),
+            Self::Field(field) => write!(f, ".{field}"),
+            Self::Index(index) => write!(f, "[{index}]"),
+            Self::Key(key) => write!(f, "[\"{key}\"]"),
+        }
+    }
 }
 
 /// Defines how a parent report collects a child report.

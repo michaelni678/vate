@@ -145,5 +145,5 @@ fn main() {
         Ok(false)
     );
 
-    println!("{report:#?}");
+    println!("{report}");
 }
