@@ -1,8 +1,30 @@
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
-pub struct True;
+/// ### Description
+/// Validates a boolean is `true`.
+/// ### Usage
+/// ```rust
+/// use vate::{Validate, BooleanTrue, Everything, Report, Accessor, path};
+/// 
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(BooleanTrue)]
+///     a: bool,
+/// }
+/// 
+/// let mut report = Report::new(Accessor::Root("example"));
+/// 
+/// let example = Example {
+///     a: true,
+/// };
+/// 
+/// let _ = example.validate::<Everything>(&(), &mut report); 
+/// 
+/// assert!(report.is_valid_at_path(path!(example.a)).unwrap());
+/// ```
+pub struct BooleanTrue;
 
-impl<D, E> Validator<bool, D, E> for True {
+impl<D, E> Validator<bool, D, E> for BooleanTrue {
     fn run<C: Collector<E>>(
         &self,
         accessor: Accessor,
@@ -23,9 +45,9 @@ impl<D, E> Validator<bool, D, E> for True {
     }
 }
 
-pub struct False;
+pub struct BooleanFalse;
 
-impl<D, E> Validator<bool, D, E> for False {
+impl<D, E> Validator<bool, D, E> for BooleanFalse {
     fn run<C: Collector<E>>(
         &self,
         accessor: Accessor,

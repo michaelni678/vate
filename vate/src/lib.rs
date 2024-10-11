@@ -7,7 +7,7 @@ mod validators;
 pub use collectors::{Everything, FirstInvalidAndPrecedingErrors, InvalidsAndErrors};
 pub use core::{Accessor, Collector, Exit, Report, ReportHasher, Validate, Validator};
 pub use validators::{
-    boolean::{False, True},
+    boolean::{BooleanFalse, BooleanTrue},
     bundle::Bundle2,
     collection::CollectionIterate,
     compare::{

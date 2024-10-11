@@ -37,11 +37,11 @@ let _ = create_user.validate::<InvalidsAndErrors>(&data, &mut report);
 ## Built-in Validators
 
 ### Boolean
-`True` and `False` validate that a boolean is `true` or `false`.
+`BooleanTrue` and `BooleanFalse` validate that a boolean is `true` or `false`.
 ```rust
-#[vate(True)]
+#[vate(BooleanTrue)]
 a: bool,
-#[vate(False)]
+#[vate(BooleanFalse)]
 b: bool,
 ```
 
