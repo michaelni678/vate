@@ -152,7 +152,7 @@ impl<E> Report<E> {
         let validity = self.get_validity_at_path(path)?;
         Some(validity.is_err())
     }
-    
+
     /// A method used by `<Report as Display>::fmt` to stringify the report.
     fn stringify(&self, current_path: Option<Vec<&Accessor>>) -> String {
         let mut stringified = String::new();

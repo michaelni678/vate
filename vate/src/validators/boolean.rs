@@ -1,26 +1,36 @@
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
-/// ### Description
+/// # Description
 /// Validates a boolean is `true`.
-/// ### Usage
+/// # Target Type
+/// `bool`
+/// # Arguments
+/// None
+/// # Feature Flag
+/// None
+/// # Usage
 /// ```rust
-/// use vate::{Validate, BooleanTrue, Everything, Report, Accessor, path};
-/// 
+/// use vate::{path, Accessor, BooleanTrue, Everything, Report, Validate};
+///
 /// #[derive(Validate)]
 /// struct Example {
 ///     #[vate(BooleanTrue)]
 ///     a: bool,
+///     #[vate(BooleanTrue)]
+///     b: bool,
 /// }
-/// 
+///
 /// let mut report = Report::new(Accessor::Root("example"));
-/// 
+///
 /// let example = Example {
 ///     a: true,
+///     b: false,
 /// };
-/// 
-/// let _ = example.validate::<Everything>(&(), &mut report); 
-/// 
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
 /// assert!(report.is_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_invalid_at_path(path!(example.b)).unwrap());
 /// ```
 pub struct BooleanTrue;
 
@@ -45,6 +55,38 @@ impl<D, E> Validator<bool, D, E> for BooleanTrue {
     }
 }
 
+/// # Description
+/// Validates a boolean is `false`.
+/// # Target Type
+/// `bool`
+/// # Arguments
+/// None
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use vate::{path, Accessor, BooleanFalse, Everything, Report, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(BooleanFalse)]
+///     a: bool,
+///     #[vate(BooleanFalse)]
+///     b: bool,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: false,
+///     b: true,
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_invalid_at_path(path!(example.b)).unwrap());
+/// ```
 pub struct BooleanFalse;
 
 impl<D, E> Validator<bool, D, E> for BooleanFalse {

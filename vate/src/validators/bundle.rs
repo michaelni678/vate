@@ -1,5 +1,38 @@
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
+/// # Description
+/// Runs the two inner validators.
+/// # Target Type
+/// Generic
+/// # Arguments
+/// `0`: the first inner validator.
+/// `1`: the second inner validator.
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use vate::{path, Accessor, Bundle2, Compare, Everything, Report, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(Bundle2(Compare!( > 1 ), Compare!( < 3 )))]
+///     a: i32,
+///     #[vate(Bundle2(Compare!( > 1 ), Compare!( < 3 )))]
+///     b: i32,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: 2,
+///     b: 5,
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_invalid_at_path(path!(example.b)).unwrap());
+/// ```
 pub struct Bundle2<V1, V2>(pub V1, pub V2);
 
 impl<T, D, E, V1, V2> Validator<T, D, E> for Bundle2<V1, V2>
@@ -23,6 +56,38 @@ where
 
 // Note: This macro's name is `UpperCamelCase`, which doesn't conform with typical macro naming conventions.
 // However, it was done to match the naming convention of normal validators.
+/// # Description
+/// Runs the inner validators.
+/// # Target Type
+/// Generic
+/// # Arguments
+/// A comma-separated list of validators.
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use vate::{path, Accessor, Bundle, Compare, Everything, Report, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(Bundle!(Compare!( > 1 ), Compare!( < 3 )))]
+///     a: i32,
+///     #[vate(Bundle!(Compare!( > 1 ), Compare!( < 3 )))]
+///     b: i32,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: 2,
+///     b: 5,
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_invalid_at_path(path!(example.b)).unwrap());
+/// ```
 #[macro_export]
 macro_rules! Bundle {
     ($a:expr) => {
