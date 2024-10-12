@@ -1,4 +1,3 @@
-use crate::extras::Regex;
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
 /// # Description
@@ -440,8 +439,10 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthRange {
 /// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
 /// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
 /// ```
-pub struct StringMatchesRegex<'a>(pub &'a Regex);
+#[cfg(feature = "regex")]
+pub struct StringMatchesRegex<'a>(pub &'a crate::extras::Regex);
 
+#[cfg(feature = "regex")]
 impl<'a, T: AsRef<str>, D, E> Validator<T, D, E> for StringMatchesRegex<'a> {
     fn run<C: Collector<E>>(
         &self,

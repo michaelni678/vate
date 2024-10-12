@@ -21,11 +21,15 @@ pub use validators::{
     option::{OptionNone, OptionSome, OptionSomeThen},
     string::{
         StringAlphabetic, StringAlphanumeric, StringAscii, StringLengthEquals, StringLengthRange,
-        StringLowercase, StringMatchesRegex, StringUppercase,
+        StringLowercase, StringUppercase,
     },
 };
 pub use vate_derive::{path, Validate};
 
+#[cfg(feature = "regex")]
+pub use validators::string::StringMatchesRegex;
+
 pub mod extras {
+    #[cfg(feature = "regex")]
     pub use regex::Regex;
 }
