@@ -167,6 +167,116 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAscii {
 }
 
 /// # Description
+/// Validates a string consists of only lowercase characters.
+/// # Target Type
+/// Implementors of `AsRef<str>`.
+/// # Arguments
+/// None
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use vate::{path, Accessor, Everything, Report, StringLowercase, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(StringLowercase)]
+///     a: &'static str,
+///     #[vate(StringLowercase)]
+///     b: &'static str,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: "hello",
+///     b: "hEllo",
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// ```
+pub struct StringLowercase;
+
+impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLowercase {
+    fn run<C: Collector<E>>(
+        &self,
+        accessor: Accessor,
+        target: &T,
+        _data: &D,
+        parent_report: &mut Report<E>,
+    ) -> Result<(), Exit<E>> {
+        let mut child_report = Report::new(accessor);
+
+        if target.as_ref().chars().all(char::is_lowercase) {
+            child_report.set_valid();
+        } else {
+            child_report.set_invalid();
+            child_report.set_message("contains non-lowercase characters");
+        }
+
+        C::apply(parent_report, child_report)
+    }
+}
+
+/// # Description
+/// Validates a string consists of only uppercase characters.
+/// # Target Type
+/// Implementors of `AsRef<str>`.
+/// # Arguments
+/// None
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use vate::{path, Accessor, Everything, Report, StringUppercase, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(StringUppercase)]
+///     a: &'static str,
+///     #[vate(StringUppercase)]
+///     b: &'static str,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: "HELLO",
+///     b: "HeLLO",
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// ```
+pub struct StringUppercase;
+
+impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringUppercase {
+    fn run<C: Collector<E>>(
+        &self,
+        accessor: Accessor,
+        target: &T,
+        _data: &D,
+        parent_report: &mut Report<E>,
+    ) -> Result<(), Exit<E>> {
+        let mut child_report = Report::new(accessor);
+
+        if target.as_ref().chars().all(char::is_uppercase) {
+            child_report.set_valid();
+        } else {
+            child_report.set_invalid();
+            child_report.set_message("contains non-uppercase characters");
+        }
+
+        C::apply(parent_report, child_report)
+    }
+}
+
+/// # Description
 /// Validates a string's length equals argument `0`.
 /// # Target Type
 /// Implementors of `AsRef<str>`.
@@ -307,7 +417,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthRange {
 /// ```rust
 /// use once_cell::sync::Lazy;
 /// use vate::{extras::Regex, path, Accessor, Everything, Report, StringMatchesRegex, Validate};
-/// 
+///
 /// static LOWERCASE_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("^[a-z]+$").unwrap());
 ///
 /// #[derive(Validate)]
@@ -322,7 +432,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthRange {
 ///
 /// let example = Example {
 ///     a: "hello",
-///     b: "Hello",
+///     b: "hEllo",
 /// };
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);

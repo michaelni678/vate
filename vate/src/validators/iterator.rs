@@ -5,7 +5,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 /// # Description
 /// Runs the inner validator, passing over the iterated items. The indices of the elements will generate `Accessor::Index`.
 /// # Target Type
-/// Implementors of `Iterator` and `Clone`. 
+/// Implementors of `Iterator` and `Clone`.
 /// **WARNING: the iterator is cloned!**
 /// # Arguments
 /// `0`: the inner validator.
@@ -76,7 +76,7 @@ where
 /// Runs the inner validator, passing over the iterated values. The keys of the values will generate `Accessor::Key`.
 /// **NOTE: the key type must implement `ToString` so that it can generate `Accessor::Key`.**
 /// # Target Type
-/// Implementors of `Iterator` and `Clone`. 
+/// Implementors of `Iterator` and `Clone`.
 /// **WARNING: the iterator is cloned!**
 /// # Arguments
 /// `0`: the inner validator.
@@ -85,7 +85,7 @@ where
 /// # Usage
 /// ```rust
 /// use std::collections::HashMap;
-/// 
+///
 /// use vate::{path, Accessor, CollectionIterate, Compare, Everything, IteratorKeyed, Report, Validate};
 ///
 /// #[derive(Validate)]
@@ -148,7 +148,7 @@ where
 /// # Description
 /// Consumes an iterator, validating the number of elements is equal to argument `0`.
 /// # Target Type
-/// Implementors of `Iterator` and `Clone`. 
+/// Implementors of `Iterator` and `Clone`.
 /// **WARNING: the iterator is cloned!**
 /// # Arguments
 /// `0`: the expected number of elements.
@@ -210,7 +210,7 @@ where
 /// # Description
 /// Validates the size of the iterator is equal to argument `0`.
 /// # Target Type
-/// Implementors of `ExactSizeIterator`. 
+/// Implementors of `ExactSizeIterator`.
 /// # Arguments
 /// `0`: the expected number of elements.
 /// # Feature Flag

@@ -21,7 +21,7 @@ pub use validators::{
     option::{OptionNone, OptionSome, OptionSomeThen},
     string::{
         StringAlphabetic, StringAlphanumeric, StringAscii, StringLengthEquals, StringLengthRange,
-        StringMatchesRegex,
+        StringLowercase, StringMatchesRegex, StringUppercase,
     },
 };
 pub use vate_derive::{path, Validate};

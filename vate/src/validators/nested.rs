@@ -20,7 +20,7 @@ use crate::{
 ///     #[vate(Nested)]
 ///     example2: Example2,
 /// }
-/// 
+///
 /// #[derive(Validate)]
 /// struct Example2 {
 ///     #[vate(BooleanTrue)]

@@ -9,19 +9,19 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 /// Convenience macro for generating comparison validators
 /// `CompareLessThan`, `CompareLessThanOrEqualTo`, `CompareGreaterThan`,
 /// `CompareGreaterThanOrEqualTo`, `CompareEqualTo`, and `CompareNotEqualTo`.
-/// 
+///
 /// ```ignore
 /// Compare!( < 5 ); // Generates CompareLessThan(Cow::Owned(5))
 /// Compare!( == &self.a ); // Generates CompareEqualTo(Cow::Borrowed(&self.a))
 /// ```
-/// 
+///
 /// This macro is purely syntactical! Something like...
 /// ```ignore
 /// let x = &5;
 /// Compare!( < x ); // Generates CompareLessThan(Cow::Owned(&5)), which is (probably) not what you want.
 /// ```
 /// ... may not work.
-/// 
+///
 /// # Target Type
 /// Implementors of `PartialOrd` and `Display`.
 /// # Arguments
@@ -103,7 +103,7 @@ macro_rules! Compare {
 /// # Usage
 /// ```rust
 /// use std::borrow::Cow;
-/// 
+///
 /// use vate::{path, Accessor, CompareLessThan, Everything, Report, Validate};
 ///
 /// #[derive(Validate)]
@@ -168,7 +168,7 @@ where
 /// # Usage
 /// ```rust
 /// use std::borrow::Cow;
-/// 
+///
 /// use vate::{path, Accessor, CompareLessThanOrEqualTo, Everything, Report, Validate};
 ///
 /// #[derive(Validate)]
@@ -233,7 +233,7 @@ where
 /// # Usage
 /// ```rust
 /// use std::borrow::Cow;
-/// 
+///
 /// use vate::{path, Accessor, CompareGreaterThan, Everything, Report, Validate};
 ///
 /// #[derive(Validate)]
@@ -298,7 +298,7 @@ where
 /// # Usage
 /// ```rust
 /// use std::borrow::Cow;
-/// 
+///
 /// use vate::{path, Accessor, CompareGreaterThanOrEqualTo, Everything, Report, Validate};
 ///
 /// #[derive(Validate)]
@@ -363,7 +363,7 @@ where
 /// # Usage
 /// ```rust
 /// use std::borrow::Cow;
-/// 
+///
 /// use vate::{path, Accessor, CompareEqualTo, Everything, Report, Validate};
 ///
 /// #[derive(Validate)]
@@ -428,7 +428,7 @@ where
 /// # Usage
 /// ```rust
 /// use std::borrow::Cow;
-/// 
+///
 /// use vate::{path, Accessor, CompareNotEqualTo, Everything, Report, Validate};
 ///
 /// #[derive(Validate)]
