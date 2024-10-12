@@ -180,6 +180,11 @@ impl<E> Report<E> {
         (!validities.is_empty()).then_some(validities.iter().any(|validity| validity.is_err()))
     }
 
+    /// Check if the path is not in the report.
+    pub fn is_empty_at_path(&self, path: impl AsRef<[Accessor]>) -> bool {
+        self.get_validities_at_path(path.as_ref()).is_empty()
+    }
+
     /// A method used by `<Report as Display>::fmt` to stringify the report.
     fn stringify(&self, current_path: Option<Vec<&Accessor>>) -> String {
         let mut stringified = String::new();
