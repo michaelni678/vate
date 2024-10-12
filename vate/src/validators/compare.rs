@@ -4,8 +4,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 
 // Note: This macro's name is `UpperCamelCase`, which doesn't conform with typical macro naming conventions.
 // However, it was done to match the naming convention of normal validators.
-/// # Description
-/// Validates the target is lt, le, gt, ge, eq, ne to the argument `0`, depending on the specified operator.
+/// Validates the target is lt, le, gt, ge, eq, ne to the field `0`, depending on the specified operator.
 /// Convenience macro for generating comparison validators
 /// `CompareLessThan`, `CompareLessThanOrEqualTo`, `CompareGreaterThan`,
 /// `CompareGreaterThanOrEqualTo`, `CompareEqualTo`, and `CompareNotEqualTo`.
@@ -22,12 +21,16 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 /// ```
 /// ... may not work.
 ///
+///
 /// # Target Type
 /// Implementors of `PartialOrd` and `Display`.
-/// # Arguments
+///
+/// # Fields / Arguments
 /// Any one of the operators <, <=, >, >=, ==, or != preceding the literal / variable to compare to, which must be comparable to the target type.
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, Compare, Everything, Report, Validate};
@@ -92,14 +95,17 @@ macro_rules! Compare {
     };
 }
 
-/// # Description
-/// Validates the target is less than the argument `0`.
+/// Validates the target is less than the field `0`.
+///
 /// # Target Type
-/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of argument `0`.
-/// # Arguments
+/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of field `0`.
+///
+/// # Fields / Arguments
 /// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use std::borrow::Cow;
@@ -157,14 +163,17 @@ where
     }
 }
 
-/// # Description
-/// Validates the target is less than or equal to the argument `0`.
+/// Validates the target is less than or equal to the field `0`.
+///
 /// # Target Type
-/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of argument `0`.
-/// # Arguments
+/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of field `0`.
+///
+/// # Fields / Arguments
 /// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use std::borrow::Cow;
@@ -222,14 +231,17 @@ where
     }
 }
 
-/// # Description
-/// Validates the target is greater than the argument `0`.
+/// Validates the target is greater than the field `0`.
+///
 /// # Target Type
-/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of argument `0`.
-/// # Arguments
+/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of field `0`.
+///
+/// # Fields / Arguments
 /// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use std::borrow::Cow;
@@ -287,14 +299,17 @@ where
     }
 }
 
-/// # Description
-/// Validates the target is greater than or equal to the argument `0`.
+/// Validates the target is greater than or equal to the field `0`.
+///
 /// # Target Type
-/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of argument `0`.
-/// # Arguments
+/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of field `0`.
+///
+/// # Fields / Arguments
 /// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use std::borrow::Cow;
@@ -352,14 +367,17 @@ where
     }
 }
 
-/// # Description
-/// Validates the target is equal to the argument `0`.
+/// Validates the target is equal to the field `0`.
+///
 /// # Target Type
-/// Implementors of `PartialEq<U>` and `Display`, where U is the type of argument `0`.
-/// # Arguments
+/// Implementors of `PartialEq<U>` and `Display`, where U is the type of field `0`.
+///
+/// # Fields / Arguments
 /// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use std::borrow::Cow;
@@ -417,14 +435,17 @@ where
     }
 }
 
-/// # Description
-/// Validates the target is not equal to the argument `0`.
+/// Validates the target is not equal to the field `0`.
+///
 /// # Target Type
-/// Implementors of `PartialEq<U>` and `Display`, where U is the type of argument `0`.
-/// # Arguments
+/// Implementors of `PartialEq<U>` and `Display`, where U is the type of field `0`.
+///
+/// # Fields / Arguments
 /// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use std::borrow::Cow;

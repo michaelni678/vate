@@ -1,13 +1,16 @@
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
-/// # Description
 /// Validates a option is the `Some` variant.
+///
 /// # Target Type
 /// `Option<T>`, where T is generic.
-/// # Arguments
+///
+/// # Fields / Arguments
 /// None
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, Everything, OptionSome, Report, Validate};
@@ -55,14 +58,17 @@ impl<T, D, E> Validator<Option<T>, D, E> for OptionSome {
     }
 }
 
-/// # Description
 /// Validates a option is the `None` variant.
+///
 /// # Target Type
 /// `Option<T>`, where T is generic.
-/// # Arguments
+///
+/// # Fields / Arguments
 /// None
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, Everything, OptionNone, Report, Validate};
@@ -110,14 +116,17 @@ impl<T, D, E> Validator<Option<T>, D, E> for OptionNone {
     }
 }
 
-/// # Description
 /// If the option is the `Some` variant, runs the inner validator with the option's unwrapped value.
+///
 /// # Target Type
 /// `Option<T>`, where T is generic.
-/// # Arguments
+///
+/// # Fields / Arguments
 /// `0`: the inner validator that runs if the option is `Some`.
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, Everything, OptionSomeThen, Report, StringAscii, Validate};

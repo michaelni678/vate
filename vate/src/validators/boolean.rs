@@ -1,13 +1,16 @@
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
-/// # Description
 /// Validates a boolean is `true`.
+///
 /// # Target Type
 /// `bool`
-/// # Arguments
+///
+/// # Fields / Arguments
 /// None
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, BooleanTrue, Everything, Report, Validate};
@@ -55,14 +58,17 @@ impl<D, E> Validator<bool, D, E> for BooleanTrue {
     }
 }
 
-/// # Description
 /// Validates a boolean is `false`.
+///
 /// # Target Type
 /// `bool`
-/// # Arguments
+///
+/// # Fields / Arguments
 /// None
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, BooleanFalse, Everything, Report, Validate};

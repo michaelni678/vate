@@ -2,15 +2,18 @@ use std::ops::Deref;
 
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
-/// # Description
 /// Runs the inner validator, passing over the iterated items. The indices of the elements will generate `Accessor::Index`.
+///
 /// # Target Type
 /// Implementors of `Iterator` and `Clone`.
 /// **WARNING: the iterator is cloned!**
-/// # Arguments
+///
+/// # Fields / Arguments
 /// `0`: the inner validator.
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, CollectionIterate, Everything, IteratorIndexed, Report, StringAlphabetic, Validate};
@@ -72,16 +75,19 @@ where
     }
 }
 
-/// # Description
 /// Runs the inner validator, passing over the iterated values. The keys of the values will generate `Accessor::Key`.
 /// **NOTE: the key type must implement `ToString` so that it can generate `Accessor::Key`.**
+///
 /// # Target Type
 /// Implementors of `Iterator` and `Clone`.
 /// **WARNING: the iterator is cloned!**
-/// # Arguments
+///
+/// # Fields / Arguments
 /// `0`: the inner validator.
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use std::collections::HashMap;
@@ -145,15 +151,18 @@ where
     }
 }
 
-/// # Description
-/// Consumes an iterator, validating the number of elements is equal to argument `0`.
+/// Consumes an iterator, validating the number of elements is equal to field `0`.
+///
 /// # Target Type
 /// Implementors of `Iterator` and `Clone`.
 /// **WARNING: the iterator is cloned!**
-/// # Arguments
+///
+/// # Fields / Arguments
 /// `0`: the expected number of elements.
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, CollectionIterate, Everything, IteratorLengthEquals, Report, StringAlphabetic, Validate};
@@ -207,14 +216,17 @@ where
     }
 }
 
-/// # Description
-/// Validates the size of the iterator is equal to argument `0`.
+/// Validates the size of the iterator is equal to field `0`.
+///
 /// # Target Type
 /// Implementors of `ExactSizeIterator`.
-/// # Arguments
+///
+/// # Fields / Arguments
 /// `0`: the expected number of elements.
-/// # Feature Flag
+///
+/// # Feature Flags
 /// None
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, CollectionIterate, Everything, ExactSizeIteratorLengthEquals, Report, StringAlphabetic, Validate};
