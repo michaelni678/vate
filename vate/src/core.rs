@@ -110,43 +110,62 @@ impl<E> Report<E> {
         self.children.push(child);
     }
 
-    /// Get a child report given an accessor.
-    pub fn get_child(&self, accessor: &Accessor) -> Option<&Report<E>> {
+    /// Get child reports given an accessor.
+    pub fn get_children_at_accessor<'a>(&'a self, accessor: &'a Accessor) -> impl Iterator<Item = &'a Report<E>> + '_ {
         self.children
             .iter()
-            .find(|child| child.get_accessor() == accessor)
+            .filter(move |child| child.get_accessor() == accessor)
     }
 
-    /// Get the validity of a path in the report.
-    /// If the path isn't found, `None` is returned. If the path isn't found,
-    /// this does NOT mean the struct does not have this path. It just means it is
+    /// Get the validities of a path in the report.
+    /// If the path isn't found, an empty vec is returned. 
+    /// This does NOT mean the path doesn't exist. It just means it is
     /// not in the report. This can be due to many reasons, such as because nothing on
     /// that path was validated, the validation was skipped, etc.
-    pub fn get_validity_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<&Result<bool, E>> {
-        let (first, rest) = path.as_ref().split_first()?;
-        if let Some(next) = rest.first() {
-            self.get_child(next)?.get_validity_at_path(rest)
-        } else {
-            (*first == self.accessor).then_some(&self.validity)
+    pub fn get_validities_at_path<'a>(&'a self, path: &'a [Accessor]) -> Vec<&'a Result<bool, E>> {
+        let mut validities = Vec::new();
+        if let Some((first, rest)) = path.as_ref().split_first() {
+            if let Some(next) = rest.first() {
+                for child in self.get_children_at_accessor(next) {
+                    validities.extend(child.get_validities_at_path(rest));
+                }
+            } else {
+                if *first == self.accessor {
+                    validities.push(self.get_validity())
+                }
+            }
         }
+        validities
     }
 
-    /// Check if the nested report at the path is valid.
-    pub fn is_valid_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
-        let validity = self.get_validity_at_path(path)?;
-        Some(matches!(validity, Ok(true)))
+    /// Check if ALL of the nested reports at the path are valid. 
+    /// If the path isn't found, `None` is returned. 
+    /// This does NOT mean the path doesn't exist. It just means it is
+    /// not in the report. This can be due to many reasons, such as because nothing on
+    /// that path was validated, the validation was skipped, etc.
+    pub fn is_all_valid_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> where E: Debug {
+        let validities = self.get_validities_at_path(path.as_ref());
+        (!validities.is_empty()).then_some(validities.iter().all(|validity| matches!(validity, Ok(true))))
     }
 
-    /// Check if the nested report at the path is invalid.
-    pub fn is_invalid_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
-        let validity = self.get_validity_at_path(path)?;
-        Some(matches!(validity, Ok(false)))
+    /// Check if ANY of the nested reports at the path are invalid.
+    /// If the path isn't found, `None` is returned. 
+    /// This does NOT mean the path doesn't exist. It just means it is
+    /// not in the report. This can be due to many reasons, such as because nothing on
+    /// that path was validated, the validation was skipped, etc.
+    pub fn is_any_invalid_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
+        let validities = self.get_validities_at_path(path.as_ref());
+        (!validities.is_empty()).then_some(validities.iter().any(|validity| matches!(validity, Ok(false))))
     }
 
-    /// Check if the nested report at the path is erroneous.
-    pub fn is_error_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
-        let validity = self.get_validity_at_path(path)?;
-        Some(validity.is_err())
+    /// Check if ANY of the nested reports at the path are erroneous.
+    /// If the path isn't found, `None` is returned. 
+    /// This does NOT mean the path doesn't exist. It just means it is
+    /// not in the report. This can be due to many reasons, such as because nothing on
+    /// that path was validated, the validation was skipped, etc.
+    pub fn is_any_error_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
+        let validities = self.get_validities_at_path(path.as_ref());
+        (!validities.is_empty()).then_some(validities.iter().any(|validity| validity.is_err()))
     }
 
     /// A method used by `<Report as Display>::fmt` to stringify the report.

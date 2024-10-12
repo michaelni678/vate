@@ -158,11 +158,13 @@ mod tests {
         let mut report = Report::new(Accessor::Root("example"));
         let _ = example.validate::<Everything>(&(), &mut report);
 
-        assert!(report.is_valid_at_path(path!(example.v[0])).unwrap());
-        assert!(report.is_valid_at_path(path!(example.v[1])).unwrap());
-        assert!(report.is_invalid_at_path(path!(example.v[2])).unwrap());
-        assert!(report.is_valid_at_path(path!(example.v[3])).unwrap());
-        assert!(report.is_valid_at_path(path!(example.v[4])).unwrap());
+        println!("{report:#?}");
+
+        assert!(report.is_all_valid_at_path(path!(example.v[0])).unwrap());
+        assert!(report.is_all_valid_at_path(path!(example.v[1])).unwrap());
+        assert!(report.is_any_invalid_at_path(path!(example.v[2])).unwrap());
+        assert!(report.is_all_valid_at_path(path!(example.v[3])).unwrap());
+        assert!(report.is_all_valid_at_path(path!(example.v[4])).unwrap());
     }
 
     #[test]
@@ -180,11 +182,11 @@ mod tests {
         let mut report = Report::new(Accessor::Root("example"));
         let _ = example.validate::<Everything>(&(), &mut report);
 
-        assert!(report.is_valid_at_path(path!(example.hm["a"])).unwrap());
-        assert!(report.is_valid_at_path(path!(example.hm["b"])).unwrap());
-        assert!(report.is_invalid_at_path(path!(example.hm["c"])).unwrap());
-        assert!(report.is_valid_at_path(path!(example.hm["d"])).unwrap());
-        assert!(report.is_valid_at_path(path!(example.hm["e"])).unwrap());
+        assert!(report.is_all_valid_at_path(path!(example.hm["a"])).unwrap());
+        assert!(report.is_all_valid_at_path(path!(example.hm["b"])).unwrap());
+        assert!(report.is_any_invalid_at_path(path!(example.hm["c"])).unwrap());
+        assert!(report.is_all_valid_at_path(path!(example.hm["d"])).unwrap());
+        assert!(report.is_all_valid_at_path(path!(example.hm["e"])).unwrap());
     }
 
     #[test]
@@ -202,7 +204,7 @@ mod tests {
         let mut report = Report::new(Accessor::Root("example"));
         let _ = example.validate::<Everything>(&(), &mut report);
 
-        assert!(report.is_valid_at_path(path!(example)).unwrap());
+        assert!(report.is_all_valid_at_path(path!(example)).unwrap());
     }
 
     #[test]
@@ -220,6 +222,6 @@ mod tests {
         let mut report = Report::new(Accessor::Root("example"));
         let _ = example.validate::<Everything>(&(), &mut report);
 
-        assert!(report.is_valid_at_path(path!(example)).unwrap());
+        assert!(report.is_all_valid_at_path(path!(example)).unwrap());
     }
 }

@@ -49,7 +49,7 @@ mod tests {
         let _ = example1.validate::<Everything>(&(), &mut report);
 
         assert!(report
-            .is_invalid_at_path(path!(example1.example2.a))
+            .is_any_invalid_at_path(path!(example1.example2.a))
             .unwrap());
     }
 }
