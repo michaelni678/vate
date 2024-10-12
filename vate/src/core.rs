@@ -1,10 +1,4 @@
-use std::{
-    borrow::Borrow,
-    collections::HashSet,
-    fmt::{Debug, Display, Formatter, Result as FmtResult},
-    hash::{Hash, Hasher},
-    ops::Deref,
-};
+use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
 
 /// Allows the implementor to be validated.
 pub trait Validate {
@@ -42,7 +36,7 @@ pub struct Report<E> {
     /// The message associated with the report.
     message: String,
     /// The children of this report.
-    children: HashSet<ReportHasher<E>>,
+    children: Vec<Report<E>>,
 }
 
 impl<E> Report<E> {
@@ -52,7 +46,7 @@ impl<E> Report<E> {
             accessor,
             validity: Ok(true),
             message: String::new(),
-            children: HashSet::new(),
+            children: Vec::new(),
         }
     }
 
@@ -112,13 +106,15 @@ impl<E> Report<E> {
     }
 
     /// Push a child report to this report.
-    pub fn push_child(&mut self, child: impl Into<ReportHasher<E>>) {
-        self.children.insert(child.into());
+    pub fn push_child(&mut self, child: Report<E>) {
+        self.children.push(child);
     }
 
     /// Get a child report given an accessor.
     pub fn get_child(&self, accessor: &Accessor) -> Option<&Report<E>> {
-        self.children.get(accessor).map(|v| &**v)
+        self.children
+            .iter()
+            .find(|child| child.get_accessor() == accessor)
     }
 
     /// Get the validity of a path in the report.
@@ -182,45 +178,8 @@ impl<E> Display for Report<E> {
     }
 }
 
-/// For hashing reports.
-#[derive(Debug)]
-pub struct ReportHasher<E>(pub Report<E>);
-
-impl<E> From<Report<E>> for ReportHasher<E> {
-    fn from(report: Report<E>) -> Self {
-        Self(report)
-    }
-}
-
-impl<E> Deref for ReportHasher<E> {
-    type Target = Report<E>;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl<E> PartialEq for ReportHasher<E> {
-    fn eq(&self, other: &Self) -> bool {
-        self.accessor == other.accessor
-    }
-}
-
-impl<E> Eq for ReportHasher<E> {}
-
-impl<E> Hash for ReportHasher<E> {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        self.accessor.hash(state);
-    }
-}
-
-impl<E> Borrow<Accessor> for ReportHasher<E> {
-    fn borrow(&self) -> &Accessor {
-        &self.accessor
-    }
-}
-
 /// A segment of a path to a validated target.
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Accessor {
     Root(&'static str),
     Field(&'static str),
