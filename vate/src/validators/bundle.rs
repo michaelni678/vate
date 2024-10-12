@@ -59,6 +59,7 @@ where
 
 // Note: This macro's name is `UpperCamelCase`, which doesn't conform with typical macro naming conventions.
 // However, it was done to match the naming convention of normal validators.
+//
 /// Runs the inner validators.
 ///
 /// # Target Type

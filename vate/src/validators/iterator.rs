@@ -6,6 +6,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 ///
 /// # Target Type
 /// Implementors of `Iterator` and `Clone`.
+/// 
 /// **WARNING: the iterator is cloned!**
 ///
 /// # Fields / Arguments
@@ -76,10 +77,12 @@ where
 }
 
 /// Runs the inner validator, passing over the iterated values. The keys of the values will generate `Accessor::Key`.
+/// 
 /// **NOTE: the key type must implement `ToString` so that it can generate `Accessor::Key`.**
 ///
 /// # Target Type
 /// Implementors of `Iterator` and `Clone`.
+/// 
 /// **WARNING: the iterator is cloned!**
 ///
 /// # Fields / Arguments
@@ -155,6 +158,7 @@ where
 ///
 /// # Target Type
 /// Implementors of `Iterator` and `Clone`.
+/// 
 /// **WARNING: the iterator is cloned!**
 ///
 /// # Fields / Arguments

@@ -4,8 +4,10 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 
 // Note: This macro's name is `UpperCamelCase`, which doesn't conform with typical macro naming conventions.
 // However, it was done to match the naming convention of normal validators.
-/// Validates the target is lt, le, gt, ge, eq, ne to the field `0`, depending on the specified operator.
-/// Convenience macro for generating comparison validators
+//
+/// Compares the target to the field `0`.
+/// 
+/// This is a convenience macro for generating comparison validators
 /// `CompareLessThan`, `CompareLessThanOrEqualTo`, `CompareGreaterThan`,
 /// `CompareGreaterThanOrEqualTo`, `CompareEqualTo`, and `CompareNotEqualTo`.
 ///
