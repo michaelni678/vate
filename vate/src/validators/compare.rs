@@ -2,23 +2,56 @@ use std::{borrow::Cow, fmt::Display};
 
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
+// Note: This macro's name is `UpperCamelCase`, which doesn't conform with typical macro naming conventions.
+// However, it was done to match the naming convention of normal validators.
+/// # Description
+/// Validates the target is lt, le, gt, ge, eq, ne to the argument `0`, depending on the specified operator.
 /// Convenience macro for generating comparison validators
 /// `CompareLessThan`, `CompareLessThanOrEqualTo`, `CompareGreaterThan`,
 /// `CompareGreaterThanOrEqualTo`, `CompareEqualTo`, and `CompareNotEqualTo`.
-/// ### Usage
+///
 /// ```ignore
 /// Compare!( < 5 ); // Generates CompareLessThan(Cow::Owned(5))
 /// Compare!( == &self.a ); // Generates CompareEqualTo(Cow::Borrowed(&self.a))
 /// ```
-/// ### Warning
+///
 /// This macro is purely syntactical! Something like...
 /// ```ignore
 /// let x = &5;
 /// Compare!( < x ); // Generates CompareLessThan(Cow::Owned(&5)), which is (probably) not what you want.
 /// ```
 /// ... may not work.
-// Note: This macro's name is `UpperCamelCase`, which doesn't conform with typical macro naming conventions.
-// However, it was done to match the naming convention of normal validators.
+///
+/// # Target Type
+/// Implementors of `PartialOrd` and `Display`.
+/// # Arguments
+/// Any one of the operators <, <=, >, >=, ==, or != preceding the literal / variable to compare to, which must be comparable to the target type.
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use vate::{path, Accessor, Compare, Everything, Report, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(Compare!( > 3 ))]
+///     a: i32,
+///     #[vate(Compare!( == &self.a ))]
+///     b: i32,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: 4,
+///     b: 2,
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// ```
 #[macro_export]
 macro_rules! Compare {
     ( < & $value:expr) => {
@@ -59,6 +92,40 @@ macro_rules! Compare {
     };
 }
 
+/// # Description
+/// Validates the target is less than the argument `0`.
+/// # Target Type
+/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of argument `0`.
+/// # Arguments
+/// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use std::borrow::Cow;
+///
+/// use vate::{path, Accessor, CompareLessThan, Everything, Report, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(CompareLessThan(Cow::Owned(3)))]
+///     a: i32,
+///     #[vate(CompareLessThan(Cow::Borrowed(&self.a)))]
+///     b: i32,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: 1,
+///     b: 5,
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// ```
 pub struct CompareLessThan<'a, T: Clone>(pub Cow<'a, T>);
 
 impl<T, D, E, U> Validator<T, D, E> for CompareLessThan<'_, U>
@@ -90,6 +157,40 @@ where
     }
 }
 
+/// # Description
+/// Validates the target is less than or equal to the argument `0`.
+/// # Target Type
+/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of argument `0`.
+/// # Arguments
+/// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use std::borrow::Cow;
+///
+/// use vate::{path, Accessor, CompareLessThanOrEqualTo, Everything, Report, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(CompareLessThanOrEqualTo(Cow::Owned(3)))]
+///     a: i32,
+///     #[vate(CompareLessThanOrEqualTo(Cow::Borrowed(&self.a)))]
+///     b: i32,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: 3,
+///     b: 4,
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// ```
 pub struct CompareLessThanOrEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
 impl<T, D, E, U> Validator<T, D, E> for CompareLessThanOrEqualTo<'_, U>
@@ -121,6 +222,40 @@ where
     }
 }
 
+/// # Description
+/// Validates the target is greater than the argument `0`.
+/// # Target Type
+/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of argument `0`.
+/// # Arguments
+/// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use std::borrow::Cow;
+///
+/// use vate::{path, Accessor, CompareGreaterThan, Everything, Report, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(CompareGreaterThan(Cow::Owned(3)))]
+///     a: i32,
+///     #[vate(CompareGreaterThan(Cow::Borrowed(&self.a)))]
+///     b: i32,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: 5,
+///     b: 1,
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// ```
 pub struct CompareGreaterThan<'a, T: Clone>(pub Cow<'a, T>);
 
 impl<T, D, E, U> Validator<T, D, E> for CompareGreaterThan<'_, U>
@@ -152,6 +287,40 @@ where
     }
 }
 
+/// # Description
+/// Validates the target is greater than or equal to the argument `0`.
+/// # Target Type
+/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of argument `0`.
+/// # Arguments
+/// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use std::borrow::Cow;
+///
+/// use vate::{path, Accessor, CompareGreaterThanOrEqualTo, Everything, Report, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(CompareGreaterThanOrEqualTo(Cow::Owned(3)))]
+///     a: i32,
+///     #[vate(CompareGreaterThanOrEqualTo(Cow::Borrowed(&self.a)))]
+///     b: i32,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: 4,
+///     b: 3,
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// ```
 pub struct CompareGreaterThanOrEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
 impl<T, D, E, U> Validator<T, D, E> for CompareGreaterThanOrEqualTo<'_, U>
@@ -183,6 +352,40 @@ where
     }
 }
 
+/// # Description
+/// Validates the target is equal to the argument `0`.
+/// # Target Type
+/// Implementors of `PartialEq<U>` and `Display`, where U is the type of argument `0`.
+/// # Arguments
+/// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use std::borrow::Cow;
+///
+/// use vate::{path, Accessor, CompareEqualTo, Everything, Report, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(CompareEqualTo(Cow::Owned(3)))]
+///     a: i32,
+///     #[vate(CompareEqualTo(Cow::Borrowed(&self.a)))]
+///     b: i32,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: 3,
+///     b: 4,
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// ```
 pub struct CompareEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
 impl<T, D, E, U> Validator<T, D, E> for CompareEqualTo<'_, U>
@@ -214,6 +417,40 @@ where
     }
 }
 
+/// # Description
+/// Validates the target is not equal to the argument `0`.
+/// # Target Type
+/// Implementors of `PartialEq<U>` and `Display`, where U is the type of argument `0`.
+/// # Arguments
+/// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use std::borrow::Cow;
+///
+/// use vate::{path, Accessor, CompareNotEqualTo, Everything, Report, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(CompareNotEqualTo(Cow::Owned(3)))]
+///     a: i32,
+///     #[vate(CompareNotEqualTo(Cow::Borrowed(&self.a)))]
+///     b: i32,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: 4,
+///     b: 4,
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// ```
 pub struct CompareNotEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
 impl<T, D, E, U> Validator<T, D, E> for CompareNotEqualTo<'_, U>

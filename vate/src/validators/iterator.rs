@@ -2,6 +2,37 @@ use std::ops::Deref;
 
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
+/// # Description
+/// Runs the inner validator, passing over the iterated items. The indices of the elements will generate `Accessor::Index`.
+/// # Target Type
+/// Implementors of `Iterator` and `Clone`.
+/// **WARNING: the iterator is cloned!**
+/// # Arguments
+/// `0`: the inner validator.
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use vate::{path, Accessor, CollectionIterate, Everything, IteratorIndexed, Report, StringAlphabetic, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(CollectionIterate(IteratorIndexed(StringAlphabetic)))]
+///     a: Vec<&'static str>,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: vec!["hello", "world", "!"],
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_all_valid_at_path(path!(example.a[0])).unwrap());
+/// assert!(report.is_all_valid_at_path(path!(example.a[1])).unwrap());
+/// assert!(report.is_any_invalid_at_path(path!(example.a[2])).unwrap());
+/// ```
 pub struct IteratorIndexed<V>(pub V);
 
 impl<T, D, E, V> Validator<T, D, E> for IteratorIndexed<V>
@@ -41,6 +72,44 @@ where
     }
 }
 
+/// # Description
+/// Runs the inner validator, passing over the iterated values. The keys of the values will generate `Accessor::Key`.
+/// **NOTE: the key type must implement `ToString` so that it can generate `Accessor::Key`.**
+/// # Target Type
+/// Implementors of `Iterator` and `Clone`.
+/// **WARNING: the iterator is cloned!**
+/// # Arguments
+/// `0`: the inner validator.
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use std::collections::HashMap;
+///
+/// use vate::{path, Accessor, CollectionIterate, Compare, Everything, IteratorKeyed, Report, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(CollectionIterate(IteratorKeyed(Compare!( != 1 ))))]
+///     a: HashMap<&'static str, i32>,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: HashMap::from([
+///         ("zero", 0),
+///         ("one", 1),
+///         ("two", 2),
+///     ]),
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_all_valid_at_path(path!(example.a["zero"])).unwrap());
+/// assert!(report.is_any_invalid_at_path(path!(example.a["one"])).unwrap());
+/// assert!(report.is_all_valid_at_path(path!(example.a["two"])).unwrap());
+/// ```
 pub struct IteratorKeyed<V>(pub V);
 
 impl<'a, T, D, E, Key: 'a, Value: 'a, V> Validator<T, D, E> for IteratorKeyed<V>
@@ -76,6 +145,39 @@ where
     }
 }
 
+/// # Description
+/// Consumes an iterator, validating the number of elements is equal to argument `0`.
+/// # Target Type
+/// Implementors of `Iterator` and `Clone`.
+/// **WARNING: the iterator is cloned!**
+/// # Arguments
+/// `0`: the expected number of elements.
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use vate::{path, Accessor, CollectionIterate, Everything, IteratorLengthEquals, Report, StringAlphabetic, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(CollectionIterate(IteratorLengthEquals(3)))]
+///     a: Vec<i32>,
+///     #[vate(CollectionIterate(IteratorLengthEquals(3)))]
+///     b: Vec<i32>,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: vec![1, 2, 3],
+///     b: vec![1, 2, 3, 4],
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// ```
 pub struct IteratorLengthEquals(pub usize);
 
 impl<T, D, E> Validator<T, D, E> for IteratorLengthEquals
@@ -105,6 +207,38 @@ where
     }
 }
 
+/// # Description
+/// Validates the size of the iterator is equal to argument `0`.
+/// # Target Type
+/// Implementors of `ExactSizeIterator`.
+/// # Arguments
+/// `0`: the expected number of elements.
+/// # Feature Flag
+/// None
+/// # Usage
+/// ```rust
+/// use vate::{path, Accessor, CollectionIterate, Everything, ExactSizeIteratorLengthEquals, Report, StringAlphabetic, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(CollectionIterate(ExactSizeIteratorLengthEquals(3)))]
+///     a: Vec<i32>,
+///     #[vate(CollectionIterate(ExactSizeIteratorLengthEquals(3)))]
+///     b: Vec<i32>,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: vec![1, 2, 3],
+///     b: vec![1, 2, 3, 4],
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// ```
 pub struct ExactSizeIteratorLengthEquals(pub usize);
 
 impl<T, D, E> Validator<T, D, E> for ExactSizeIteratorLengthEquals
@@ -131,95 +265,5 @@ where
         }
 
         C::apply(parent_report, child_report)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use std::collections::HashMap;
-
-    use vate::{
-        path, Accessor, CollectionIterate, Compare, Everything, ExactSizeIteratorLengthEquals,
-        IteratorIndexed, IteratorKeyed, IteratorLengthEquals, Report, Validate,
-    };
-
-    #[test]
-    fn iterator_indexed() {
-        #[derive(Validate)]
-        struct Example {
-            #[vate(CollectionIterate(IteratorIndexed(Compare!( != 2 ))))]
-            v: Vec<u32>,
-        }
-
-        let example = Example {
-            v: vec![0, 1, 2, 3, 4],
-        };
-
-        let mut report = Report::new(Accessor::Root("example"));
-        let _ = example.validate::<Everything>(&(), &mut report);
-
-        assert!(report.is_valid_at_path(path!(example.v[0])).unwrap());
-        assert!(report.is_valid_at_path(path!(example.v[1])).unwrap());
-        assert!(report.is_invalid_at_path(path!(example.v[2])).unwrap());
-        assert!(report.is_valid_at_path(path!(example.v[3])).unwrap());
-        assert!(report.is_valid_at_path(path!(example.v[4])).unwrap());
-    }
-
-    #[test]
-    fn iterator_keyed() {
-        #[derive(Validate)]
-        struct Example {
-            #[vate(CollectionIterate(IteratorKeyed(Compare!( != 2 ))))]
-            hm: HashMap<&'static str, u32>,
-        }
-
-        let example = Example {
-            hm: HashMap::from([("a", 0), ("b", 1), ("c", 2), ("d", 3), ("e", 4)]),
-        };
-
-        let mut report = Report::new(Accessor::Root("example"));
-        let _ = example.validate::<Everything>(&(), &mut report);
-
-        assert!(report.is_valid_at_path(path!(example.hm["a"])).unwrap());
-        assert!(report.is_valid_at_path(path!(example.hm["b"])).unwrap());
-        assert!(report.is_invalid_at_path(path!(example.hm["c"])).unwrap());
-        assert!(report.is_valid_at_path(path!(example.hm["d"])).unwrap());
-        assert!(report.is_valid_at_path(path!(example.hm["e"])).unwrap());
-    }
-
-    #[test]
-    fn iterator_length_equals() {
-        #[derive(Validate)]
-        struct Example {
-            #[vate(CollectionIterate(IteratorLengthEquals(5)))]
-            v: Vec<u32>,
-        }
-
-        let example = Example {
-            v: vec![1, 2, 3, 4, 5],
-        };
-
-        let mut report = Report::new(Accessor::Root("example"));
-        let _ = example.validate::<Everything>(&(), &mut report);
-
-        assert!(report.is_valid_at_path(path!(example)).unwrap());
-    }
-
-    #[test]
-    fn exact_size_iterator_length_equals() {
-        #[derive(Validate)]
-        struct Example {
-            #[vate(CollectionIterate(ExactSizeIteratorLengthEquals(5)))]
-            v: Vec<u32>,
-        }
-
-        let example = Example {
-            v: vec![1, 2, 3, 4, 5],
-        };
-
-        let mut report = Report::new(Accessor::Root("example"));
-        let _ = example.validate::<Everything>(&(), &mut report);
-
-        assert!(report.is_valid_at_path(path!(example)).unwrap());
     }
 }

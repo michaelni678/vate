@@ -5,9 +5,9 @@ mod core;
 mod validators;
 
 pub use collectors::{Everything, FirstInvalidAndPrecedingErrors, InvalidsAndErrors};
-pub use core::{Accessor, Collector, Exit, Report, ReportHasher, Validate, Validator};
+pub use core::{Accessor, Collector, Exit, Report, Validate, Validator};
 pub use validators::{
-    boolean::{False, True},
+    boolean::{BooleanFalse, BooleanTrue},
     bundle::Bundle2,
     collection::CollectionIterate,
     compare::{
@@ -21,11 +21,15 @@ pub use validators::{
     option::{OptionNone, OptionSome, OptionSomeThen},
     string::{
         StringAlphabetic, StringAlphanumeric, StringAscii, StringLengthEquals, StringLengthRange,
-        StringMatchesRegex,
+        StringLowercase, StringUppercase,
     },
 };
 pub use vate_derive::{path, Validate};
 
+#[cfg(feature = "regex")]
+pub use validators::string::StringMatchesRegex;
+
 pub mod extras {
+    #[cfg(feature = "regex")]
     pub use regex::Regex;
 }
