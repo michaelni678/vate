@@ -61,19 +61,27 @@ extern crate self as vate;
 pub mod collectors;
 pub mod core;
 pub mod validators;
+pub mod extras {
+    #[cfg(feature = "regex")]
+    pub use regex::Regex;
+}
 
-#[doc(inline)]
-pub use collectors::{Everything, FirstInvalidAndPrecedingErrors, InvalidsAndErrors};
-
+// Inline the re-exports of core components in the docs.
 #[doc(inline)]
 pub use core::{Accessor, Collector, Exit, Report, Validate, Validator};
 
-#[doc(inline)]
+// Hide the re-exports of collectors in the docs.
+#[doc(hidden)]
+pub use collectors::{Everything, FirstInvalidAndPrecedingErrors, InvalidsAndErrors};
+
+// Hide the re-exports of validators in the docs.
+#[doc(hidden)]
 pub use validators::{
     boolean::{BooleanFalse, BooleanTrue},
-    bundle::Bundle2,
+    bundle::{Bundle, Bundle2},
     collection::CollectionIterate,
     compare::{
+        Compare,
         CompareEqualTo, CompareGreaterThan, CompareGreaterThanOrEqualTo, CompareLessThan,
         CompareLessThanOrEqualTo, CompareNotEqualTo,
     },
@@ -88,13 +96,8 @@ pub use validators::{
     },
 };
 
-pub use vate_derive::{path, Validate};
-
 #[cfg(feature = "regex")]
 #[doc(hidden)]
 pub use validators::string::StringMatchesRegex;
 
-pub mod extras {
-    #[cfg(feature = "regex")]
-    pub use regex::Regex;
-}
+pub use vate_derive::{path, Validate};
