@@ -2,9 +2,7 @@
 
 //! The "vate" crate is a versatile and powerful Rust library designed for validating data
 //! structures. It provides a flexible framework for defining and applying custom validators,
-//! along with a collection of built-in validators for common use cases. Whether you need to
-//! validate simple fields, nested structures, or collections, "vate" allows you to create
-//! reusable and composable validation logic.
+//! along with a collection of built-in validators for common use cases.
 
 extern crate self as vate;
 
