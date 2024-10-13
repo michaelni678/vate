@@ -23,12 +23,12 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 /// ```
 /// ... may not work.
 ///
-/// Requires the target type to be an implementor of `PartialOrd<U>` 
+/// Requires the target type to be an implementor of `PartialOrd<U>`
 /// and `Display`, where U is the type of the literal / variable being
 /// compared to.
 ///
-/// The arguments consist of any of the operators <, <=, >, >=, ==, or != 
-/// preceding the literal / variable to compare to, which must be 
+/// The arguments consist of any of the operators <, <=, >, >=, ==, or !=
+/// preceding the literal / variable to compare to, which must be
 /// comparable to the target type and made into a `Cow`.
 ///
 /// # Usage
@@ -97,10 +97,10 @@ macro_rules! Compare {
 
 /// Validates the target is less than a value.
 ///
-/// Requires the target type to be an implementor of `PartialOrd<U>` 
+/// Requires the target type to be an implementor of `PartialOrd<U>`
 /// and `Display`, where U is the type of the literal / variable being
 /// compared to.
-/// 
+///
 /// Takes a `Cow<'_, U>` for field `0`.
 ///
 /// # Usage
@@ -161,13 +161,13 @@ where
 }
 
 /// Validates the target is less than or equal to a value.
-/// 
-/// Requires the target type to be an implementor of `PartialOrd<U>` 
+///
+/// Requires the target type to be an implementor of `PartialOrd<U>`
 /// and `Display`, where U is the type of the literal / variable being
 /// compared to.
-/// 
+///
 /// Takes a `Cow<'_, U>` for field `0`.
-/// 
+///
 /// # Usage
 /// ```rust
 /// use std::borrow::Cow;
@@ -227,10 +227,10 @@ where
 
 /// Validates the target is greater than a value.
 ///
-/// Requires the target type to be an implementor of `PartialOrd<U>` 
+/// Requires the target type to be an implementor of `PartialOrd<U>`
 /// and `Display`, where U is the type of the literal / variable being
 /// compared to.
-/// 
+///
 /// Takes a `Cow<'_, U>` for field `0`.
 ///
 /// # Usage
@@ -291,11 +291,11 @@ where
 }
 
 /// Validates the target is greater than or equal to a value.
-/// 
-/// Requires the target type to be an implementor of `PartialOrd<U>` 
+///
+/// Requires the target type to be an implementor of `PartialOrd<U>`
 /// and `Display`, where U is the type of the literal / variable being
 /// compared to.
-/// 
+///
 /// Takes a `Cow<'_, U>` for field `0`.
 ///
 /// # Fields / Arguments
@@ -359,11 +359,11 @@ where
 }
 
 /// Validates the target is equal to a value.
-/// 
-/// Requires the target type to be an implementor of `PartialOrd<U>` 
+///
+/// Requires the target type to be an implementor of `PartialOrd<U>`
 /// and `Display`, where U is the type of the literal / variable being
 /// compared to.
-/// 
+///
 /// Takes a `Cow<'_, U>` for field `0`.
 ///
 /// # Usage
@@ -424,11 +424,11 @@ where
 }
 
 /// Validates the target is not equal to a value.
-/// 
-/// Requires the target type to be an implementor of `PartialOrd<U>` 
+///
+/// Requires the target type to be an implementor of `PartialOrd<U>`
 /// and `Display`, where U is the type of the literal / variable being
 /// compared to.
-/// 
+///
 /// Takes a `Cow<'_, U>` for field `0`.
 ///
 /// # Usage

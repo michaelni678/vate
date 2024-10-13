@@ -102,7 +102,7 @@ impl<T, D, E> Validator<Option<T>, D, E> for OptionNone {
     }
 }
 
-/// If the option is the `Some` variant, runs the inner validator with 
+/// If the option is the `Some` variant, runs the inner validator with
 /// the option's unwrapped value.
 ///
 /// Requires the target type to be an `Option<T>`.
