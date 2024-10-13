@@ -223,6 +223,7 @@ impl<E> Display for Report<E> {
 pub enum Accessor {
     Root(&'static str),
     Field(&'static str),
+    TupleIndex(usize),
     Index(usize),
     Key(String),
 }
@@ -232,6 +233,7 @@ impl Display for Accessor {
         match self {
             Self::Root(root) => write!(f, "{root}"),
             Self::Field(field) => write!(f, ".{field}"),
+            Self::TupleIndex(tuple_index) => write!(f, ".{tuple_index}"),
             Self::Index(index) => write!(f, "[{index}]"),
             Self::Key(key) => write!(f, "[\"{key}\"]"),
         }

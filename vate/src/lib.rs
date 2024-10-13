@@ -1,11 +1,23 @@
+#![cfg_attr(docsrs, feature(doc_cfg, doc_auto_cfg))]
+
 extern crate self as vate;
 
+/// Built-in collectors.
 mod collectors;
+
+/// Core functionality.
 mod core;
+
+/// Built-in validators.
 mod validators;
 
+#[doc(inline)]
 pub use collectors::{Everything, FirstInvalidAndPrecedingErrors, InvalidsAndErrors};
+
+#[doc(inline)]
 pub use core::{Accessor, Collector, Exit, Report, Validate, Validator};
+
+#[doc(inline)]
 pub use validators::{
     boolean::{BooleanFalse, BooleanTrue},
     bundle::Bundle2,
@@ -27,6 +39,7 @@ pub use validators::{
 pub use vate_derive::{path, Validate};
 
 #[cfg(feature = "regex")]
+#[doc(hidden)]
 pub use validators::string::StringMatchesRegex;
 
 pub mod extras {
