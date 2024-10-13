@@ -4,7 +4,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 ///
 /// Requires the target type to be `bool`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, BooleanTrue, Everything, Report, Validate};
 ///
@@ -55,7 +55,7 @@ impl<D, E> Validator<bool, D, E> for BooleanTrue {
 ///
 /// Requires the target type to be `bool`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, BooleanFalse, Everything, Report, Validate};
 ///

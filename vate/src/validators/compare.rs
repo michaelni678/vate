@@ -31,7 +31,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 /// preceding the literal / variable to compare to, which must be
 /// comparable to the target type and made into a `Cow`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, Compare, Everything, Report, Validate};
 ///
@@ -103,7 +103,7 @@ macro_rules! Compare {
 ///
 /// Takes a `Cow<'_, U>` for field `0`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use std::borrow::Cow;
 ///
@@ -168,7 +168,7 @@ where
 ///
 /// Takes a `Cow<'_, U>` for field `0`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use std::borrow::Cow;
 ///
@@ -233,7 +233,7 @@ where
 ///
 /// Takes a `Cow<'_, U>` for field `0`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use std::borrow::Cow;
 ///
@@ -301,7 +301,7 @@ where
 /// # Fields / Arguments
 /// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use std::borrow::Cow;
 ///
@@ -366,7 +366,7 @@ where
 ///
 /// Takes a `Cow<'_, U>` for field `0`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use std::borrow::Cow;
 ///
@@ -431,7 +431,7 @@ where
 ///
 /// Takes a `Cow<'_, U>` for field `0`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use std::borrow::Cow;
 ///

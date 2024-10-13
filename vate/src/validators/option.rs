@@ -4,7 +4,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 ///
 /// Requires the target type to be an `Option`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, Everything, OptionSome, Report, Validate};
 ///
@@ -55,7 +55,7 @@ impl<T, D, E> Validator<Option<T>, D, E> for OptionSome {
 ///
 /// Requires the target type to be an `Option`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, Everything, OptionNone, Report, Validate};
 ///
@@ -109,7 +109,7 @@ impl<T, D, E> Validator<Option<T>, D, E> for OptionNone {
 ///
 /// Takes an implementor of `Validator<T, _, _>` for field `0`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, Everything, OptionSomeThen, Report, StringAscii, Validate};
 ///

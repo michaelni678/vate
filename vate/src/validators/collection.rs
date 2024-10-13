@@ -6,7 +6,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 ///
 /// Takes an implementor of `Validator` for field `0`.
 ///
-/// # Usage
+/// # Examples
 /// See the usages of the iterator validators, such as the `IteratorIndexed` validator.
 pub struct CollectionIterate<V>(pub V);
 

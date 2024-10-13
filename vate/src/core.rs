@@ -106,6 +106,8 @@ impl<E> Report<E> {
     }
 
     /// Push a child report to this report.
+    /// 
+    /// This is typically called by collectors!
     pub fn push_child(&mut self, child: Report<E>) {
         self.children.push(child);
     }
@@ -187,6 +189,32 @@ impl<E> Report<E> {
     /// Check if the path is not in the report.
     pub fn is_empty_at_path(&self, path: impl AsRef<[Accessor]>) -> bool {
         self.get_validities_at_path(path.as_ref()).is_empty()
+    }
+
+    /// Get the number of leaf reports.
+    /// 
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    /// 
+    /// let mut report: Report<()> = Report::new(Accessor::Root("Parent"));
+    /// 
+    /// report.push_child(Report::new(Accessor::Key(String::from("Child 1"))));
+    /// report.push_child(Report::new(Accessor::Key(String::from("Child 2"))));
+    /// report.push_child(Report::new(Accessor::Key(String::from("Child 3"))));
+    /// 
+    /// assert_eq!(report.count_leaves(), 3);
+    /// ```
+    pub fn count_leaves(&self) -> usize {
+        if self.children.is_empty() {
+            1
+        } else {
+            let mut count = 0;
+            for child in self.children.iter() {
+                count += child.count_leaves();
+            }
+            count
+        }
     }
 
     /// A method used by `<Report as Display>::fmt` to stringify the report.

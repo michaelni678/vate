@@ -5,7 +5,7 @@ mod validate;
 
 /// Derives the `Validate` trait.
 ///
-/// # Usage
+/// # Examples
 ///
 /// ## Struct
 /// ```rust
@@ -55,7 +55,7 @@ pub fn derive_validate(input: TokenStream) -> TokenStream {
 
 /// Generates an array of `Accessor` representing the specified path.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor};
 ///
