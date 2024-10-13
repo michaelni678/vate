@@ -144,7 +144,7 @@ impl<E> Report<E> {
     /// not in the report. This can be due to many reasons, such as because nothing on
     /// that path was validated, the validation was skipped, etc.
     pub fn get_validities_at_path<'a>(&'a self, path: &'a [Accessor]) -> Vec<&'a Result<bool, E>> {
-        self.get_children_at_path(path).iter().map(|child| child.get_validity()).collect()
+        self.get_children_at_path(path).into_iter().map(|child| child.get_validity()).collect()
     }
 
     /// Check if ALL of the nested reports at the path are valid.
@@ -153,10 +153,7 @@ impl<E> Report<E> {
     /// This does NOT mean the path doesn't exist. It just means it is
     /// not in the report. This can be due to many reasons, such as because nothing on
     /// that path was validated, the validation was skipped, etc.
-    pub fn is_all_valid_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool>
-    where
-        E: Debug,
-    {
+    pub fn is_all_valid_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
         let validities = self.get_validities_at_path(path.as_ref());
         (!validities.is_empty()).then_some(
             validities
