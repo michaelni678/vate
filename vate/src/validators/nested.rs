@@ -3,14 +3,10 @@ use crate::{
     Validate,
 };
 
-/// # Description
 /// Validates the nested implementor of `Validate`.
-/// # Target Type
-/// Implementors of `Validate`.
-/// # Arguments
-/// None
-/// # Feature Flag
-/// None
+///
+/// Requires the target type to be an implementor of `Validate`.
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, BooleanTrue, BooleanFalse, Everything, Nested, Report, Validate};

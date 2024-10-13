@@ -1,13 +1,11 @@
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
-/// # Description
-/// Runs the inner validator, converting target to an iterator.
-/// # Target Type
-/// Implementors of `for<'a> &'a T: IntoIterator`.
-/// # Arguments
-/// `0`: the inner validator.
-/// # Feature Flag
-/// None
+/// Converts target to an iterator and runs the inner validator.
+///
+/// Requires the target type to be an implementor of `for<'a> &'a T: IntoIterator`.
+///
+/// Takes an implementor of `Validator` for field `0`.
+///
 /// # Usage
 /// See the usages of the iterator validators, such as the `IteratorIndexed` validator.
 pub struct CollectionIterate<V>(pub V);

@@ -47,14 +47,23 @@ pub fn expand_derive_validate_struct(
     let mut body = Vec::new();
 
     for (index, field) in data.fields.into_iter().enumerate() {
-        let item_ident = field.ident.map_or(quote!(#index), |ident| quote!(#ident));
+        let item_ident = match field.ident {
+            Some(ref ident) => quote!(#ident),
+            None => quote!(#index),
+        };
+
+        let accessor = match field.ident {
+            Some(ident) => quote!(::vate::Accessor::Field(stringify!(#ident))),
+            None => quote!(::vate::Accessor::TupleIndex(#index)),
+        };
+
         for attr in field.attrs.iter() {
             if !attr.path().is_ident("vate") {
                 continue;
             }
             let tokens = &attr.meta.require_list()?.tokens;
             let code = quote! {
-                ::vate::Bundle!(#tokens).run::<C>(::vate::Accessor::Field(stringify!(#item_ident)), &self.#item_ident, data, parent_report)?;
+                ::vate::Bundle!(#tokens).run::<C>(#accessor, &self.#item_ident, data, parent_report)?;
             };
             body.push(code);
         }

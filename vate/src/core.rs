@@ -121,6 +121,7 @@ impl<E> Report<E> {
     }
 
     /// Get the validities of a path in the report.
+    ///
     /// If the path isn't found, an empty vec is returned.
     /// This does NOT mean the path doesn't exist. It just means it is
     /// not in the report. This can be due to many reasons, such as because nothing on
@@ -140,6 +141,7 @@ impl<E> Report<E> {
     }
 
     /// Check if ALL of the nested reports at the path are valid.
+    ///
     /// If the path isn't found, `None` is returned.
     /// This does NOT mean the path doesn't exist. It just means it is
     /// not in the report. This can be due to many reasons, such as because nothing on
@@ -157,6 +159,7 @@ impl<E> Report<E> {
     }
 
     /// Check if ANY of the nested reports at the path are invalid.
+    ///
     /// If the path isn't found, `None` is returned.
     /// This does NOT mean the path doesn't exist. It just means it is
     /// not in the report. This can be due to many reasons, such as because nothing on
@@ -171,6 +174,7 @@ impl<E> Report<E> {
     }
 
     /// Check if ANY of the nested reports at the path are erroneous.
+    ///
     /// If the path isn't found, `None` is returned.
     /// This does NOT mean the path doesn't exist. It just means it is
     /// not in the report. This can be due to many reasons, such as because nothing on
@@ -219,6 +223,7 @@ impl<E> Display for Report<E> {
 pub enum Accessor {
     Root(&'static str),
     Field(&'static str),
+    TupleIndex(usize),
     Index(usize),
     Key(String),
 }
@@ -228,6 +233,7 @@ impl Display for Accessor {
         match self {
             Self::Root(root) => write!(f, "{root}"),
             Self::Field(field) => write!(f, ".{field}"),
+            Self::TupleIndex(tuple_index) => write!(f, ".{tuple_index}"),
             Self::Index(index) => write!(f, "[{index}]"),
             Self::Key(key) => write!(f, "[\"{key}\"]"),
         }
@@ -240,16 +246,17 @@ pub trait Collector<E> {
 }
 
 /// An exit "error" that acts as a control flow within validators, collectors, etc.
+///
 /// For example, the `FirstInvalidAndPrecedingErrors` validator exits gracefully
 /// as soon as the first invalid is encountered. The validators following this invalid
 /// will not be ran, which can be good for performance if you only want the first invalid
 /// anyway.
 #[derive(Debug)]
 pub enum Exit<E> {
-    /// Exit gracefully. Although in the context of `Result<_, Exit<E>>` this is considered
-    /// an error, Exit::Gracefully indicates that this behavior was expected.
+    /// Exit gracefully.
     Gracefully,
-    /// Exit with an error. This is different from pushing an error to a report, and
-    /// is intended for force-exiting if a fatal error is encountered.
+    /// Exit with an error.
+    ///
+    /// This is different from pushing an error to a report, and is intended for force-exiting if a fatal error is encountered.
     WithError(E),
 }

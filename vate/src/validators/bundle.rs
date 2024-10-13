@@ -1,14 +1,9 @@
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
-/// # Description
 /// Runs the two inner validators.
-/// # Target Type
-/// Generic
-/// # Arguments
-/// `0`: the first inner validator.
-/// `1`: the second inner validator.
-/// # Feature Flag
-/// None
+///
+/// Takes two implementors of `Validator` for fields `0` and `1`.
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, Bundle2, Compare, Everything, Report, Validate};
@@ -56,14 +51,11 @@ where
 
 // Note: This macro's name is `UpperCamelCase`, which doesn't conform with typical macro naming conventions.
 // However, it was done to match the naming convention of normal validators.
-/// # Description
+//
 /// Runs the inner validators.
-/// # Target Type
-/// Generic
-/// # Arguments
-/// A comma-separated list of validators.
-/// # Feature Flag
-/// None
+///
+/// Takes a comma-separated list of validators as arguments.
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, Bundle, Compare, Everything, Report, Validate};

@@ -1,5 +1,5 @@
 <h1 align=center><code>vate</code></h1>
-<h3 align=center>Rust data validation library</h3>
+<h3 align=center>Rust data validation crate</h3>
 
 ## Installation
 Currently not on crates.io. Specify the dependency using this git repository instead.

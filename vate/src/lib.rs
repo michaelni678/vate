@@ -1,11 +1,74 @@
+#![cfg_attr(docsrs, feature(doc_cfg, doc_auto_cfg))]
+
+//! The "vate" crate is a versatile and powerful Rust library designed for validating data
+//! structures. It provides a flexible framework for defining and applying custom validators,
+//! along with a collection of built-in validators for common use cases.
+//!
+//! # Validators
+//!
+//! ### Boolean
+//! - [`BooleanFalse`]
+//! - [`BooleanTrue`]
+//!
+//! ### Bundle
+//! - [`Bundle`]
+//! - [`Bundle2`]
+//!
+//! ### Collection
+//! - [`CollectionIterate`]
+//!
+//! ### Compare
+//! - [`CompareEqualTo`]
+//! - [`CompareGreaterThan`]
+//! - [`CompareGreaterThanOrEqualTo`]
+//! - [`CompareLessThan`]
+//! - [`CompareLessThanOrEqualTo`]
+//! - [`CompareNotEqualTo`]
+//!
+//! ### Iterator
+//! - [`ExactSizeIteratorLengthEquals`]
+//! - [`IteratorIndexed`]
+//! - [`IteratorKeyed`]
+//! - [`IteratorLengthEquals`]
+//!
+//! ### Nested
+//! - [`Nested`]
+//!
+//! ### Option
+//! - [`OptionNone`]
+//! - [`OptionSome`]
+//! - [`OptionSomeThen`]
+//!
+//! ### String
+//! - [`StringAlphabetic`]
+//! - [`StringAlphanumeric`]
+//! - [`StringAscii`]
+//! - [`StringLengthEquals`]
+//! - [`StringLengthRange`]
+//! - [`StringLowercase`]
+//! - [`StringUppercase`]
+//!
+//! # Collectors
+//! - [`InvalidsAndErrors`]
+//! - [`FirstInvalidAndPrecedingErrors`]
+//! - [`Everything`]
+//!
+//! # Utility
+//! - [`path`]
+
 extern crate self as vate;
 
-mod collectors;
-mod core;
-mod validators;
+pub mod collectors;
+pub mod core;
+pub mod validators;
 
+#[doc(inline)]
 pub use collectors::{Everything, FirstInvalidAndPrecedingErrors, InvalidsAndErrors};
+
+#[doc(inline)]
 pub use core::{Accessor, Collector, Exit, Report, Validate, Validator};
+
+#[doc(inline)]
 pub use validators::{
     boolean::{BooleanFalse, BooleanTrue},
     bundle::Bundle2,
@@ -24,9 +87,11 @@ pub use validators::{
         StringLowercase, StringUppercase,
     },
 };
+
 pub use vate_derive::{path, Validate};
 
 #[cfg(feature = "regex")]
+#[doc(hidden)]
 pub use validators::string::StringMatchesRegex;
 
 pub mod extras {

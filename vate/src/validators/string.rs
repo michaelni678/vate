@@ -1,13 +1,9 @@
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
-/// # Description
 /// Validates a string consists of only alphabetic characters.
-/// # Target Type
-/// Implementors of `AsRef<str>`.
-/// # Arguments
-/// None
-/// # Feature Flag
-/// None
+///
+/// Requires the target type to be an implementor of `AsRef<str>`.
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, Everything, Report, StringAlphabetic, Validate};
@@ -55,14 +51,10 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAlphabetic {
     }
 }
 
-/// # Description
 /// Validates a string consists of only alphanumeric characters.
-/// # Target Type
-/// Implementors of `AsRef<str>`.
-/// # Arguments
-/// None
-/// # Feature Flag
-/// None
+///
+/// Requires the target type to be an implementor of `AsRef<str>`.
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, Everything, Report, StringAlphanumeric, Validate};
@@ -110,14 +102,10 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAlphanumeric {
     }
 }
 
-/// # Description
 /// Validates a string consists of only ascii characters.
-/// # Target Type
-/// Implementors of `AsRef<str>`.
-/// # Arguments
-/// None
-/// # Feature Flag
-/// None
+///
+/// Requires the target type to be an implementor of `AsRef<str>`.
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, Everything, Report, StringAscii, Validate};
@@ -165,14 +153,10 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAscii {
     }
 }
 
-/// # Description
 /// Validates a string consists of only lowercase characters.
-/// # Target Type
-/// Implementors of `AsRef<str>`.
-/// # Arguments
-/// None
-/// # Feature Flag
-/// None
+///
+/// Requires the target type to be an implementor of `AsRef<str>`.
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, Everything, Report, StringLowercase, Validate};
@@ -220,14 +204,10 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLowercase {
     }
 }
 
-/// # Description
 /// Validates a string consists of only uppercase characters.
-/// # Target Type
-/// Implementors of `AsRef<str>`.
-/// # Arguments
-/// None
-/// # Feature Flag
-/// None
+///
+/// Requires the target type to be an implementor of `AsRef<str>`.
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, Everything, Report, StringUppercase, Validate};
@@ -275,14 +255,13 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringUppercase {
     }
 }
 
-/// # Description
-/// Validates a string's length equals argument `0`.
-/// # Target Type
-/// Implementors of `AsRef<str>`.
-/// # Arguments
-/// `0`: the expected length.
-/// # Feature Flag
-/// None
+/// Validates a string's length.
+///
+/// Requires the target type to be an implementor of `AsRef<str>`.
+///
+/// The enum variant is the unit of measure.
+/// Takes a usize indicating the expected length for field `0`.
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, Everything, Report, StringLengthEquals, Validate};
@@ -339,15 +318,13 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthEquals {
     }
 }
 
-/// # Description
-/// Validates a string's length is in the inclusive range of arguments `min` and `max`.
-/// # Target Type
-/// Implementors of `AsRef<str>`.
-/// # Arguments
-/// `min`: the minimum length.
-/// `max`: the maximum length.
-/// # Feature Flag
-/// None
+/// Validates a string's length is in a range.
+///
+/// Requires the target type to be an implementor of `AsRef<str>`.
+///
+/// The enum variant is the unit of measure.
+/// Takes usizes for fields `min` and `max` indicating the expected range.
+///
 /// # Usage
 /// ```rust
 /// use vate::{path, Accessor, Everything, Report, StringLengthRange, Validate};
@@ -404,14 +381,15 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthRange {
     }
 }
 
-/// # Description
-/// Validates a string matches the regex at argument `0`.
-/// # Target Type
-/// Implementors of `AsRef<str>`.
-/// # Arguments
-/// `0`: the regex to match against.
-/// # Feature Flag
-/// None
+/// Validates a string matches a regex.
+///
+/// Requires the target type to be an implementor of `AsRef<str>`.
+///
+/// Takes a reference to the regex to match against for field `0`.
+///
+/// # Feature Flags
+/// `regex`
+///
 /// # Usage
 /// ```rust
 /// use once_cell::sync::Lazy;
