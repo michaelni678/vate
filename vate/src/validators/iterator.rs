@@ -4,16 +4,11 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 
 /// Runs the inner validator, passing over the iterated items. The indices of the elements will generate `Accessor::Index`.
 ///
-/// # Target Type
-/// Implementors of `Iterator` and `Clone`.
+/// Requires the target type to be an implementor of `Iterator` and `Clone`.
 ///
 /// **WARNING: the iterator is cloned!**
 ///
-/// # Fields / Arguments
-/// `0`: the inner validator.
-///
-/// # Feature Flags
-/// None
+/// Takes an implementor of `Validator` for field `0`.
 ///
 /// # Usage
 /// ```rust
@@ -80,16 +75,11 @@ where
 ///
 /// **NOTE: the key type must implement `ToString` so that it can generate `Accessor::Key`.**
 ///
-/// # Target Type
-/// Implementors of `Iterator` and `Clone`.
+/// Requires the target type to be an implementor of `Iterator` and `Clone`.
 ///
 /// **WARNING: the iterator is cloned!**
 ///
-/// # Fields / Arguments
-/// `0`: the inner validator.
-///
-/// # Feature Flags
-/// None
+/// Takes an implementor of `Validator` for field `0`.
 ///
 /// # Usage
 /// ```rust
@@ -154,18 +144,13 @@ where
     }
 }
 
-/// Consumes an iterator, validating the number of elements is equal to field `0`.
+/// Consumes an iterator, validating its size.
 ///
-/// # Target Type
-/// Implementors of `Iterator` and `Clone`.
+/// Requires the target type to be an implementor of `Iterator` and `Clone`.
 ///
 /// **WARNING: the iterator is cloned!**
 ///
-/// # Fields / Arguments
-/// `0`: the expected number of elements.
-///
-/// # Feature Flags
-/// None
+/// Takes a usize indicating the expected size for field `0`.
 ///
 /// # Usage
 /// ```rust
@@ -220,16 +205,11 @@ where
     }
 }
 
-/// Validates the size of the iterator is equal to field `0`.
+/// Validates the size of the iterator.
 ///
-/// # Target Type
-/// Implementors of `ExactSizeIterator`.
+/// Requires the target type to be an implementor of `ExactSizeIterator`.
 ///
-/// # Fields / Arguments
-/// `0`: the expected number of elements.
-///
-/// # Feature Flags
-/// None
+/// Takes a usize indicating the expected size for field `0`.
 ///
 /// # Usage
 /// ```rust

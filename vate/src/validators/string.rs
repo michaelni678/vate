@@ -2,14 +2,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 
 /// Validates a string consists of only alphabetic characters.
 ///
-/// # Target Type
-/// Implementors of `AsRef<str>`.
-///
-/// # Fields / Arguments
-/// None
-///
-/// # Feature Flags
-/// None
+/// Requires the target type to be an implementor of `AsRef<str>`.
 ///
 /// # Usage
 /// ```rust
@@ -60,14 +53,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAlphabetic {
 
 /// Validates a string consists of only alphanumeric characters.
 ///
-/// # Target Type
-/// Implementors of `AsRef<str>`.
-///
-/// # Fields / Arguments
-/// None
-///
-/// # Feature Flags
-/// None
+/// Requires the target type to be an implementor of `AsRef<str>`.
 ///
 /// # Usage
 /// ```rust
@@ -118,14 +104,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAlphanumeric {
 
 /// Validates a string consists of only ascii characters.
 ///
-/// # Target Type
-/// Implementors of `AsRef<str>`.
-///
-/// # Fields / Arguments
-/// None
-///
-/// # Feature Flags
-/// None
+/// Requires the target type to be an implementor of `AsRef<str>`.
 ///
 /// # Usage
 /// ```rust
@@ -176,14 +155,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAscii {
 
 /// Validates a string consists of only lowercase characters.
 ///
-/// # Target Type
-/// Implementors of `AsRef<str>`.
-///
-/// # Fields / Arguments
-/// None
-///
-/// # Feature Flags
-/// None
+/// Requires the target type to be an implementor of `AsRef<str>`.
 ///
 /// # Usage
 /// ```rust
@@ -234,14 +206,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLowercase {
 
 /// Validates a string consists of only uppercase characters.
 ///
-/// # Target Type
-/// Implementors of `AsRef<str>`.
-///
-/// # Fields / Arguments
-/// None
-///
-/// # Feature Flags
-/// None
+/// Requires the target type to be an implementor of `AsRef<str>`.
 ///
 /// # Usage
 /// ```rust
@@ -290,16 +255,12 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringUppercase {
     }
 }
 
-/// Validates a string's length equals field `0`.
+/// Validates a string's length.
 ///
-/// # Target Type
-/// Implementors of `AsRef<str>`.
+/// Requires the target type to be an implementor of `AsRef<str>`.
 ///
-/// # Fields / Arguments
-/// `0`: the expected length.
-///
-/// # Feature Flags
-/// None
+/// The enum variant is the unit of measure.
+/// Takes a usize indicating the expected length for field `0`.
 ///
 /// # Usage
 /// ```rust
@@ -357,17 +318,12 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthEquals {
     }
 }
 
-/// Validates a string's length is in the inclusive range of arguments `min` and `max`.
+/// Validates a string's length is in a range.
 ///
-/// # Target Type
-/// Implementors of `AsRef<str>`.
+/// Requires the target type to be an implementor of `AsRef<str>`.
 ///
-/// # Fields / Arguments
-/// `min`: the minimum length.
-/// `max`: the maximum length.
-///
-/// # Feature Flags
-/// None
+/// The enum variant is the unit of measure.
+/// Takes usizes for fields `min` and `max` indicating the expected range.
 ///
 /// # Usage
 /// ```rust
@@ -425,13 +381,11 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthRange {
     }
 }
 
-/// Validates a string matches the regex at field `0`.
+/// Validates a string matches a regex.
 ///
-/// # Target Type
-/// Implementors of `AsRef<str>`.
+/// Requires the target type to be an implementor of `AsRef<str>`.
 ///
-/// # Fields / Arguments
-/// `0`: the regex to match against.
+/// Takes a reference to the regex to match against for field `0`.
 ///
 /// # Feature Flags
 /// `regex`

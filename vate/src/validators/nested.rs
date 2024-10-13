@@ -5,14 +5,7 @@ use crate::{
 
 /// Validates the nested implementor of `Validate`.
 ///
-/// # Target Type
-/// Implementors of `Validate`.
-///
-/// # Fields / Arguments
-/// None
-///
-/// # Feature Flags
-/// None
+/// Requires the target type to be an implementor of `Validate`.
 ///
 /// # Usage
 /// ```rust

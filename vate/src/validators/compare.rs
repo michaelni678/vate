@@ -5,7 +5,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 // Note: This macro's name is `UpperCamelCase`, which doesn't conform with typical macro naming conventions.
 // However, it was done to match the naming convention of normal validators.
 //
-/// Compares the target to the field `0`.
+/// Validates the specified comparison.
 ///
 /// This is a convenience macro for generating comparison validators
 /// `CompareLessThan`, `CompareLessThanOrEqualTo`, `CompareGreaterThan`,
@@ -23,15 +23,13 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 /// ```
 /// ... may not work.
 ///
+/// Requires the target type to be an implementor of `PartialOrd<U>` 
+/// and `Display`, where U is the type of the literal / variable being
+/// compared to.
 ///
-/// # Target Type
-/// Implementors of `PartialOrd` and `Display`.
-///
-/// # Fields / Arguments
-/// Any one of the operators <, <=, >, >=, ==, or != preceding the literal / variable to compare to, which must be comparable to the target type.
-///
-/// # Feature Flags
-/// None
+/// The arguments consist of any of the operators <, <=, >, >=, ==, or != 
+/// preceding the literal / variable to compare to, which must be 
+/// comparable to the target type and made into a `Cow`.
 ///
 /// # Usage
 /// ```rust
@@ -97,16 +95,13 @@ macro_rules! Compare {
     };
 }
 
-/// Validates the target is less than the field `0`.
+/// Validates the target is less than a value.
 ///
-/// # Target Type
-/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of field `0`.
-///
-/// # Fields / Arguments
-/// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
-///
-/// # Feature Flags
-/// None
+/// Requires the target type to be an implementor of `PartialOrd<U>` 
+/// and `Display`, where U is the type of the literal / variable being
+/// compared to.
+/// 
+/// Takes a `Cow<'_, U>` for field `0`.
 ///
 /// # Usage
 /// ```rust
@@ -165,17 +160,14 @@ where
     }
 }
 
-/// Validates the target is less than or equal to the field `0`.
-///
-/// # Target Type
-/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of field `0`.
-///
-/// # Fields / Arguments
-/// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
-///
-/// # Feature Flags
-/// None
-///
+/// Validates the target is less than or equal to a value.
+/// 
+/// Requires the target type to be an implementor of `PartialOrd<U>` 
+/// and `Display`, where U is the type of the literal / variable being
+/// compared to.
+/// 
+/// Takes a `Cow<'_, U>` for field `0`.
+/// 
 /// # Usage
 /// ```rust
 /// use std::borrow::Cow;
@@ -233,16 +225,13 @@ where
     }
 }
 
-/// Validates the target is greater than the field `0`.
+/// Validates the target is greater than a value.
 ///
-/// # Target Type
-/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of field `0`.
-///
-/// # Fields / Arguments
-/// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
-///
-/// # Feature Flags
-/// None
+/// Requires the target type to be an implementor of `PartialOrd<U>` 
+/// and `Display`, where U is the type of the literal / variable being
+/// compared to.
+/// 
+/// Takes a `Cow<'_, U>` for field `0`.
 ///
 /// # Usage
 /// ```rust
@@ -301,16 +290,16 @@ where
     }
 }
 
-/// Validates the target is greater than or equal to the field `0`.
-///
-/// # Target Type
-/// Implementors of `PartialOrd<U>` and `Display`, where U is the type of field `0`.
+/// Validates the target is greater than or equal to a value.
+/// 
+/// Requires the target type to be an implementor of `PartialOrd<U>` 
+/// and `Display`, where U is the type of the literal / variable being
+/// compared to.
+/// 
+/// Takes a `Cow<'_, U>` for field `0`.
 ///
 /// # Fields / Arguments
 /// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
-///
-/// # Feature Flags
-/// None
 ///
 /// # Usage
 /// ```rust
@@ -369,16 +358,13 @@ where
     }
 }
 
-/// Validates the target is equal to the field `0`.
-///
-/// # Target Type
-/// Implementors of `PartialEq<U>` and `Display`, where U is the type of field `0`.
-///
-/// # Fields / Arguments
-/// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
-///
-/// # Feature Flags
-/// None
+/// Validates the target is equal to a value.
+/// 
+/// Requires the target type to be an implementor of `PartialOrd<U>` 
+/// and `Display`, where U is the type of the literal / variable being
+/// compared to.
+/// 
+/// Takes a `Cow<'_, U>` for field `0`.
 ///
 /// # Usage
 /// ```rust
@@ -437,16 +423,13 @@ where
     }
 }
 
-/// Validates the target is not equal to the field `0`.
-///
-/// # Target Type
-/// Implementors of `PartialEq<U>` and `Display`, where U is the type of field `0`.
-///
-/// # Fields / Arguments
-/// `0`: the value the target is compared to, which must be an implementor of `Clone` and `Display`.
-///
-/// # Feature Flags
-/// None
+/// Validates the target is not equal to a value.
+/// 
+/// Requires the target type to be an implementor of `PartialOrd<U>` 
+/// and `Display`, where U is the type of the literal / variable being
+/// compared to.
+/// 
+/// Takes a `Cow<'_, U>` for field `0`.
 ///
 /// # Usage
 /// ```rust

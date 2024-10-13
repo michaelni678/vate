@@ -2,14 +2,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 
 /// Validates a option is the `Some` variant.
 ///
-/// # Target Type
-/// `Option<T>`, where T is generic.
-///
-/// # Fields / Arguments
-/// None
-///
-/// # Feature Flags
-/// None
+/// Requires the target type to be an `Option`.
 ///
 /// # Usage
 /// ```rust
@@ -60,14 +53,7 @@ impl<T, D, E> Validator<Option<T>, D, E> for OptionSome {
 
 /// Validates a option is the `None` variant.
 ///
-/// # Target Type
-/// `Option<T>`, where T is generic.
-///
-/// # Fields / Arguments
-/// None
-///
-/// # Feature Flags
-/// None
+/// Requires the target type to be an `Option`.
 ///
 /// # Usage
 /// ```rust
@@ -116,16 +102,12 @@ impl<T, D, E> Validator<Option<T>, D, E> for OptionNone {
     }
 }
 
-/// If the option is the `Some` variant, runs the inner validator with the option's unwrapped value.
+/// If the option is the `Some` variant, runs the inner validator with 
+/// the option's unwrapped value.
 ///
-/// # Target Type
-/// `Option<T>`, where T is generic.
+/// Requires the target type to be an `Option<T>`.
 ///
-/// # Fields / Arguments
-/// `0`: the inner validator that runs if the option is `Some`.
-///
-/// # Feature Flags
-/// None
+/// Takes an implementor of `Validator<T, _, _>` for field `0`.
 ///
 /// # Usage
 /// ```rust

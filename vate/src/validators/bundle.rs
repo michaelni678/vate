@@ -2,15 +2,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 
 /// Runs the two inner validators.
 ///
-/// # Target Type
-/// Generic
-///
-/// # Fields / Arguments
-/// `0`: the first inner validator.
-/// `1`: the second inner validator.
-///
-/// # Feature Flags
-/// None
+/// Takes two implementors of `Validator` for fields `0` and `1`.
 ///
 /// # Usage
 /// ```rust
@@ -62,14 +54,7 @@ where
 //
 /// Runs the inner validators.
 ///
-/// # Target Type
-/// Generic
-///
-/// # Fields / Arguments
-/// A comma-separated list of validators.
-///
-/// # Feature Flags
-/// None
+/// Takes a comma-separated list of validators as arguments.
 ///
 /// # Usage
 /// ```rust

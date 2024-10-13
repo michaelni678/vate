@@ -2,14 +2,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 
 /// Validates a boolean is `true`.
 ///
-/// # Target Type
-/// `bool`
-///
-/// # Fields / Arguments
-/// None
-///
-/// # Feature Flags
-/// None
+/// Requires the target type to be `bool`.
 ///
 /// # Usage
 /// ```rust
@@ -60,14 +53,7 @@ impl<D, E> Validator<bool, D, E> for BooleanTrue {
 
 /// Validates a boolean is `false`.
 ///
-/// # Target Type
-/// `bool`
-///
-/// # Fields / Arguments
-/// None
-///
-/// # Feature Flags
-/// None
+/// Requires the target type to be `bool`.
 ///
 /// # Usage
 /// ```rust
