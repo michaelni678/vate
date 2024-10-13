@@ -10,7 +10,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 ///
 /// Takes an implementor of `Validator` for field `0`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, CollectionIterate, Everything, IteratorIndexed, Report, StringAlphabetic, Validate};
 ///
@@ -81,7 +81,7 @@ where
 ///
 /// Takes an implementor of `Validator` for field `0`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use std::collections::HashMap;
 ///
@@ -152,7 +152,7 @@ where
 ///
 /// Takes a usize indicating the expected size for field `0`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, CollectionIterate, Everything, IteratorLengthEquals, Report, StringAlphabetic, Validate};
 ///
@@ -211,7 +211,7 @@ where
 ///
 /// Takes a usize indicating the expected size for field `0`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, CollectionIterate, Everything, ExactSizeIteratorLengthEquals, Report, StringAlphabetic, Validate};
 ///

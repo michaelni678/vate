@@ -7,7 +7,7 @@ use crate::{
 ///
 /// Requires the target type to be an implementor of `Validate`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, BooleanTrue, BooleanFalse, Everything, Nested, Report, Validate};
 ///

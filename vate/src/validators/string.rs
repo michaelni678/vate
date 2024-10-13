@@ -4,7 +4,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 ///
 /// Requires the target type to be an implementor of `AsRef<str>`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, Everything, Report, StringAlphabetic, Validate};
 ///
@@ -55,7 +55,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAlphabetic {
 ///
 /// Requires the target type to be an implementor of `AsRef<str>`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, Everything, Report, StringAlphanumeric, Validate};
 ///
@@ -106,7 +106,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAlphanumeric {
 ///
 /// Requires the target type to be an implementor of `AsRef<str>`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, Everything, Report, StringAscii, Validate};
 ///
@@ -157,7 +157,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAscii {
 ///
 /// Requires the target type to be an implementor of `AsRef<str>`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, Everything, Report, StringLowercase, Validate};
 ///
@@ -208,7 +208,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLowercase {
 ///
 /// Requires the target type to be an implementor of `AsRef<str>`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, Everything, Report, StringUppercase, Validate};
 ///
@@ -262,7 +262,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringUppercase {
 /// The enum variant is the unit of measure.
 /// Takes a usize indicating the expected length for field `0`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, Everything, Report, StringLengthEquals, Validate};
 ///
@@ -325,7 +325,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthEquals {
 /// The enum variant is the unit of measure.
 /// Takes usizes for fields `min` and `max` indicating the expected range.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, Everything, Report, StringLengthRange, Validate};
 ///
@@ -390,7 +390,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthRange {
 /// # Feature Flags
 /// `regex`
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use once_cell::sync::Lazy;
 /// use vate::{extras::Regex, path, Accessor, Everything, Report, StringMatchesRegex, Validate};

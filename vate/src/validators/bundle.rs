@@ -4,7 +4,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 ///
 /// Takes two implementors of `Validator` for fields `0` and `1`.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, Bundle2, Compare, Everything, Report, Validate};
 ///
@@ -56,7 +56,7 @@ where
 ///
 /// Takes a comma-separated list of validators as arguments.
 ///
-/// # Usage
+/// # Examples
 /// ```rust
 /// use vate::{path, Accessor, Bundle, Compare, Everything, Report, Validate};
 ///
