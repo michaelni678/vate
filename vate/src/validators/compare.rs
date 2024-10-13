@@ -55,8 +55,9 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 /// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
 /// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
 /// ```
+#[doc(hidden)]
 #[macro_export]
-macro_rules! Compare {
+macro_rules! _Compare {
     ( < & $value:expr) => {
         ::vate::CompareLessThan(::std::borrow::Cow::Borrowed(&$value))
     };
@@ -94,6 +95,9 @@ macro_rules! Compare {
         ::vate::CompareNotEqualTo(::std::borrow::Cow::Owned($value))
     };
 }
+
+#[doc(inline)]
+pub use _Compare as Compare;
 
 /// Validates the target is less than a value.
 ///

@@ -1,80 +1,74 @@
-#![cfg_attr(docsrs, feature(doc_cfg, doc_auto_cfg))]
-
 //! The "vate" crate is a versatile and powerful Rust library designed for validating data
 //! structures. It provides a flexible framework for defining and applying custom validators,
 //! along with a collection of built-in validators for common use cases.
 //!
-//! # Validators
+//! **All publicly accessible components are re-exported at the root of the crate for convenience.** \
+//! This allows you to access them directly using `vate::{item}`, where `item` is any publicly exposed component.
 //!
-//! ### Boolean
-//! - [`BooleanFalse`]
-//! - [`BooleanTrue`]
+//! # Usage
+//! ```rust
+//! use vate::*;
 //!
-//! ### Bundle
-//! - [`Bundle`]
-//! - [`Bundle2`]
+//! #[derive(Validate)]
+//! struct CreateUser {
+//!     #[vate(StringAlphanumeric, StringLengthRange::Chars { min: 4, max: 20 })]
+//!     username: String,
+//!     #[vate(StringAscii, StringLengthRange::Chars { min: 8, max: usize::MAX })]
+//!     password: String,
+//!     #[vate(Compare!( == &self.password ))]
+//!     confirm_password: String,
+//! }
 //!
-//! ### Collection
-//! - [`CollectionIterate`]
+//! let create_user = CreateUser {
+//!     username: String::from("username"),
+//!     password: String::from("password"),
+//!     confirm_password: String::from("password"),
+//! };
 //!
-//! ### Compare
-//! - [`CompareEqualTo`]
-//! - [`CompareGreaterThan`]
-//! - [`CompareGreaterThanOrEqualTo`]
-//! - [`CompareLessThan`]
-//! - [`CompareLessThanOrEqualTo`]
-//! - [`CompareNotEqualTo`]
+//! let mut report = Report::new(Accessor::Root("create_user"));
+//! let _ = create_user.validate::<InvalidsAndErrors>(&(), &mut report);
 //!
-//! ### Iterator
-//! - [`ExactSizeIteratorLengthEquals`]
-//! - [`IteratorIndexed`]
-//! - [`IteratorKeyed`]
-//! - [`IteratorLengthEquals`]
-//!
-//! ### Nested
-//! - [`Nested`]
-//!
-//! ### Option
-//! - [`OptionNone`]
-//! - [`OptionSome`]
-//! - [`OptionSomeThen`]
-//!
-//! ### String
-//! - [`StringAlphabetic`]
-//! - [`StringAlphanumeric`]
-//! - [`StringAscii`]
-//! - [`StringLengthEquals`]
-//! - [`StringLengthRange`]
-//! - [`StringLowercase`]
-//! - [`StringUppercase`]
-//!
-//! # Collectors
-//! - [`InvalidsAndErrors`]
-//! - [`FirstInvalidAndPrecedingErrors`]
-//! - [`Everything`]
-//!
-//! # Utility
-//! - [`path`]
+//! assert!(report.is_valid());
+//! ```
 
 extern crate self as vate;
 
+/// Built-in collectors, implementing the [`Collector`] trait.
 pub mod collectors;
+
+/// Core components.
 pub mod core;
+
+/// Feature-dependent re-exports.
+pub mod extras {
+    #[cfg(feature = "regex")]
+    pub use regex::Regex;
+}
+
+/// Utilities for convenience.
+pub mod utils {
+    pub use vate_derive::path;
+}
+
+/// Built-in validators, implementing the [`Validator`] trait.
 pub mod validators;
 
-#[doc(inline)]
-pub use collectors::{Everything, FirstInvalidAndPrecedingErrors, InvalidsAndErrors};
-
-#[doc(inline)]
+// Hide re-exports of core components in the docs.
+#[doc(hidden)]
 pub use core::{Accessor, Collector, Exit, Report, Validate, Validator};
 
-#[doc(inline)]
+// Hide the re-exports of collectors in the docs.
+#[doc(hidden)]
+pub use collectors::{Everything, FirstInvalidAndPrecedingErrors, InvalidsAndErrors};
+
+// Hide the re-exports of validators in the docs.
+#[doc(hidden)]
 pub use validators::{
     boolean::{BooleanFalse, BooleanTrue},
-    bundle::Bundle2,
+    bundle::{Bundle, Bundle2},
     collection::CollectionIterate,
     compare::{
-        CompareEqualTo, CompareGreaterThan, CompareGreaterThanOrEqualTo, CompareLessThan,
+        Compare, CompareEqualTo, CompareGreaterThan, CompareGreaterThanOrEqualTo, CompareLessThan,
         CompareLessThanOrEqualTo, CompareNotEqualTo,
     },
     iterator::{
@@ -88,13 +82,11 @@ pub use validators::{
     },
 };
 
-pub use vate_derive::{path, Validate};
-
 #[cfg(feature = "regex")]
 #[doc(hidden)]
 pub use validators::string::StringMatchesRegex;
 
-pub mod extras {
-    #[cfg(feature = "regex")]
-    pub use regex::Regex;
-}
+#[doc(hidden)]
+pub use vate_derive::path;
+
+pub use vate_derive::Validate;

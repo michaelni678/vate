@@ -51,31 +51,101 @@ impl<E> Report<E> {
     }
 
     /// Get the report accessor.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let report: Report<()> = Report::new(Accessor::Root("example"));
+    /// assert!(matches!(report.get_accessor(), Accessor::Root("example")));
+    /// ```
     pub fn get_accessor(&self) -> &Accessor {
         &self.accessor
     }
 
     /// Set the validity of the report.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// report.set_validity(Ok(true));
+    /// assert!(report.is_valid());
+    ///
+    /// report.set_validity(Ok(false));
+    /// assert!(report.is_invalid());
+    ///
+    /// report.set_validity(Err(()));
+    /// assert!(report.is_error());
+    /// ```
     pub fn set_validity(&mut self, validity: Result<bool, E>) {
         self.validity = validity;
     }
 
     /// Set the report validity to valid.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// report.set_valid();
+    /// assert!(report.is_valid());
+    /// ```
     pub fn set_valid(&mut self) {
         self.set_validity(Ok(true));
     }
 
     /// Set the report validity to invalid.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// report.set_invalid();
+    /// assert!(report.is_invalid());
+    /// ```
     pub fn set_invalid(&mut self) {
         self.set_validity(Ok(false));
     }
 
     /// Set the report validity to an error.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// report.set_error(());
+    /// assert!(report.is_error());
+    /// ```
     pub fn set_error(&mut self, error: E) {
         self.set_validity(Err(error));
     }
 
     /// Get the validity of this report.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// report.set_validity(Ok(true));
+    /// assert!(matches!(report.get_validity(), Ok(true)));
+    ///
+    /// report.set_validity(Ok(false));
+    /// assert!(matches!(report.get_validity(), Ok(false)));
+    ///
+    /// report.set_validity(Err(()));
+    /// assert!(matches!(report.get_validity(), Err(())));
+    /// ```
     pub fn get_validity(&self) -> &Result<bool, E> {
         &self.validity
     }
@@ -106,7 +176,7 @@ impl<E> Report<E> {
     }
 
     /// Push a child report to this report.
-    /// 
+    ///
     /// This is typically called by collectors!
     pub fn push_child(&mut self, child: Report<E>) {
         self.children.push(child);
@@ -122,6 +192,21 @@ impl<E> Report<E> {
             .filter(move |child| child.get_accessor() == accessor)
     }
 
+    /// Get child reports given a path.
+    pub fn get_children_at_path<'a>(&'a self, path: &'a [Accessor]) -> Vec<&'a Report<E>> {
+        let mut children = Vec::new();
+        if let Some((first, rest)) = path.as_ref().split_first() {
+            if let Some(next) = rest.first() {
+                for child in self.get_children_at_accessor(next) {
+                    children.extend(child.get_children_at_path(rest));
+                }
+            } else if *first == self.accessor {
+                children.push(self)
+            }
+        }
+        children
+    }
+
     /// Get the validities of a path in the report.
     ///
     /// If the path isn't found, an empty vec is returned.
@@ -129,29 +214,19 @@ impl<E> Report<E> {
     /// not in the report. This can be due to many reasons, such as because nothing on
     /// that path was validated, the validation was skipped, etc.
     pub fn get_validities_at_path<'a>(&'a self, path: &'a [Accessor]) -> Vec<&'a Result<bool, E>> {
-        let mut validities = Vec::new();
-        if let Some((first, rest)) = path.as_ref().split_first() {
-            if let Some(next) = rest.first() {
-                for child in self.get_children_at_accessor(next) {
-                    validities.extend(child.get_validities_at_path(rest));
-                }
-            } else if *first == self.accessor {
-                validities.push(self.get_validity())
-            }
-        }
-        validities
+        self.get_children_at_path(path)
+            .into_iter()
+            .map(|child| child.get_validity())
+            .collect()
     }
 
-    /// Check if ALL of the nested reports at the path are valid.
+    /// Check if **all** of the nested reports at the path are valid.
     ///
     /// If the path isn't found, `None` is returned.
     /// This does NOT mean the path doesn't exist. It just means it is
     /// not in the report. This can be due to many reasons, such as because nothing on
     /// that path was validated, the validation was skipped, etc.
-    pub fn is_all_valid_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool>
-    where
-        E: Debug,
-    {
+    pub fn is_all_valid_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
         let validities = self.get_validities_at_path(path.as_ref());
         (!validities.is_empty()).then_some(
             validities
@@ -160,7 +235,7 @@ impl<E> Report<E> {
         )
     }
 
-    /// Check if ANY of the nested reports at the path are invalid.
+    /// Check if **any** of the nested reports at the path are invalid.
     ///
     /// If the path isn't found, `None` is returned.
     /// This does NOT mean the path doesn't exist. It just means it is
@@ -175,7 +250,7 @@ impl<E> Report<E> {
         )
     }
 
-    /// Check if ANY of the nested reports at the path are erroneous.
+    /// Check if **any** of the nested reports at the path are erroneous.
     ///
     /// If the path isn't found, `None` is returned.
     /// This does NOT mean the path doesn't exist. It just means it is
@@ -191,18 +266,27 @@ impl<E> Report<E> {
         self.get_validities_at_path(path.as_ref()).is_empty()
     }
 
+    /// Count the number of reports.
+    pub fn count_reports(&self) -> usize {
+        let mut count = 1;
+        for child in self.children.iter() {
+            count += child.count_reports();
+        }
+        count
+    }
+
     /// Get the number of leaf reports.
-    /// 
+    ///
     /// # Examples
     /// ```rust
     /// use vate::{Accessor, Report};
-    /// 
-    /// let mut report: Report<()> = Report::new(Accessor::Root("Parent"));
-    /// 
-    /// report.push_child(Report::new(Accessor::Key(String::from("Child 1"))));
-    /// report.push_child(Report::new(Accessor::Key(String::from("Child 2"))));
-    /// report.push_child(Report::new(Accessor::Key(String::from("Child 3"))));
-    /// 
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("parent"));
+    ///
+    /// report.push_child(Report::new(Accessor::Key(String::from("leaf_1"))));
+    /// report.push_child(Report::new(Accessor::Key(String::from("leaf_2"))));
+    /// report.push_child(Report::new(Accessor::Key(String::from("leaf_3"))));
+    ///
     /// assert_eq!(report.count_leaves(), 3);
     /// ```
     pub fn count_leaves(&self) -> usize {
@@ -211,6 +295,40 @@ impl<E> Report<E> {
         } else {
             let mut count = 0;
             for child in self.children.iter() {
+                count += child.count_leaves();
+            }
+            count
+        }
+    }
+
+    /// Get the number of leaf reports at a path.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{path, Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("parent"));
+    ///
+    /// report.push_child(Report::new(Accessor::Key(String::from("leaf_1"))));
+    /// report.push_child(Report::new(Accessor::Key(String::from("leaf_2"))));
+    ///
+    /// let mut child_1 = Report::new(Accessor::Key(String::from("child_1")));
+    /// child_1.push_child(Report::new(Accessor::Key(String::from("child_1_leaf_1"))));
+    /// child_1.push_child(Report::new(Accessor::Key(String::from("child_1_leaf_2"))));
+    ///
+    /// report.push_child(child_1);
+    ///
+    /// assert_eq!(report.count_leaves_at_path(path!(parent)), 4);
+    /// assert_eq!(report.count_leaves_at_path(path!(parent["leaf_1"])), 1);
+    /// assert_eq!(report.count_leaves_at_path(path!(parent["child_1"])), 2);
+    /// assert_eq!(report.count_leaves_at_path(path!(parent["child_1"]["child_1_leaf_1"])), 1);
+    /// ```
+    pub fn count_leaves_at_path(&self, path: impl AsRef<[Accessor]>) -> usize {
+        if self.children.is_empty() {
+            1
+        } else {
+            let mut count = 0;
+            for child in self.get_children_at_path(path.as_ref()) {
                 count += child.count_leaves();
             }
             count

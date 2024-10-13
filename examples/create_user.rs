@@ -73,13 +73,13 @@ struct Credentials {
     /// The password confirmation, which must be equal to the password.
     #[vate(Compare!( == &self.password ))]
     confirm_password: String,
-    /// The ID of the device that attempted to create this user.
-    /// This is purposely not validated to demonstrate that not all
-    /// fields need to be validated.
+    /// The ID of the device that attempted to create this user. This is purposely not
+    /// validated to demonstrate that not all fields need to be validated.
     device_id: String,
 }
 
 fn main() {
+    // Create an instance of `CreateUser`.
     let create_user = CreateUser {
         profile: Profile {
             name: Name {
@@ -107,24 +107,55 @@ fn main() {
         },
     };
 
+    // Create the root report.
     let mut report = Report::new(Accessor::Root("create_user"));
+
+    // Validate `create_user`, ignoring the return value since the validations
+    // done by this example do not produce any errors.
     let _ = create_user.validate::<InvalidsAndErrors>(&(), &mut report);
 
+    // The report should contain 6 leaves. All leaves should be invalid reports, since the
+    // collector `InvalidsAndErrors` only collects invalid and erroneous reports, and
+    // the validations done by this example do not produce any errors.
+    assert_eq!(report.count_leaves(), 6);
+
+    // The report should be invalid at create_user.profile.name.middle,
+    // since "0" is not alphabetic nor between 2 and 32 characters.
     assert!(report
         .is_any_invalid_at_path(path!(create_user.profile.name.middle))
         .unwrap());
+
+    // The report should have two leaves at create_user.profile.name.middle,
+    // one for the alphabetic validation and one for the string length validation.
+    assert_eq!(
+        report.count_leaves_at_path(path!(create_user.profile.name.middle)),
+        2
+    );
+
+    // The report should be invalid at create_user.profile.hobbies[1],
+    // since "\u{03A9}" is not ascii.
     assert!(report
         .is_any_invalid_at_path(path!(create_user.profile.hobbies[1]))
         .unwrap());
+
+    // The report should be invalid at create_user.profile.languages["English"],
+    // since 0 is not greater than or equal to 1.
     assert!(report
         .is_any_invalid_at_path(path!(create_user.profile.languages["English"]))
         .unwrap());
+
+    // The report should be invalid at create_user.credentials.username,
+    // since "u$ername" is not alphanumeric.
     assert!(report
         .is_any_invalid_at_path(path!(create_user.credentials.username))
         .unwrap());
+
+    // The report should be invalid at create_user.credentials.confirm_password,
+    // since "pulp fiction" is not equal to "health me".
     assert!(report
         .is_any_invalid_at_path(path!(create_user.credentials.confirm_password))
         .unwrap());
 
+    // Print the report.
     println!("{report}");
 }
