@@ -3,17 +3,64 @@
 //! The "vate" crate is a versatile and powerful Rust library designed for validating data
 //! structures. It provides a flexible framework for defining and applying custom validators,
 //! along with a collection of built-in validators for common use cases.
+//! 
+//! # Validators
+//! 
+//! ### Boolean
+//! - [`BooleanFalse`]
+//! - [`BooleanTrue`]
+//! 
+//! ### Bundle
+//! - [`Bundle`]
+//! - [`Bundle2`]
+//! 
+//! ### Collection
+//! - [`CollectionIterate`]
+//! 
+//! ### Compare
+//! - [`CompareEqualTo`]
+//! - [`CompareGreaterThan`]
+//! - [`CompareGreaterThanOrEqualTo`]
+//! - [`CompareLessThan`]
+//! - [`CompareLessThanOrEqualTo`]
+//! - [`CompareNotEqualTo`]
+//! 
+//! ### Iterator
+//! - [`ExactSizeIteratorLengthEquals`]
+//! - [`IteratorIndexed`]
+//! - [`IteratorKeyed`]
+//! - [`IteratorLengthEquals`]
+//! 
+//! ### Nested
+//! - [`Nested`]
+//! 
+//! ### Option
+//! - [`OptionNone`]
+//! - [`OptionSome`]
+//! - [`OptionSomeThen`]
+//! 
+//! ### String
+//! - [`StringAlphabetic`]
+//! - [`StringAlphanumeric`]
+//! - [`StringAscii`]
+//! - [`StringLengthEquals`]
+//! - [`StringLengthRange`]
+//! - [`StringLowercase`]
+//! - [`StringUppercase`]
+//! 
+//! # Collectors
+//! - [`InvalidsAndErrors`]
+//! - [`FirstInvalidAndPrecedingErrors`]
+//! - [`Everything`]
+//! 
+//! # Utility
+//! - [`path`]
 
 extern crate self as vate;
 
-/// Built-in collectors.
-mod collectors;
-
-/// Core functionality.
-mod core;
-
-/// Built-in validators.
-mod validators;
+pub mod collectors;
+pub mod core;
+pub mod validators;
 
 #[doc(inline)]
 pub use collectors::{Everything, FirstInvalidAndPrecedingErrors, InvalidsAndErrors};
@@ -40,6 +87,7 @@ pub use validators::{
         StringLowercase, StringUppercase,
     },
 };
+
 pub use vate_derive::{path, Validate};
 
 #[cfg(feature = "regex")]
