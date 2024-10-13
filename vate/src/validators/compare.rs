@@ -6,7 +6,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 // However, it was done to match the naming convention of normal validators.
 //
 /// Compares the target to the field `0`.
-/// 
+///
 /// This is a convenience macro for generating comparison validators
 /// `CompareLessThan`, `CompareLessThanOrEqualTo`, `CompareGreaterThan`,
 /// `CompareGreaterThanOrEqualTo`, `CompareEqualTo`, and `CompareNotEqualTo`.

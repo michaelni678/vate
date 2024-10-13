@@ -18,8 +18,12 @@ fn parse_expr(expr: &syn::Expr, accessors: &mut Vec<TokenStream2>) -> syn::Resul
         syn::Expr::Field(syn::ExprField { base, member, .. }) => {
             parse_expr(base, accessors)?;
             match member {
-                syn::Member::Named(ident) => accessors.push(quote!(::vate::Accessor::Field(stringify!(#ident)))),
-                syn::Member::Unnamed(index) => accessors.push(quote!(::vate::Accessor::TupleIndex(#index))),
+                syn::Member::Named(ident) => {
+                    accessors.push(quote!(::vate::Accessor::Field(stringify!(#ident))))
+                }
+                syn::Member::Unnamed(index) => {
+                    accessors.push(quote!(::vate::Accessor::TupleIndex(#index)))
+                }
             }
         }
         syn::Expr::Index(syn::ExprIndex {

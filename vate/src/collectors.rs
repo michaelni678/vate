@@ -24,8 +24,8 @@ impl<E> Collector<E> for InvalidsAndErrors {
     }
 }
 
-/// Collects only the first invalid report and any preceding error reports. 
-/// 
+/// Collects only the first invalid report and any preceding error reports.
+///
 /// Exits gracefully when the first invalid report is encountered.
 pub struct FirstInvalidAndPrecedingErrors;
 
