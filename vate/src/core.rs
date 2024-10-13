@@ -220,7 +220,7 @@ impl<E> Report<E> {
             .collect()
     }
 
-    /// Check if ALL of the nested reports at the path are valid.
+    /// Check if **all** of the nested reports at the path are valid.
     ///
     /// If the path isn't found, `None` is returned.
     /// This does NOT mean the path doesn't exist. It just means it is
@@ -235,7 +235,7 @@ impl<E> Report<E> {
         )
     }
 
-    /// Check if ANY of the nested reports at the path are invalid.
+    /// Check if **any** of the nested reports at the path are invalid.
     ///
     /// If the path isn't found, `None` is returned.
     /// This does NOT mean the path doesn't exist. It just means it is
@@ -250,7 +250,7 @@ impl<E> Report<E> {
         )
     }
 
-    /// Check if ANY of the nested reports at the path are erroneous.
+    /// Check if **any** of the nested reports at the path are erroneous.
     ///
     /// If the path isn't found, `None` is returned.
     /// This does NOT mean the path doesn't exist. It just means it is
