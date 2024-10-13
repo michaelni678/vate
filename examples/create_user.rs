@@ -114,15 +114,23 @@ fn main() {
     assert!(report
         .is_any_invalid_at_path(path!(create_user.profile.name.middle))
         .unwrap());
+    assert_eq!(
+        report.count_leaves_at_path(path!(create_user.profile.name.middle)),
+        2
+    );
+
     assert!(report
         .is_any_invalid_at_path(path!(create_user.profile.hobbies[1]))
         .unwrap());
+
     assert!(report
         .is_any_invalid_at_path(path!(create_user.profile.languages["English"]))
         .unwrap());
+
     assert!(report
         .is_any_invalid_at_path(path!(create_user.credentials.username))
         .unwrap());
+
     assert!(report
         .is_any_invalid_at_path(path!(create_user.credentials.confirm_password))
         .unwrap());
