@@ -51,56 +51,185 @@ impl<E> Report<E> {
     }
 
     /// Get the report accessor.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let report: Report<()> = Report::new(Accessor::Root("example"));
+    /// assert!(matches!(report.get_accessor(), Accessor::Root("example")));
+    /// ```
     pub fn get_accessor(&self) -> &Accessor {
         &self.accessor
     }
 
     /// Set the validity of the report.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// report.set_validity(Ok(true));
+    /// assert!(report.is_valid());
+    ///
+    /// report.set_validity(Ok(false));
+    /// assert!(report.is_invalid());
+    ///
+    /// report.set_validity(Err(()));
+    /// assert!(report.is_error());
+    /// ```
     pub fn set_validity(&mut self, validity: Result<bool, E>) {
         self.validity = validity;
     }
 
     /// Set the report validity to valid.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// report.set_valid();
+    /// assert!(report.is_valid());
+    /// ```
     pub fn set_valid(&mut self) {
         self.set_validity(Ok(true));
     }
 
     /// Set the report validity to invalid.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// report.set_invalid();
+    /// assert!(report.is_invalid());
+    /// ```
     pub fn set_invalid(&mut self) {
         self.set_validity(Ok(false));
     }
 
     /// Set the report validity to an error.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// report.set_error(());
+    /// assert!(report.is_error());
+    /// ```
     pub fn set_error(&mut self, error: E) {
         self.set_validity(Err(error));
     }
 
     /// Get the validity of this report.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// report.set_validity(Ok(true));
+    /// assert!(matches!(report.get_validity(), Ok(true)));
+    ///
+    /// report.set_validity(Ok(false));
+    /// assert!(matches!(report.get_validity(), Ok(false)));
+    ///
+    /// report.set_validity(Err(()));
+    /// assert!(matches!(report.get_validity(), Err(())));
+    /// ```
     pub fn get_validity(&self) -> &Result<bool, E> {
         &self.validity
     }
 
     /// Check if the validity of this report is valid.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// report.set_valid();
+    /// assert!(report.is_valid());
+    ///
+    /// report.set_invalid();
+    /// assert!(!report.is_valid());
+    /// ```
     pub fn is_valid(&self) -> bool {
         matches!(self.get_validity(), Ok(true))
     }
 
     /// Check if the validity of this report is invalid.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// report.set_invalid();
+    /// assert!(report.is_invalid());
+    ///
+    /// report.set_valid();
+    /// assert!(!report.is_invalid());
+    /// ```
     pub fn is_invalid(&self) -> bool {
         matches!(self.get_validity(), Ok(false))
     }
 
     /// Check if the validity of this report is an error.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// report.set_error(());
+    /// assert!(report.is_error());
+    ///
+    /// report.set_valid();
+    /// assert!(!report.is_error());
+    /// ```
     pub fn is_error(&self) -> bool {
         self.get_validity().is_err()
     }
 
     /// Set the message of this report.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// report.set_message("is invalid");
+    /// assert_eq!(report.get_message(), "is invalid");
+    /// ```
     pub fn set_message(&mut self, message: impl Into<String>) {
         self.message = message.into();
     }
 
     /// Get the message of this report.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// report.set_message("is invalid");
+    /// assert_eq!(report.get_message(), "is invalid");
+    /// ```
     pub fn get_message(&self) -> &String {
         &self.message
     }
@@ -108,6 +237,19 @@ impl<E> Report<E> {
     /// Push a child report to this report.
     ///
     /// This is typically called by collectors!
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// assert_eq!(report.count_reports(), 1);
+    ///
+    /// report.push_child(Report::new(Accessor::Field("child")));
+    ///
+    /// assert_eq!(report.count_reports(), 2);
+    /// ```
     pub fn push_child(&mut self, child: Report<E>) {
         self.children.push(child);
     }
@@ -194,6 +336,28 @@ impl<E> Report<E> {
     /// Check if the path is not in the report.
     pub fn is_empty_at_path(&self, path: impl AsRef<[Accessor]>) -> bool {
         self.get_validities_at_path(path.as_ref()).is_empty()
+    }
+
+    /// Count the number of reports.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{Accessor, Report};
+    ///
+    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    ///
+    /// assert_eq!(report.count_reports(), 1);
+    ///
+    /// report.push_child(Report::new(Accessor::Field("child")));
+    ///
+    /// assert_eq!(report.count_reports(), 2);
+    /// ```
+    pub fn count_reports(&self) -> usize {
+        let mut count = 1;
+        for child in self.children.iter() {
+            count += child.count_reports();
+        }
+        count
     }
 
     /// Get the number of leaf reports.

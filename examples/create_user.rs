@@ -114,18 +114,18 @@ fn main() {
     // done by this example do not produce any errors.
     let _ = create_user.validate::<InvalidsAndErrors>(&(), &mut report);
 
-    // The report should contain 6 leaves. All leaves should be invalid reports, since the 
+    // The report should contain 6 leaves. All leaves should be invalid reports, since the
     // collector `InvalidsAndErrors` only collects invalid and erroneous reports, and
     // the validations done by this example do not produce any errors.
     assert_eq!(report.count_leaves(), 6);
 
-    // The report should be invalid at create_user.profile.name.middle, 
+    // The report should be invalid at create_user.profile.name.middle,
     // since "0" is not alphabetic nor between 2 and 32 characters.
     assert!(report
         .is_any_invalid_at_path(path!(create_user.profile.name.middle))
         .unwrap());
 
-    // The report should have two leaves at create_user.profile.name.middle, 
+    // The report should have two leaves at create_user.profile.name.middle,
     // one for the alphabetic validation and one for the string length validation.
     assert_eq!(
         report.count_leaves_at_path(path!(create_user.profile.name.middle)),
