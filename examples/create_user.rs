@@ -73,9 +73,8 @@ struct Credentials {
     /// The password confirmation, which must be equal to the password.
     #[vate(Compare!( == &self.password ))]
     confirm_password: String,
-    /// The ID of the device that attempted to create this user.
-    /// This is purposely not validated to demonstrate that not all
-    /// fields need to be validated.
+    /// The ID of the device that attempted to create this user. This is purposely not
+    /// validated to demonstrate that not all fields need to be validated.
     device_id: String,
 }
 

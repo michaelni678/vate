@@ -2,8 +2,9 @@
 //! structures. It provides a flexible framework for defining and applying custom validators,
 //! along with a collection of built-in validators for common use cases.
 //!
-//! **All publicly accessible components are re-exported for convenience!**
-//!
+//! **All publicly accessible components are re-exported at the root of the crate for convenience.** \
+//! This allows you to access them directly using `vate::{item}`, where `item` is any publicly exposed component.
+//! 
 //! # Usage
 //! ```rust
 //! use vate::*;
