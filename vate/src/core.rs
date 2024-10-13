@@ -106,7 +106,7 @@ impl<E> Report<E> {
     }
 
     /// Push a child report to this report.
-    /// 
+    ///
     /// This is typically called by collectors!
     pub fn push_child(&mut self, child: Report<E>) {
         self.children.push(child);
@@ -144,7 +144,10 @@ impl<E> Report<E> {
     /// not in the report. This can be due to many reasons, such as because nothing on
     /// that path was validated, the validation was skipped, etc.
     pub fn get_validities_at_path<'a>(&'a self, path: &'a [Accessor]) -> Vec<&'a Result<bool, E>> {
-        self.get_children_at_path(path).into_iter().map(|child| child.get_validity()).collect()
+        self.get_children_at_path(path)
+            .into_iter()
+            .map(|child| child.get_validity())
+            .collect()
     }
 
     /// Check if ALL of the nested reports at the path are valid.
@@ -194,17 +197,17 @@ impl<E> Report<E> {
     }
 
     /// Get the number of leaf reports.
-    /// 
+    ///
     /// # Examples
     /// ```rust
     /// use vate::{Accessor, Report};
-    /// 
+    ///
     /// let mut report: Report<()> = Report::new(Accessor::Root("parent"));
-    /// 
+    ///
     /// report.push_child(Report::new(Accessor::Key(String::from("leaf_1"))));
     /// report.push_child(Report::new(Accessor::Key(String::from("leaf_2"))));
     /// report.push_child(Report::new(Accessor::Key(String::from("leaf_3"))));
-    /// 
+    ///
     /// assert_eq!(report.count_leaves(), 3);
     /// ```
     pub fn count_leaves(&self) -> usize {
@@ -220,22 +223,22 @@ impl<E> Report<E> {
     }
 
     /// Get the number of leaf reports at a path.
-    /// 
+    ///
     /// # Examples
     /// ```rust
     /// use vate::{path, Accessor, Report};
-    /// 
+    ///
     /// let mut report: Report<()> = Report::new(Accessor::Root("parent"));
-    /// 
+    ///
     /// report.push_child(Report::new(Accessor::Key(String::from("leaf_1"))));
     /// report.push_child(Report::new(Accessor::Key(String::from("leaf_2"))));
-    /// 
+    ///
     /// let mut child_1 = Report::new(Accessor::Key(String::from("child_1")));
     /// child_1.push_child(Report::new(Accessor::Key(String::from("child_1_leaf_1"))));
     /// child_1.push_child(Report::new(Accessor::Key(String::from("child_1_leaf_2"))));
-    /// 
+    ///
     /// report.push_child(child_1);
-    /// 
+    ///
     /// assert_eq!(report.count_leaves_at_path(path!(parent)), 4);
     /// assert_eq!(report.count_leaves_at_path(path!(parent["leaf_1"])), 1);
     /// assert_eq!(report.count_leaves_at_path(path!(parent["child_1"])), 2);
