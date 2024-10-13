@@ -122,6 +122,21 @@ impl<E> Report<E> {
             .filter(move |child| child.get_accessor() == accessor)
     }
 
+    /// Get child reports given a path.
+    pub fn get_children_at_path<'a>(&'a self, path: &'a [Accessor]) -> Vec<&'a Report<E>> {
+        let mut children = Vec::new();
+        if let Some((first, rest)) = path.as_ref().split_first() {
+            if let Some(next) = rest.first() {
+                for child in self.get_children_at_accessor(next) {
+                    children.extend(child.get_children_at_path(rest));
+                }
+            } else if *first == self.accessor {
+                children.push(self)
+            }
+        }
+        children
+    }
+
     /// Get the validities of a path in the report.
     ///
     /// If the path isn't found, an empty vec is returned.
@@ -129,17 +144,7 @@ impl<E> Report<E> {
     /// not in the report. This can be due to many reasons, such as because nothing on
     /// that path was validated, the validation was skipped, etc.
     pub fn get_validities_at_path<'a>(&'a self, path: &'a [Accessor]) -> Vec<&'a Result<bool, E>> {
-        let mut validities = Vec::new();
-        if let Some((first, rest)) = path.as_ref().split_first() {
-            if let Some(next) = rest.first() {
-                for child in self.get_children_at_accessor(next) {
-                    validities.extend(child.get_validities_at_path(rest));
-                }
-            } else if *first == self.accessor {
-                validities.push(self.get_validity())
-            }
-        }
-        validities
+        self.get_children_at_path(path).iter().map(|child| child.get_validity()).collect()
     }
 
     /// Check if ALL of the nested reports at the path are valid.
@@ -197,11 +202,11 @@ impl<E> Report<E> {
     /// ```rust
     /// use vate::{Accessor, Report};
     /// 
-    /// let mut report: Report<()> = Report::new(Accessor::Root("Parent"));
+    /// let mut report: Report<()> = Report::new(Accessor::Root("parent"));
     /// 
-    /// report.push_child(Report::new(Accessor::Key(String::from("Child 1"))));
-    /// report.push_child(Report::new(Accessor::Key(String::from("Child 2"))));
-    /// report.push_child(Report::new(Accessor::Key(String::from("Child 3"))));
+    /// report.push_child(Report::new(Accessor::Key(String::from("leaf_1"))));
+    /// report.push_child(Report::new(Accessor::Key(String::from("leaf_2"))));
+    /// report.push_child(Report::new(Accessor::Key(String::from("leaf_3"))));
     /// 
     /// assert_eq!(report.count_leaves(), 3);
     /// ```
@@ -211,6 +216,40 @@ impl<E> Report<E> {
         } else {
             let mut count = 0;
             for child in self.children.iter() {
+                count += child.count_leaves();
+            }
+            count
+        }
+    }
+
+    /// Get the number of leaf reports at a path.
+    /// 
+    /// # Examples
+    /// ```rust
+    /// use vate::{path, Accessor, Report};
+    /// 
+    /// let mut report: Report<()> = Report::new(Accessor::Root("parent"));
+    /// 
+    /// report.push_child(Report::new(Accessor::Key(String::from("leaf_1"))));
+    /// report.push_child(Report::new(Accessor::Key(String::from("leaf_2"))));
+    /// 
+    /// let mut child_1 = Report::new(Accessor::Key(String::from("child_1")));
+    /// child_1.push_child(Report::new(Accessor::Key(String::from("child_1_leaf_1"))));
+    /// child_1.push_child(Report::new(Accessor::Key(String::from("child_1_leaf_2"))));
+    /// 
+    /// report.push_child(child_1);
+    /// 
+    /// assert_eq!(report.count_leaves_at_path(path!(parent)), 4);
+    /// assert_eq!(report.count_leaves_at_path(path!(parent["leaf_1"])), 1);
+    /// assert_eq!(report.count_leaves_at_path(path!(parent["child_1"])), 2);
+    /// assert_eq!(report.count_leaves_at_path(path!(parent["child_1"]["child_1_leaf_1"])), 1);
+    /// ```
+    pub fn count_leaves_at_path(&self, path: impl AsRef<[Accessor]>) -> usize {
+        if self.children.is_empty() {
+            1
+        } else {
+            let mut count = 0;
+            for child in self.get_children_at_path(path.as_ref()) {
                 count += child.count_leaves();
             }
             count

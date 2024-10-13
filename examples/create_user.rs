@@ -110,6 +110,8 @@ fn main() {
     let mut report = Report::new(Accessor::Root("create_user"));
     let _ = create_user.validate::<InvalidsAndErrors>(&(), &mut report);
 
+    assert_eq!(report.count_leaves(), 6);
+
     assert!(report
         .is_any_invalid_at_path(path!(create_user.profile.name.middle))
         .unwrap());
