@@ -8,6 +8,8 @@ pub mod collection;
 pub mod compare;
 /// Iterator validators.
 pub mod iterator;
+/// Miscellaneous validators.
+pub mod miscellaneous;
 /// Nested validators.
 pub mod nested;
 /// Option validators.
