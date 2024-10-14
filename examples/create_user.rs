@@ -5,8 +5,9 @@ use std::collections::HashMap;
 use once_cell::sync::Lazy;
 use vate::{
     extras::Regex, path, Accessor, Bundle, CollectionIterate, Compare, InvalidsAndErrors,
-    IteratorIndexed, IteratorKeyed, Nested, OptionSomeThen, Report, PasswordStrong, StringAlphabetic,
-    StringAlphanumeric, StringAscii, StringLengthRange, StringMatchesRegex, Validate,
+    IteratorIndexed, IteratorKeyed, Nested, OptionSomeThen, PasswordStrong, Report,
+    StringAlphabetic, StringAlphanumeric, StringAscii, StringLengthRange, StringMatchesRegex,
+    Validate,
 };
 
 /// The required age to create an account.
@@ -68,7 +69,7 @@ struct Credentials {
     #[vate(StringAlphanumeric, StringLengthRange::Chars { min: 4, max: 20 })]
     username: String,
     /// The user's password, which must be ascii, at least 8 characters long, and strong.
-    /// The username is passed into the password strength validator to ensure the password is not 
+    /// The username is passed into the password strength validator to ensure the password is not
     /// similar to the username.
     #[vate(StringAscii, StringLengthRange::Chars { min: 8, max: usize::MAX }, PasswordStrong([&self.username]))]
     password: String,

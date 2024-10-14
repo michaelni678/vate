@@ -2,14 +2,14 @@
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
 /// Validates a password is strong using zxcvbn.
-/// 
+///
 /// Requires the target type to be an implementor of `AsRef<str>`.
-/// 
-/// Takes an optional list of inputs like username, email, etc. to 
+///
+/// Takes an optional list of inputs like username, email, etc. to
 /// factor into the password strength calculation.
-/// 
+///
 /// Enabled with the `password` feature.
-/// 
+///
 /// # Examples
 /// ```rust
 /// use vate::{path, Accessor, Everything, PasswordStrong, Report, Validate};
@@ -17,7 +17,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 /// #[derive(Validate)]
 /// struct Example {
 ///     username: String,
-/// 
+///
 ///     #[vate(PasswordStrong([]))]
 ///     a: &'static str,
 ///     #[vate(PasswordStrong([]))]
@@ -32,7 +32,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 ///
 /// let example = Example {
 ///     username: String::from("crate_vate_is_great_123"),
-/// 
+///
 ///     a: "password123", // A horrible password in general.
 ///     b: "crate_vate_is_great_12345!", // Strong password (this does not check inputs).
 ///     c: "crate_vate_is_great_12345!", // Weak password. Too similar to an input (username).
@@ -40,7 +40,7 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 /// };
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
-/// 
+///
 /// println!("{report:#?}");
 ///
 /// assert!(report.is_any_invalid_at_path(path!(example.a)).unwrap());
@@ -69,13 +69,13 @@ impl<'a, const N: usize, T: AsRef<str>, D, E> Validator<T, D, E> for PasswordStr
             child_report.set_valid();
         } else {
             child_report.set_invalid();
-            child_report.set_message("is too weak");
             // TODO: `entropy.feedback()` gives some feedback on the password.
             // This validator does not include the feedback in the message,
             // but maybe it should?
             // if let Some(feedback) = entropy.feedback() {
             //     child_report.set_message(format!("is too weak. {feedback}"));
             // }
+            child_report.set_message("is too weak");
         }
 
         C::apply(parent_report, child_report)
