@@ -387,8 +387,7 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringLengthRange {
 ///
 /// Takes a reference to the regex to match against for field `0`.
 ///
-/// # Feature Flags
-/// `regex`
+/// Enabled with the `regex` feature.
 ///
 /// # Examples
 /// ```rust

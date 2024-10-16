@@ -82,6 +82,10 @@ pub use validators::{
     },
 };
 
+#[cfg(feature = "password")]
+#[doc(hidden)]
+pub use validators::miscellaneous::PasswordStrong;
+
 #[cfg(feature = "regex")]
 #[doc(hidden)]
 pub use validators::string::StringMatchesRegex;

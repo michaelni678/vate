@@ -5,8 +5,9 @@ use std::collections::HashMap;
 use once_cell::sync::Lazy;
 use vate::{
     extras::Regex, path, Accessor, Bundle, CollectionIterate, Compare, InvalidsAndErrors,
-    IteratorIndexed, IteratorKeyed, Nested, OptionSomeThen, Report, StringAlphabetic,
-    StringAlphanumeric, StringAscii, StringLengthRange, StringMatchesRegex, Validate,
+    IteratorIndexed, IteratorKeyed, Nested, OptionSomeThen, PasswordStrong, Report,
+    StringAlphabetic, StringAlphanumeric, StringAscii, StringLengthRange, StringMatchesRegex,
+    Validate,
 };
 
 /// The required age to create an account.
@@ -67,8 +68,10 @@ struct Credentials {
     /// The user's username, which must be alphanumeric and between 4 and 20 characters.
     #[vate(StringAlphanumeric, StringLengthRange::Chars { min: 4, max: 20 })]
     username: String,
-    /// The user's password, which must be ascii and at least 8 characters long.
-    #[vate(StringAscii, StringLengthRange::Chars { min: 8, max: usize::MAX })]
+    /// The user's password, which must be ascii, at least 8 characters long, and strong.
+    /// The username is passed into the password strength validator to ensure the password is not
+    /// similar to the username.
+    #[vate(StringAscii, StringLengthRange::Chars { min: 8, max: usize::MAX }, PasswordStrong([&self.username]))]
     password: String,
     /// The password confirmation, which must be equal to the password.
     #[vate(Compare!( == &self.password ))]
@@ -114,10 +117,10 @@ fn main() {
     // done by this example do not produce any errors.
     let _ = create_user.validate::<InvalidsAndErrors>(&(), &mut report);
 
-    // The report should contain 6 leaves. All leaves should be invalid reports, since the
+    // The report should contain 7 leaves. All leaves should be invalid reports, since the
     // collector `InvalidsAndErrors` only collects invalid and erroneous reports, and
     // the validations done by this example do not produce any errors.
-    assert_eq!(report.count_leaves(), 6);
+    assert_eq!(report.count_leaves(), 7);
 
     // The report should be invalid at create_user.profile.name.middle,
     // since "0" is not alphabetic nor between 2 and 32 characters.
@@ -148,6 +151,12 @@ fn main() {
     // since "u$ername" is not alphanumeric.
     assert!(report
         .is_any_invalid_at_path(path!(create_user.credentials.username))
+        .unwrap());
+
+    // The report should be invalid at create_user.credentials.password,
+    // since "health me" is not a strong password.
+    assert!(report
+        .is_any_invalid_at_path(path!(create_user.credentials.password))
         .unwrap());
 
     // The report should be invalid at create_user.credentials.confirm_password,
