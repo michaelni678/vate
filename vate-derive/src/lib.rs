@@ -43,7 +43,15 @@ pub fn derive_validate(input: TokenStream) -> TokenStream {
 /// use vate::{path, Accessor};
 ///
 /// let path = path!(a.b[0].c["Hello"].0);
-/// let expected = [Accessor::Root("a"), Accessor::Field("b"), Accessor::Index(0), Accessor::Field("c"), Accessor::Key(String::from("Hello")), Accessor::TupleIndex(0)];
+/// 
+/// let expected = [
+///     Accessor::Root("a"),
+///     Accessor::Field("b"),
+///     Accessor::Index(0),
+///     Accessor::Field("c"),
+///     Accessor::Key(String::from("Hello")),
+///     Accessor::TupleIndex(0),
+/// ];
 ///
 /// assert_eq!(path, expected);
 /// ```

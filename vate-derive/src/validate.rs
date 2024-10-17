@@ -16,7 +16,7 @@ pub fn expand_derive_validate(input: syn::DeriveInput) -> syn::Result<TokenStrea
     }
 }
 
-pub fn expand_derive_validate_struct(
+fn expand_derive_validate_struct(
     ident: syn::Ident,
     generics: syn::Generics,
     data: syn::DataStruct,
