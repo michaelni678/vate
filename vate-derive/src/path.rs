@@ -26,12 +26,8 @@ fn parse_expr(expr: &syn::Expr, accessors: &mut Vec<TokenStream2>) -> syn::Resul
                 }
             }
         }
-        syn::Expr::Index(syn::ExprIndex {
-            expr: base_expr,
-            index,
-            ..
-        }) => {
-            parse_expr(base_expr, accessors)?;
+        syn::Expr::Index(syn::ExprIndex { expr, index, .. }) => {
+            parse_expr(expr, accessors)?;
             match &**index {
                 syn::Expr::Lit(syn::ExprLit { lit: syn::Lit::Str(str), .. }) => {
                     let key = str.value();
@@ -40,6 +36,10 @@ fn parse_expr(expr: &syn::Expr, accessors: &mut Vec<TokenStream2>) -> syn::Resul
                 syn::Expr::Lit(syn::ExprLit { lit: syn::Lit::Int(int), .. }) => {
                     let index = int.base10_parse::<usize>()?;
                     accessors.push(quote!(::vate::Accessor::Index(#index)));
+                }
+                syn::Expr::Path(syn::ExprPath { path, .. }) => {
+                    let ident = path.require_ident()?;
+                    accessors.push(quote!(::vate::Accessor::Variant(stringify!(#ident))));
                 }
                 _ => return Err(syn::Error::new_spanned(index, "Expected `usize` to generate `Accessor::Index` or `&'static str` to generate to generate `Accessor::Key`")),
             }

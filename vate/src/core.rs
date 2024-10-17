@@ -368,6 +368,7 @@ impl<E> Display for Report<E> {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Accessor {
     Root(&'static str),
+    Variant(&'static str),
     Field(&'static str),
     TupleIndex(usize),
     Index(usize),
@@ -378,6 +379,7 @@ impl Display for Accessor {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
             Self::Root(root) => write!(f, "{root}"),
+            Self::Variant(variant) => write!(f, "[{variant}]"),
             Self::Field(field) => write!(f, ".{field}"),
             Self::TupleIndex(tuple_index) => write!(f, ".{tuple_index}"),
             Self::Index(index) => write!(f, "[{index}]"),
