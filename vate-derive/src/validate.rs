@@ -47,6 +47,8 @@ pub fn expand_derive_validate_struct(
     let mut body = Vec::new();
 
     for (index, field) in data.fields.into_iter().enumerate() {
+        let index = syn::Index::from(index);
+
         let item_ident = match field.ident {
             Some(ref ident) => quote!(#ident),
             None => quote!(#index),
