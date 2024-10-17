@@ -26,12 +26,8 @@ fn parse_expr(expr: &syn::Expr, accessors: &mut Vec<TokenStream2>) -> syn::Resul
                 }
             }
         }
-        syn::Expr::Index(syn::ExprIndex {
-            expr,
-            index,
-            ..
-        }) => {
-            parse_expr(&expr, accessors)?;
+        syn::Expr::Index(syn::ExprIndex { expr, index, .. }) => {
+            parse_expr(expr, accessors)?;
             match &**index {
                 syn::Expr::Lit(syn::ExprLit { lit: syn::Lit::Str(str), .. }) => {
                     let key = str.value();

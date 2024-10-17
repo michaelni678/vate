@@ -34,7 +34,7 @@ fn consecutive_fields() {
 
 #[test]
 fn consecutive_tuple_indices() {
-    let path = path!(a.0.1);
+    let path = path!(a.0 .1);
     let expected = [
         Accessor::Root("a"),
         Accessor::TupleIndex(0),
@@ -47,11 +47,7 @@ fn consecutive_tuple_indices() {
 #[test]
 fn consecutive_indices() {
     let path = path!(a[0][1]);
-    let expected = [
-        Accessor::Root("a"),
-        Accessor::Index(0),
-        Accessor::Index(1),
-    ];
+    let expected = [Accessor::Root("a"), Accessor::Index(0), Accessor::Index(1)];
 
     assert_eq!(path, expected);
 }

@@ -48,7 +48,10 @@ fn expand_derive_validate_struct(
     })
 }
 
-fn parse_outer_type_attrs(ident: &'static str, attrs: &[syn::Attribute]) -> syn::Result<TokenStream2> {
+fn parse_outer_type_attrs(
+    ident: &'static str,
+    attrs: &[syn::Attribute],
+) -> syn::Result<TokenStream2> {
     for attr in attrs {
         if !attr.path().is_ident("vate") {
             continue;
