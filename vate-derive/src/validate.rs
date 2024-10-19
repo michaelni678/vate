@@ -63,26 +63,15 @@ fn expand_derive_validate_enum(
     for variant in data.variants {
         let variant_ident = &variant.ident;
 
-        let (variant_fields, variant_arm) = match &variant.fields {
-            syn::Fields::Unit => (quote!(), vec![]),
+        let variant_fields = match &variant.fields {
+            syn::Fields::Unit => quote!(),
             syn::Fields::Named(fields) => {
                 let mut item_idents = Vec::new();
                 for field in fields.named.iter() {
                     let item_ident = field.ident.clone().unwrap();
                     item_idents.push(quote!(#item_ident));
                 }
-
-                let variant_fields = quote!({ #(#item_idents)* });
-
-                let variant_arm = parse_inner_validator_attrs(
-                    |item| {
-                        let ident = format_ident!("{item}");
-                        quote!(#ident)
-                    },
-                    &variant.fields,
-                )?;
-
-                (variant_fields, variant_arm)
+                quote!({ #(#item_idents)* })
             }
             syn::Fields::Unnamed(fields) => {
                 let mut item_idents = Vec::new();
@@ -91,18 +80,29 @@ fn expand_derive_validate_enum(
                     let item_ident = format_ident!("item{}", index);
                     item_idents.push(item_ident);
                 }
+                quote!((#(#item_idents)*))
+            }
+        };
 
-                let variant_fields = quote!((#(#item_idents)*));
-
-                let variant_arm = parse_inner_validator_attrs(
+        let variant_arm = match &variant.fields {
+            syn::Fields::Unit => vec![],
+            syn::Fields::Named(_) => {
+                parse_inner_validator_attrs(
+                    |item| {
+                        let ident = format_ident!("{item}");
+                        quote!(#ident)
+                    },
+                    &variant.fields,
+                )?
+            }
+            syn::Fields::Unnamed(_) => {
+                parse_inner_validator_attrs(
                     |item| {
                         let ident = format_ident!("item{item}");
                         quote!(#ident)
                     },
                     &variant.fields,
-                )?;
-
-                (variant_fields, variant_arm)
+                )?
             }
         };
 
