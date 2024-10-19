@@ -1,5 +1,5 @@
 use proc_macro2::TokenStream as TokenStream2;
-use quote::quote;
+use quote::{format_ident, quote};
 use syn::punctuated::Punctuated;
 
 pub fn expand_derive_validate(input: syn::DeriveInput) -> syn::Result<TokenStream2> {
@@ -12,6 +12,7 @@ pub fn expand_derive_validate(input: syn::DeriveInput) -> syn::Result<TokenStrea
     } = input;
     match data {
         syn::Data::Struct(data) => expand_derive_validate_struct(ident, generics, data, &attrs),
+        syn::Data::Enum(data) => expand_derive_validate_enum(ident, generics, data, &attrs),
         _ => unimplemented!("Unsupported data storage type"),
     }
 }
@@ -27,14 +28,12 @@ fn expand_derive_validate_struct(
     let data_type = parse_outer_type_attrs("data", attrs)?;
     let error_type = parse_outer_type_attrs("error", attrs)?;
 
-    let body = parse_inner_validator_attrs(data.fields)?;
+    let body = parse_inner_validator_attrs(|item| quote!(&self.#item), &data.fields)?;
 
     Ok(quote! {
         impl #impl_generics ::vate::Validate for #ident #ty_generics #where_clause {
             type Data = #data_type;
-
             type Error = #error_type;
-
             fn validate<C: ::vate::Collector<Self::Error>>(
                 &self,
                 data: &Self::Data,
@@ -42,6 +41,99 @@ fn expand_derive_validate_struct(
             ) -> Result<(), ::vate::Exit<Self::Error>> {
                 use ::vate::Validator;
                 #(#body)*
+                Ok(())
+            }
+        }
+    })
+}
+
+fn expand_derive_validate_enum(
+    ident: syn::Ident,
+    generics: syn::Generics,
+    data: syn::DataEnum,
+    attrs: &[syn::Attribute],
+) -> syn::Result<TokenStream2> {
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
+
+    let data_type = parse_outer_type_attrs("data", attrs)?;
+    let error_type = parse_outer_type_attrs("error", attrs)?;
+
+    let mut arms = Vec::new();
+
+    for variant in data.variants {
+        let variant_ident = &variant.ident;
+
+        let (variant_fields, variant_arm) = match &variant.fields {
+            syn::Fields::Unit => (quote!(), vec![]),
+            syn::Fields::Named(fields) => {
+                let mut item_idents = Vec::new();
+                for field in fields.named.iter() {
+                    let item_ident = field.ident.clone().unwrap();
+                    item_idents.push(quote!(#item_ident));
+                }
+
+                let variant_fields = quote!({ #(#item_idents)* });
+
+                let variant_arm = parse_inner_validator_attrs(
+                    |item| {
+                        let ident = format_ident!("{item}");
+                        quote!(#ident)
+                    },
+                    &variant.fields,
+                )?;
+
+                (variant_fields, variant_arm)
+            }
+            syn::Fields::Unnamed(fields) => {
+                let mut item_idents = Vec::new();
+                let field_count = fields.unnamed.len();
+                for index in 0..field_count {
+                    let item_ident = format_ident!("item{}", index);
+                    item_idents.push(item_ident);
+                }
+
+                let variant_fields = quote!((#(#item_idents)*));
+
+                let variant_arm = parse_inner_validator_attrs(
+                    |item| {
+                        let ident = format_ident!("item{item}");
+                        quote!(#ident)
+                    },
+                    &variant.fields,
+                )?;
+
+                (variant_fields, variant_arm)
+            }
+        };
+
+        arms.push(quote! {
+            #ident::#variant_ident #variant_fields => {
+                let mut child_report = ::vate::Report::<Self::Error>::new(::vate::Accessor::Variant(stringify!(#variant_ident)));
+                {
+                    // The proc-macro expects the ident `parent_report`, so rename child_report
+                    // temporarily in this scope so this expands to accept the correct report.
+                    let parent_report = &mut child_report;
+                    #(#variant_arm)*
+                }
+                C::apply(parent_report, child_report)?;
+            }
+        });
+    }
+
+    Ok(quote! {
+        impl #impl_generics ::vate::Validate for #ident #ty_generics #where_clause {
+            type Data = #data_type;
+            type Error = #error_type;
+            fn validate<C: ::vate::Collector<Self::Error>>(
+                &self,
+                data: &Self::Data,
+                parent_report: &mut ::vate::Report<Self::Error>,
+            ) -> Result<(), ::vate::Exit<Self::Error>> {
+                use ::vate::Validator;
+                match self {
+                    #(#arms)*
+                    _ => {},
+                }
                 Ok(())
             }
         }
@@ -69,18 +161,24 @@ fn parse_outer_type_attrs(
     Ok(quote!(()))
 }
 
-fn parse_inner_validator_attrs(fields: syn::Fields) -> syn::Result<Vec<TokenStream2>> {
+fn parse_inner_validator_attrs(
+    item_retriever_fn: impl Fn(TokenStream2) -> TokenStream2,
+    fields: &syn::Fields,
+) -> syn::Result<Vec<TokenStream2>> {
     let mut body = Vec::new();
 
-    for (index, field) in fields.into_iter().enumerate() {
-        let index = syn::Index::from(index);
-
-        let item_ident = match field.ident {
-            Some(ref ident) => quote!(#ident),
-            None => quote!(#index),
+    for (index, field) in fields.iter().enumerate() {
+        let item = match &field.ident {
+            Some(ident) => quote!(#ident),
+            None => {
+                let index = syn::Index::from(index);
+                quote!(#index)
+            }
         };
 
-        let accessor = match field.ident {
+        let item_retriever = item_retriever_fn(item);
+
+        let accessor = match &field.ident {
             Some(ident) => quote!(::vate::Accessor::Field(stringify!(#ident))),
             None => quote!(::vate::Accessor::TupleIndex(#index)),
         };
@@ -91,7 +189,7 @@ fn parse_inner_validator_attrs(fields: syn::Fields) -> syn::Result<Vec<TokenStre
             }
             let tokens = &attr.meta.require_list()?.tokens;
             let code = quote! {
-                ::vate::Bundle!(#tokens).run::<C>(#accessor, &self.#item_ident, data, parent_report)?;
+                ::vate::Bundle!(#tokens).run::<C>(#accessor, #item_retriever, data, parent_report)?;
             };
             body.push(code);
         }
