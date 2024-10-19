@@ -86,24 +86,20 @@ fn expand_derive_validate_enum(
 
         let variant_arm = match &variant.fields {
             syn::Fields::Unit => vec![],
-            syn::Fields::Named(_) => {
-                parse_inner_validator_attrs(
-                    |item| {
-                        let ident = format_ident!("{item}");
-                        quote!(#ident)
-                    },
-                    &variant.fields,
-                )?
-            }
-            syn::Fields::Unnamed(_) => {
-                parse_inner_validator_attrs(
-                    |item| {
-                        let ident = format_ident!("item{item}");
-                        quote!(#ident)
-                    },
-                    &variant.fields,
-                )?
-            }
+            syn::Fields::Named(_) => parse_inner_validator_attrs(
+                |item| {
+                    let ident = format_ident!("{item}");
+                    quote!(#ident)
+                },
+                &variant.fields,
+            )?,
+            syn::Fields::Unnamed(_) => parse_inner_validator_attrs(
+                |item| {
+                    let ident = format_ident!("item{item}");
+                    quote!(#ident)
+                },
+                &variant.fields,
+            )?,
         };
 
         arms.push(quote! {

@@ -153,6 +153,57 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAscii {
     }
 }
 
+/// Validates a string consists of only ascii digit characters (0 through 9).
+///
+/// Requires the target type to be an implementor of `AsRef<str>`.
+///
+/// # Examples
+/// ```rust
+/// use vate::{path, Accessor, Everything, Report, StringAsciiDigit, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(StringAsciiDigit)]
+///     a: &'static str,
+///     #[vate(StringAsciiDigit)]
+///     b: &'static str,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: "123",
+///     b: "123hello",
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// ```
+pub struct StringAsciiDigit;
+
+impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAsciiDigit {
+    fn run<C: Collector<E>>(
+        &self,
+        accessor: Accessor,
+        target: &T,
+        _data: &D,
+        parent_report: &mut Report<E>,
+    ) -> Result<(), Exit<E>> {
+        let mut child_report = Report::new(accessor);
+
+        if target.as_ref().chars().all(|c| char::is_ascii_digit(&c)) {
+            child_report.set_valid();
+        } else {
+            child_report.set_invalid();
+            child_report.set_message("contains non-numeric characters");
+        }
+
+        C::apply(parent_report, child_report)
+    }
+}
+
 /// Validates a string consists of only lowercase characters.
 ///
 /// Requires the target type to be an implementor of `AsRef<str>`.

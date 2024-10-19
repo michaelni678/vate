@@ -32,6 +32,7 @@ let _ = create_user.validate::<InvalidsAndErrors>(&data, &mut report);
 ## To-Do
 *Feel free to contribute or suggest more features by creating an issue :)*
 - Optimize `Report` and its methods.
+- Compare range validator with `Compare` macro support.
 - Email validator.
 - Phone number validator.
 - URL validator.
