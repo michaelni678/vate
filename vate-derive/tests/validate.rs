@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use vate::{path, Accessor, Everything, Report, StringAlphabetic, Validate};
+use vate::{path, Accessor, Everything, Nested, Report, StringAlphabetic, Validate};
 
 #[test]
 fn unit_struct() {
@@ -115,5 +115,52 @@ fn unnamed_variant_enum() {
 
     assert!(report
         .is_any_invalid_at_path(path!(example[Variant].0))
+        .unwrap());
+}
+
+#[test]
+fn assorted_variant_enum() {
+    #[derive(Validate)]
+    enum Example {
+        Variant1,
+        Variant2 {
+            #[vate(StringAlphabetic)]
+            a: String,
+        },
+        Variant3(#[vate(StringAlphabetic)] String),
+    }
+
+    let example = Example::Variant3(String::from("!!!"));
+
+    let mut report = Report::new(Accessor::Root("example"));
+    let _ = example.validate::<Everything>(&(), &mut report);
+
+    assert!(report
+        .is_any_invalid_at_path(path!(example[Variant3].0))
+        .unwrap());
+}
+
+#[test]
+fn nested_enum() {
+    #[derive(Validate)]
+    enum Example1 {
+        Example2(#[vate(Nested)] Example2),
+    }
+
+    #[derive(Validate)]
+    enum Example2 {
+        Variant {
+            #[vate(StringAlphabetic)]
+            a: String,
+        },
+    }
+
+    let example1 = Example1::Example2(Example2::Variant { a: String::from("!!!") });
+
+    let mut report = Report::new(Accessor::Root("example1"));
+    let _ = example1.validate::<Everything>(&(), &mut report);
+
+    assert!(report
+        .is_any_invalid_at_path(path!(example1[Example2].0[Variant].a))
         .unwrap());
 }
