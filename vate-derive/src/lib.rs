@@ -42,15 +42,16 @@ pub fn derive_validate(input: TokenStream) -> TokenStream {
 /// ```rust
 /// use vate::{path, Accessor};
 ///
-/// let path = path!(a[VariantB].b.0[0]["Hello"]);
+/// let path = path!(a.b[0].c["Hello"][World].0);
 ///
 /// let expected = [
-///     Accessor::Root("a"), // The root.
-///     Accessor::Variant("VariantB"), // An enum variant.
-///     Accessor::Field("b"), // A field.
-///     Accessor::TupleIndex(0), // A tuple index.
-///     Accessor::Index(0), // An index.
-///     Accessor::Key(String::from("Hello")), // A key.
+///     Accessor::Root("a"),
+///     Accessor::Field("b"),
+///     Accessor::Index(0),
+///     Accessor::Field("c"),
+///     Accessor::Key(String::from("Hello")),
+///     Accessor::Variant("World"),
+///     Accessor::TupleIndex(0),
 /// ];
 ///
 /// assert_eq!(path, expected);
