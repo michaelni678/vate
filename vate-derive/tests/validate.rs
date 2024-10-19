@@ -155,7 +155,9 @@ fn nested_enum() {
         },
     }
 
-    let example1 = Example1::Example2(Example2::Variant { a: String::from("!!!") });
+    let example1 = Example1::Example2(Example2::Variant {
+        a: String::from("!!!"),
+    });
 
     let mut report = Report::new(Accessor::Root("example1"));
     let _ = example1.validate::<Everything>(&(), &mut report);
