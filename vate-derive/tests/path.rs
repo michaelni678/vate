@@ -67,6 +67,7 @@ fn consecutive_keys() {
 #[test]
 fn complex() {
     let path = path!(a.b[0].c["Hello"].0[World]);
+    
     let expected = [
         Accessor::Root("a"),
         Accessor::Field("b"),
