@@ -66,15 +66,16 @@ fn consecutive_keys() {
 
 #[test]
 fn complex() {
-    let path = path!(a.b[0].c["Hello"].0[World]);
+    let path = path!(a.b[0].c["Hello"][World].0);
+
     let expected = [
         Accessor::Root("a"),
         Accessor::Field("b"),
         Accessor::Index(0),
         Accessor::Field("c"),
         Accessor::Key(String::from("Hello")),
-        Accessor::TupleIndex(0),
         Accessor::Variant("World"),
+        Accessor::TupleIndex(0),
     ];
 
     assert_eq!(path, expected);
