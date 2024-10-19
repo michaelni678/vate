@@ -10,7 +10,3 @@ vate = { path = "../vate", features = ["full"] }
 [[example]]
 name = "create_user"
 path = "create_user.rs"
-
-[[example]]
-name = "payment"
-path = "payment.rs"

@@ -66,37 +66,37 @@ fn expand_derive_validate_enum(
         let variant_fields = match &variant.fields {
             syn::Fields::Unit => quote!(),
             syn::Fields::Named(fields) => {
-                let mut item_idents = Vec::new();
+                let mut field_idents = Vec::new();
                 for field in fields.named.iter() {
-                    let item_ident = field.ident.clone().unwrap();
-                    item_idents.push(quote!(#item_ident));
+                    let field_ident = field.ident.clone().unwrap();
+                    field_idents.push(quote!(#field_ident));
                 }
-                quote!({ #(#item_idents)* })
+                quote!({ #(#field_idents)* })
             }
             syn::Fields::Unnamed(fields) => {
-                let mut item_idents = Vec::new();
+                let mut field_idents = Vec::new();
                 let field_count = fields.unnamed.len();
                 for index in 0..field_count {
-                    let item_ident = format_ident!("item{}", index);
-                    item_idents.push(item_ident);
+                    let field_ident = format_ident!("field{}", index);
+                    field_idents.push(field_ident);
                 }
-                quote!((#(#item_idents)*))
+                quote!((#(#field_idents)*))
             }
         };
 
         let variant_arm = match &variant.fields {
             syn::Fields::Unit => vec![],
             syn::Fields::Named(_) => parse_inner_validator_attrs(
-                |item| {
-                    let ident = format_ident!("{item}");
+                |field_ident| {
+                    let ident = format_ident!("{field_ident}");
                     quote!(#ident)
                 },
                 &variant.fields,
             )?,
             syn::Fields::Unnamed(_) => parse_inner_validator_attrs(
-                |item| {
-                    let ident = format_ident!("item{item}");
-                    quote!(#ident)
+                |index| {
+                    let field_ident = format_ident!("field{index}");
+                    quote!(#field_ident)
                 },
                 &variant.fields,
             )?,
