@@ -331,11 +331,11 @@ fn named_variant_enum_variable_exposure() {
     }
 }
 
-// Note: this tests the main reason why variable exposure exists. 
+// Note: this tests the main reason why variable exposure exists.
 // Otherwise, there would be no way to access variables outside of validators
 // for enums. Variables are exposed for structs and named variant enums too,
 // but they're usually not useful because you can either use &self.<ident> for
-// structs and <ident> for enums since they're destructured. 
+// structs and <ident> for enums since they're destructured.
 #[test]
 fn unnamed_variant_enum_variable_exposure() {
     #[derive(Validate)]

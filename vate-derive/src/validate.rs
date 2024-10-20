@@ -25,8 +25,8 @@ fn expand_derive_validate_struct(
 ) -> syn::Result<TokenStream2> {
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
 
-    let data_type = parse_outer_type_attrs("data", attrs)?;
-    let error_type = parse_outer_type_attrs("error", attrs)?;
+    let data_type = parse_outer_attrs("data", attrs)?;
+    let error_type = parse_outer_attrs("error", attrs)?;
 
     let destructured = destructure(&ident, &data.fields);
 
@@ -59,8 +59,8 @@ fn expand_derive_validate_enum(
 ) -> syn::Result<TokenStream2> {
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
 
-    let data_type = parse_outer_type_attrs("data", attrs)?;
-    let error_type = parse_outer_type_attrs("error", attrs)?;
+    let data_type = parse_outer_attrs("data", attrs)?;
+    let error_type = parse_outer_attrs("error", attrs)?;
 
     let mut arms = Vec::new();
 
@@ -103,10 +103,7 @@ fn expand_derive_validate_enum(
     })
 }
 
-fn parse_outer_type_attrs(
-    ident: &'static str,
-    attrs: &[syn::Attribute],
-) -> syn::Result<TokenStream2> {
+fn parse_outer_attrs(ident: &'static str, attrs: &[syn::Attribute]) -> syn::Result<TokenStream2> {
     for attr in attrs {
         if !attr.path().is_ident("vate") {
             continue;
@@ -125,7 +122,7 @@ fn parse_outer_type_attrs(
 }
 
 fn parse_inner_attrs(fields: &syn::Fields) -> syn::Result<TokenStream2> {
-    let parsed = match fields {
+    let parsed: Vec<Vec<TokenStream2>> = match fields {
         syn::Fields::Unit => Ok(vec![]),
         syn::Fields::Named(fields) => {
             fields.named.iter().map(|field| {
@@ -134,14 +131,14 @@ fn parse_inner_attrs(fields: &syn::Fields) -> syn::Result<TokenStream2> {
 
                 field.attrs.iter()
                     .filter(|attr| attr.path().is_ident("vate"))
-                    .map(|attr| {
+                    .map(|attr| -> syn::Result<TokenStream2> {
                         let tokens = &attr.meta.require_list()?.tokens;
                         Ok(quote! {
                             ::vate::Bundle!(#tokens).run::<C>(#accessor, #target, data, parent_report)?;
                         })
                     })
-                    .collect::<syn::Result<Vec<_>>>()
-            }).collect::<syn::Result<Vec<_>>>()
+                    .collect()
+            }).collect()
         },
         syn::Fields::Unnamed(fields) => {
             fields.unnamed.iter().enumerate().map(|(index, field)| {
@@ -149,14 +146,14 @@ fn parse_inner_attrs(fields: &syn::Fields) -> syn::Result<TokenStream2> {
                 let accessor = quote!(::vate::Accessor::TupleIndex(#index));
                 field.attrs.iter()
                     .filter(|attr| attr.path().is_ident("vate"))
-                    .map(|attr| {
+                    .map(|attr| -> syn::Result<TokenStream2> {
                         let tokens = &attr.meta.require_list()?.tokens;
                         Ok(quote! {
                             ::vate::Bundle!(#tokens).run::<C>(#accessor, #target, data, parent_report)?;
                         })
                     })
-                    .collect::<syn::Result<Vec<_>>>()
-            }).collect::<syn::Result<Vec<_>>>()
+                    .collect()
+            }).collect()
         },
     }?;
     Ok(quote!(#(#(#parsed)*)*))
