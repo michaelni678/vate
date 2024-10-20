@@ -1,6 +1,6 @@
 #![allow(dead_code, unused_variables)]
 
-use vate::{path, Accessor, Everything, Nested, Report, StringAlphabetic, Validate};
+use vate::{path, Accessor, Boolean, Everything, Nested, Report, StringAlphabetic, Validate};
 
 #[test]
 fn unit_struct() {
@@ -190,6 +190,27 @@ fn tuple_struct_multiple_fields() {
 
     assert!(report.is_all_valid_at_path(path!(example.0)).unwrap());
     assert!(report.is_any_invalid_at_path(path!(example.1)).unwrap());
+}
+
+#[test]
+fn regular_struct_variable_exposure() {
+    #[derive(Validate)]
+    struct Example {
+        a: i32,
+        b: i32,
+        #[vate(Boolean(a < b))]
+        validations: (),
+    }
+}
+
+#[test]
+fn tuple_struct_variable_exposure() {
+    #[derive(Validate)]
+    struct Example(
+        String, // Exposed as `field0`.
+        String, // Exposed as `field1`.
+        #[vate(Boolean(field0 < field1))] (),
+    );
 }
 
 #[test]

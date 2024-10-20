@@ -64,7 +64,7 @@ pub use collectors::{Everything, FirstInvalidAndPrecedingErrors, InvalidsAndErro
 // Hide the re-exports of validators in the docs.
 #[doc(hidden)]
 pub use validators::{
-    boolean::{BooleanFalse, BooleanTrue},
+    boolean::{Boolean, BooleanFalse, BooleanTrue},
     bundle::{Bundle, Bundle2},
     collection::CollectionIterate,
     compare::{
