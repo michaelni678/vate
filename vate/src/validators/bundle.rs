@@ -28,8 +28,8 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
 /// ```
 #[doc(hidden)]
 #[macro_export]
@@ -73,8 +73,8 @@ pub use _Bundle as Bundle;
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
 /// ```
 pub struct Bundle2<V1, V2>(pub V1, pub V2);
 

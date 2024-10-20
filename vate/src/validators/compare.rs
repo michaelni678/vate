@@ -52,8 +52,8 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
 /// ```
 #[doc(hidden)]
 #[macro_export]
@@ -130,8 +130,8 @@ pub use _Compare as Compare;
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
 /// ```
 pub struct CompareLessThan<'a, T: Clone>(pub Cow<'a, T>);
 
@@ -195,8 +195,8 @@ where
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
 /// ```
 pub struct CompareLessThanOrEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
@@ -260,8 +260,8 @@ where
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
 /// ```
 pub struct CompareGreaterThan<'a, T: Clone>(pub Cow<'a, T>);
 
@@ -328,8 +328,8 @@ where
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
 /// ```
 pub struct CompareGreaterThanOrEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
@@ -393,8 +393,8 @@ where
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
 /// ```
 pub struct CompareEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 
@@ -458,8 +458,8 @@ where
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
 /// ```
 pub struct CompareNotEqualTo<'a, T: Clone>(pub Cow<'a, T>);
 

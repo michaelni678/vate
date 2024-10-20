@@ -28,9 +28,9 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a[0])).unwrap());
-/// assert!(report.is_all_valid_at_path(path!(example.a[1])).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.a[2])).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a[0])).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a[1])).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.a[2])).unwrap());
 /// ```
 pub struct IteratorIndexed<V>(pub V);
 
@@ -105,9 +105,9 @@ where
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a["zero"])).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.a["one"])).unwrap());
-/// assert!(report.is_all_valid_at_path(path!(example.a["two"])).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a["zero"])).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.a["one"])).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a["two"])).unwrap());
 /// ```
 pub struct IteratorKeyed<V>(pub V);
 
@@ -173,8 +173,8 @@ where
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
 /// ```
 pub struct IteratorLengthEquals(pub usize);
 
@@ -232,8 +232,8 @@ where
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
 /// ```
 pub struct ExactSizeIteratorLengthEquals(pub usize);
 

@@ -25,8 +25,8 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
 /// ```
 pub struct OptionSome;
 
@@ -76,8 +76,8 @@ impl<T, D, E> Validator<Option<T>, D, E> for OptionSome {
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
 /// ```
 pub struct OptionNone;
 
@@ -130,8 +130,8 @@ impl<T, D, E> Validator<Option<T>, D, E> for OptionNone {
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_empty_at_path(path!(example.b)));
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_empty_at_path(&path!(example.b)));
 /// ```
 pub struct OptionSomeThen<V>(pub V);
 

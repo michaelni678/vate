@@ -25,7 +25,7 @@ mod validate;
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
 /// assert!(report
-///     .is_any_invalid_at_path(path!(example.a))
+///     .is_any_invalid_at_path(&path!(example.a))
 ///     .unwrap());
 /// ```
 #[proc_macro_derive(Validate, attributes(vate))]

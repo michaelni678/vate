@@ -43,10 +43,10 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 ///
 /// println!("{report:#?}");
 ///
-/// assert!(report.is_any_invalid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_all_valid_at_path(path!(example.b)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.c)).unwrap());
-/// assert!(report.is_all_valid_at_path(path!(example.d)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.b)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.c)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.d)).unwrap());
 #[cfg(feature = "password")]
 pub struct PasswordStrong<'a, const N: usize>(pub [&'a str; N]);
 

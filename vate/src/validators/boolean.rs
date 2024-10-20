@@ -25,8 +25,8 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
 /// ```
 pub struct BooleanTrue;
 
@@ -76,8 +76,8 @@ impl<D, E> Validator<bool, D, E> for BooleanTrue {
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
 /// ```
 pub struct BooleanFalse;
 

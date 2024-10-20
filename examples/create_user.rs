@@ -125,44 +125,44 @@ fn main() {
     // The report should be invalid at create_user.profile.name.middle,
     // since "0" is not alphabetic nor between 2 and 32 characters.
     assert!(report
-        .is_any_invalid_at_path(path!(create_user.profile.name.middle))
+        .is_any_invalid_at_path(&path!(create_user.profile.name.middle))
         .unwrap());
 
     // The report should have two leaves at create_user.profile.name.middle,
     // one for the alphabetic validation and one for the string length validation.
     assert_eq!(
-        report.count_leaves_at_path(path!(create_user.profile.name.middle)),
+        report.count_leaves_at_path(&path!(create_user.profile.name.middle)),
         2
     );
 
     // The report should be invalid at create_user.profile.hobbies[1],
     // since "\u{03A9}" is not ascii.
     assert!(report
-        .is_any_invalid_at_path(path!(create_user.profile.hobbies[1]))
+        .is_any_invalid_at_path(&path!(create_user.profile.hobbies[1]))
         .unwrap());
 
     // The report should be invalid at create_user.profile.languages["English"],
     // since 0 is not greater than or equal to 1.
     assert!(report
-        .is_any_invalid_at_path(path!(create_user.profile.languages["English"]))
+        .is_any_invalid_at_path(&path!(create_user.profile.languages["English"]))
         .unwrap());
 
     // The report should be invalid at create_user.credentials.username,
     // since "u$ername" is not alphanumeric.
     assert!(report
-        .is_any_invalid_at_path(path!(create_user.credentials.username))
+        .is_any_invalid_at_path(&path!(create_user.credentials.username))
         .unwrap());
 
     // The report should be invalid at create_user.credentials.password,
     // since "health me" is not a strong password.
     assert!(report
-        .is_any_invalid_at_path(path!(create_user.credentials.password))
+        .is_any_invalid_at_path(&path!(create_user.credentials.password))
         .unwrap());
 
     // The report should be invalid at create_user.credentials.confirm_password,
     // since "pulp fiction" is not equal to "health me".
     assert!(report
-        .is_any_invalid_at_path(path!(create_user.credentials.confirm_password))
+        .is_any_invalid_at_path(&path!(create_user.credentials.confirm_password))
         .unwrap());
 
     // Print the report.

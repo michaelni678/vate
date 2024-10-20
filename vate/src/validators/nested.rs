@@ -36,8 +36,8 @@ use crate::{
 ///
 /// let _ = example1.validate::<Everything>(&(), &mut report);
 ///
-/// assert!(report.is_all_valid_at_path(path!(example1.example2.a)).unwrap());
-/// assert!(report.is_any_invalid_at_path(path!(example1.example2.b)).unwrap());
+/// assert!(report.is_all_valid_at_path(&path!(example1.example2.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example1.example2.b)).unwrap());
 /// ```
 pub struct Nested;
 

@@ -135,7 +135,9 @@ impl<E> Report<E> {
     /// ```rust
     /// use vate::{Accessor, Report};
     ///
-    /// let mut report: Report<()> = Report::new(Accessor::Root("example"));
+    /// struct Error;
+    ///
+    /// let mut report: Report<Error> = Report::new(Accessor::Root("example"));
     ///
     /// report.set_validity(Ok(true));
     /// assert!(matches!(report.get_validity(), Ok(true)));
@@ -143,8 +145,8 @@ impl<E> Report<E> {
     /// report.set_validity(Ok(false));
     /// assert!(matches!(report.get_validity(), Ok(false)));
     ///
-    /// report.set_validity(Err(()));
-    /// assert!(matches!(report.get_validity(), Err(())));
+    /// report.set_validity(Err(Error));
+    /// assert!(matches!(report.get_validity(), Err(Error)));
     /// ```
     pub fn get_validity(&self) -> &Result<bool, E> {
         &self.validity
@@ -226,8 +228,8 @@ impl<E> Report<E> {
     /// This does NOT mean the path doesn't exist. It just means it is
     /// not in the report. This can be due to many reasons, such as because nothing on
     /// that path was validated, the validation was skipped, etc.
-    pub fn is_all_valid_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
-        let validities = self.get_validities_at_path(path.as_ref());
+    pub fn is_all_valid_at_path(&self, path: &[Accessor]) -> Option<bool> {
+        let validities = self.get_validities_at_path(path);
         (!validities.is_empty()).then_some(
             validities
                 .iter()
@@ -241,8 +243,8 @@ impl<E> Report<E> {
     /// This does NOT mean the path doesn't exist. It just means it is
     /// not in the report. This can be due to many reasons, such as because nothing on
     /// that path was validated, the validation was skipped, etc.
-    pub fn is_any_invalid_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
-        let validities = self.get_validities_at_path(path.as_ref());
+    pub fn is_any_invalid_at_path(&self, path: &[Accessor]) -> Option<bool> {
+        let validities = self.get_validities_at_path(path);
         (!validities.is_empty()).then_some(
             validities
                 .iter()
@@ -256,14 +258,14 @@ impl<E> Report<E> {
     /// This does NOT mean the path doesn't exist. It just means it is
     /// not in the report. This can be due to many reasons, such as because nothing on
     /// that path was validated, the validation was skipped, etc.
-    pub fn is_any_error_at_path(&self, path: impl AsRef<[Accessor]>) -> Option<bool> {
-        let validities = self.get_validities_at_path(path.as_ref());
+    pub fn is_any_error_at_path(&self, path: &[Accessor]) -> Option<bool> {
+        let validities = self.get_validities_at_path(path);
         (!validities.is_empty()).then_some(validities.iter().any(|validity| validity.is_err()))
     }
 
     /// Check if the path is not in the report.
-    pub fn is_empty_at_path(&self, path: impl AsRef<[Accessor]>) -> bool {
-        self.get_validities_at_path(path.as_ref()).is_empty()
+    pub fn is_empty_at_path(&self, path: &[Accessor]) -> bool {
+        self.get_validities_at_path(path).is_empty()
     }
 
     /// Count the number of reports.
@@ -318,10 +320,10 @@ impl<E> Report<E> {
     ///
     /// report.push_child(child_1);
     ///
-    /// assert_eq!(report.count_leaves_at_path(path!(parent)), 4);
-    /// assert_eq!(report.count_leaves_at_path(path!(parent["leaf_1"])), 1);
-    /// assert_eq!(report.count_leaves_at_path(path!(parent["child_1"])), 2);
-    /// assert_eq!(report.count_leaves_at_path(path!(parent["child_1"]["child_1_leaf_1"])), 1);
+    /// assert_eq!(report.count_leaves_at_path(&path!(parent)), 4);
+    /// assert_eq!(report.count_leaves_at_path(&path!(parent["leaf_1"])), 1);
+    /// assert_eq!(report.count_leaves_at_path(&path!(parent["child_1"])), 2);
+    /// assert_eq!(report.count_leaves_at_path(&path!(parent["child_1"]["child_1_leaf_1"])), 1);
     /// ```
     pub fn count_leaves_at_path(&self, path: impl AsRef<[Accessor]>) -> usize {
         if self.children.is_empty() {
@@ -404,7 +406,6 @@ pub enum Exit<E> {
     /// Exit gracefully.
     Gracefully,
     /// Exit with an error.
-    ///
     /// This is different from pushing an error to a report, and is intended for force-exiting if a fatal error is encountered.
     WithError(E),
 }
