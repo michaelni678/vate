@@ -317,3 +317,24 @@ fn nested_enum() {
         .is_any_invalid_at_path(path!(example1[Example2].0[Variant].a))
         .unwrap());
 }
+
+#[test]
+fn named_variant_enum_variable_exposure() {
+    #[derive(Validate)]
+    enum Example {
+        Variant {
+            a: String,
+            b: String,
+            #[vate(Boolean(a < b))]
+            validations: (),
+        },
+    }
+}
+
+#[test]
+fn unnamed_variant_enum_variable_exposure() {
+    #[derive(Validate)]
+    enum Example {
+        Variant(String, String, #[vate(Boolean(field0 < field1))] ()),
+    }
+}
