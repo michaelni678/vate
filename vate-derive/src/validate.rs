@@ -60,27 +60,23 @@ fn expand_derive_validate_enum(
 
     let mut arms = Vec::new();
 
-    for variant in data.variants {
+    for variant in data.variants.iter() {
         let variant_ident = &variant.ident;
 
-        let variant_fields = match &variant.fields {
-            syn::Fields::Unit => quote!(),
+        let variant_destructured = match &variant.fields {
+            syn::Fields::Unit => quote!(#variant_ident),
             syn::Fields::Named(fields) => {
-                let mut field_idents = Vec::new();
-                for field in fields.named.iter() {
-                    let field_ident = field.ident.clone().unwrap();
-                    field_idents.push(quote!(#field_ident));
-                }
-                quote!({ #(#field_idents)* })
+                let fields = fields.named.iter().map(|field| {
+                    let field = field.ident.as_ref().unwrap();
+                    quote!(#field)
+                });
+                quote!(#variant_ident { #(#fields)* })
             }
             syn::Fields::Unnamed(fields) => {
-                let mut field_idents = Vec::new();
-                let field_count = fields.unnamed.len();
-                for index in 0..field_count {
-                    let field_ident = format_ident!("field{}", index);
-                    field_idents.push(field_ident);
-                }
-                quote!((#(#field_idents)*))
+                let fields: Vec<_> = (0..fields.unnamed.len())
+                    .map(|index| format_ident!("field{}", index))
+                    .collect();
+                quote!(#variant_ident(#(#fields)*))
             }
         };
 
@@ -103,7 +99,7 @@ fn expand_derive_validate_enum(
         };
 
         arms.push(quote! {
-            #ident::#variant_ident #variant_fields => {
+            #ident::#variant_destructured => {
                 let mut child_report = ::vate::Report::<Self::Error>::new(::vate::Accessor::Variant(stringify!(#variant_ident)));
                 {
                     // The proc-macro expects the ident `parent_report`, so rename child_report
@@ -158,13 +154,13 @@ fn parse_outer_type_attrs(
 }
 
 fn parse_inner_validator_attrs(
-    item_retriever_fn: impl Fn(TokenStream2) -> TokenStream2,
+    target_retriever_fn: impl Fn(TokenStream2) -> TokenStream2,
     fields: &syn::Fields,
 ) -> syn::Result<Vec<TokenStream2>> {
     let mut body = Vec::new();
 
     for (index, field) in fields.iter().enumerate() {
-        let item = match &field.ident {
+        let target_retriever = match &field.ident {
             Some(ident) => quote!(#ident),
             None => {
                 let index = syn::Index::from(index);
@@ -172,7 +168,7 @@ fn parse_inner_validator_attrs(
             }
         };
 
-        let item_retriever = item_retriever_fn(item);
+        let target_retriever = target_retriever_fn(target_retriever);
 
         let accessor = match &field.ident {
             Some(ident) => quote!(::vate::Accessor::Field(stringify!(#ident))),
@@ -185,7 +181,7 @@ fn parse_inner_validator_attrs(
             }
             let tokens = &attr.meta.require_list()?.tokens;
             let code = quote! {
-                ::vate::Bundle!(#tokens).run::<C>(#accessor, #item_retriever, data, parent_report)?;
+                ::vate::Bundle!(#tokens).run::<C>(#accessor, #target_retriever, data, parent_report)?;
             };
             body.push(code);
         }
