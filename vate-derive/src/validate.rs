@@ -28,7 +28,9 @@ fn expand_derive_validate_struct(
     let data_type = parse_outer_type_attrs("data", attrs)?;
     let error_type = parse_outer_type_attrs("error", attrs)?;
 
-    let body = parse_inner_validator_attrs(|item| quote!(&self.#item), &data.fields)?;
+    let destructured = destructure(&ident, &data.fields);
+
+    let body = parse_inner_attrs(&data.fields)?;
 
     Ok(quote! {
         impl #impl_generics ::vate::Validate for #ident #ty_generics #where_clause {
@@ -40,7 +42,9 @@ fn expand_derive_validate_struct(
                 parent_report: &mut ::vate::Report<Self::Error>,
             ) -> Result<(), ::vate::Exit<Self::Error>> {
                 use ::vate::Validator;
-                #(#body)*
+                #[allow(unused_variables)]
+                let #destructured = self;
+                #body
                 Ok(())
             }
         }
@@ -60,60 +64,19 @@ fn expand_derive_validate_enum(
 
     let mut arms = Vec::new();
 
-    for variant in data.variants {
-        let variant_ident = &variant.ident;
+    for syn::Variant { ident, fields, .. } in data.variants.iter() {
+        let destructured = destructure(ident, fields);
 
-        let variant_fields = match &variant.fields {
-            syn::Fields::Unit => quote!(),
-            syn::Fields::Named(fields) => {
-                let mut item_idents = Vec::new();
-                for field in fields.named.iter() {
-                    let item_ident = field.ident.clone().unwrap();
-                    item_idents.push(quote!(#item_ident));
-                }
-                quote!({ #(#item_idents)* })
-            }
-            syn::Fields::Unnamed(fields) => {
-                let mut item_idents = Vec::new();
-                let field_count = fields.unnamed.len();
-                for index in 0..field_count {
-                    let item_ident = format_ident!("item{}", index);
-                    item_idents.push(item_ident);
-                }
-                quote!((#(#item_idents)*))
-            }
-        };
-
-        let variant_arm = match &variant.fields {
-            syn::Fields::Unit => vec![],
-            syn::Fields::Named(_) => {
-                parse_inner_validator_attrs(
-                    |item| {
-                        let ident = format_ident!("{item}");
-                        quote!(#ident)
-                    },
-                    &variant.fields,
-                )?
-            }
-            syn::Fields::Unnamed(_) => {
-                parse_inner_validator_attrs(
-                    |item| {
-                        let ident = format_ident!("item{item}");
-                        quote!(#ident)
-                    },
-                    &variant.fields,
-                )?
-            }
-        };
+        let body = parse_inner_attrs(fields)?;
 
         arms.push(quote! {
-            #ident::#variant_ident #variant_fields => {
-                let mut child_report = ::vate::Report::<Self::Error>::new(::vate::Accessor::Variant(stringify!(#variant_ident)));
+            Self::#destructured => {
+                let mut child_report = ::vate::Report::<Self::Error>::new(::vate::Accessor::Variant(stringify!(#ident)));
                 {
                     // The proc-macro expects the ident `parent_report`, so rename child_report
                     // temporarily in this scope so this expands to accept the correct report.
                     let parent_report = &mut child_report;
-                    #(#variant_arm)*
+                    #body
                 }
                 C::apply(parent_report, child_report)?;
             }
@@ -161,39 +124,59 @@ fn parse_outer_type_attrs(
     Ok(quote!(()))
 }
 
-fn parse_inner_validator_attrs(
-    item_retriever_fn: impl Fn(TokenStream2) -> TokenStream2,
-    fields: &syn::Fields,
-) -> syn::Result<Vec<TokenStream2>> {
-    let mut body = Vec::new();
+fn parse_inner_attrs(fields: &syn::Fields) -> syn::Result<TokenStream2> {
+    let parsed = match fields {
+        syn::Fields::Unit => Ok(vec![]),
+        syn::Fields::Named(fields) => {
+            fields.named.iter().map(|field| {
+                let target = field.ident.as_ref().unwrap();
+                let accessor = quote!(::vate::Accessor::Field(stringify!(#target)));
 
-    for (index, field) in fields.iter().enumerate() {
-        let item = match &field.ident {
-            Some(ident) => quote!(#ident),
-            None => {
-                let index = syn::Index::from(index);
-                quote!(#index)
-            }
-        };
+                field.attrs.iter()
+                    .filter(|attr| attr.path().is_ident("vate"))
+                    .map(|attr| {
+                        let tokens = &attr.meta.require_list()?.tokens;
+                        Ok(quote! {
+                            ::vate::Bundle!(#tokens).run::<C>(#accessor, #target, data, parent_report)?;
+                        })
+                    })
+                    .collect::<syn::Result<Vec<_>>>()
+            }).collect::<syn::Result<Vec<_>>>()
+        },
+        syn::Fields::Unnamed(fields) => {
+            fields.unnamed.iter().enumerate().map(|(index, field)| {
+                let target = format_ident!("field{index}");
+                let accessor = quote!(::vate::Accessor::TupleIndex(#index));
+                field.attrs.iter()
+                    .filter(|attr| attr.path().is_ident("vate"))
+                    .map(|attr| {
+                        let tokens = &attr.meta.require_list()?.tokens;
+                        Ok(quote! {
+                            ::vate::Bundle!(#tokens).run::<C>(#accessor, #target, data, parent_report)?;
+                        })
+                    })
+                    .collect::<syn::Result<Vec<_>>>()
+            }).collect::<syn::Result<Vec<_>>>()
+        },
+    }?;
+    Ok(quote!(#(#(#parsed)*)*))
+}
 
-        let item_retriever = item_retriever_fn(item);
-
-        let accessor = match &field.ident {
-            Some(ident) => quote!(::vate::Accessor::Field(stringify!(#ident))),
-            None => quote!(::vate::Accessor::TupleIndex(#index)),
-        };
-
-        for attr in field.attrs.iter() {
-            if !attr.path().is_ident("vate") {
-                continue;
-            }
-            let tokens = &attr.meta.require_list()?.tokens;
-            let code = quote! {
-                ::vate::Bundle!(#tokens).run::<C>(#accessor, #item_retriever, data, parent_report)?;
-            };
-            body.push(code);
+fn destructure(ident: &syn::Ident, fields: &syn::Fields) -> TokenStream2 {
+    match fields {
+        syn::Fields::Unit => quote!(#ident),
+        syn::Fields::Named(fields) => {
+            let fields = fields.named.iter().map(|field| {
+                let field = field.ident.as_ref().unwrap();
+                quote!(#field)
+            });
+            quote!(#ident { #(#fields,)* })
+        }
+        syn::Fields::Unnamed(fields) => {
+            let fields: Vec<_> = (0..fields.unnamed.len())
+                .map(|index| format_ident!("field{}", index))
+                .collect();
+            quote!(#ident(#(#fields,)*))
         }
     }
-
-    Ok(body)
 }

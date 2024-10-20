@@ -101,3 +101,57 @@ impl<D, E> Validator<bool, D, E> for BooleanFalse {
         C::apply(parent_report, child_report)
     }
 }
+
+/// Set the report validity to the boolean.
+/// This validator produces no message due to lack of information to
+/// work with.
+///
+/// Takes a boolean for field `0`.
+///
+/// # Examples
+/// ```rust
+/// use vate::{path, Accessor, Boolean, Everything, Report, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     a: i32,
+///     b: i32,
+///     #[vate(Boolean(a < b), Boolean(*a == 5))]
+///     validations: (),
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: 3,
+///     b: 4,
+///     validations: (),
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// let validities = report.get_validities_at_path(&path!(example.validations));
+///
+/// assert_eq!(validities.len(), 2);
+/// assert!(matches!(validities[0], Ok(true)));
+/// assert!(matches!(validities[1], Ok(false)));
+/// ```
+pub struct Boolean(pub bool);
+
+impl<T, D, E> Validator<T, D, E> for Boolean {
+    fn run<C: Collector<E>>(
+        &self,
+        accessor: Accessor,
+        _target: &T,
+        _data: &D,
+        parent_report: &mut Report<E>,
+    ) -> Result<(), Exit<E>> {
+        let Self(validity) = *self;
+
+        let mut child_report = Report::new(accessor);
+
+        child_report.set_validity(Ok(validity));
+
+        C::apply(parent_report, child_report)
+    }
+}

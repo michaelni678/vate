@@ -64,7 +64,7 @@ pub use collectors::{Everything, FirstInvalidAndPrecedingErrors, InvalidsAndErro
 // Hide the re-exports of validators in the docs.
 #[doc(hidden)]
 pub use validators::{
-    boolean::{BooleanFalse, BooleanTrue},
+    boolean::{Boolean, BooleanFalse, BooleanTrue},
     bundle::{Bundle, Bundle2},
     collection::CollectionIterate,
     compare::{
@@ -77,8 +77,8 @@ pub use validators::{
     nested::Nested,
     option::{OptionNone, OptionSome, OptionSomeThen},
     string::{
-        StringAlphabetic, StringAlphanumeric, StringAscii, StringLengthEquals, StringLengthRange,
-        StringLowercase, StringUppercase,
+        StringAlphabetic, StringAlphanumeric, StringAscii, StringAsciiDigit, StringLengthEquals,
+        StringLengthRange, StringLowercase, StringUppercase,
     },
 };
 
