@@ -60,47 +60,45 @@ fn expand_derive_validate_enum(
 
     let mut arms = Vec::new();
 
-    for variant in data.variants.iter() {
-        let variant_ident = &variant.ident;
-
-        let variant_destructured = match &variant.fields {
-            syn::Fields::Unit => quote!(#variant_ident),
+    for syn::Variant { ident, fields, .. } in data.variants.iter() {
+        let variant_destructured = match fields {
+            syn::Fields::Unit => quote!(#ident),
             syn::Fields::Named(fields) => {
                 let fields = fields.named.iter().map(|field| {
                     let field = field.ident.as_ref().unwrap();
                     quote!(#field)
                 });
-                quote!(#variant_ident { #(#fields)* })
+                quote!(#ident { #(#fields)* })
             }
             syn::Fields::Unnamed(fields) => {
                 let fields: Vec<_> = (0..fields.unnamed.len())
                     .map(|index| format_ident!("field{}", index))
                     .collect();
-                quote!(#variant_ident(#(#fields)*))
+                quote!(#ident(#(#fields)*))
             }
         };
 
-        let variant_arm = match &variant.fields {
+        let variant_arm = match fields {
             syn::Fields::Unit => vec![],
             syn::Fields::Named(_) => parse_inner_validator_attrs(
-                |field_ident| {
-                    let ident = format_ident!("{field_ident}");
-                    quote!(#ident)
+                |field| {
+                    let target_retriever = format_ident!("{field}");
+                    quote!(#target_retriever)
                 },
-                &variant.fields,
+                fields,
             )?,
             syn::Fields::Unnamed(_) => parse_inner_validator_attrs(
                 |index| {
-                    let field_ident = format_ident!("field{index}");
-                    quote!(#field_ident)
+                    let target_retriever = format_ident!("field{index}");
+                    quote!(#target_retriever)
                 },
-                &variant.fields,
+                fields,
             )?,
         };
 
         arms.push(quote! {
-            #ident::#variant_destructured => {
-                let mut child_report = ::vate::Report::<Self::Error>::new(::vate::Accessor::Variant(stringify!(#variant_ident)));
+            Self::#variant_destructured => {
+                let mut child_report = ::vate::Report::<Self::Error>::new(::vate::Accessor::Variant(stringify!(#ident)));
                 {
                     // The proc-macro expects the ident `parent_report`, so rename child_report
                     // temporarily in this scope so this expands to accept the correct report.
