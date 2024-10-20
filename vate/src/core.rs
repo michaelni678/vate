@@ -281,15 +281,22 @@ impl<E> Report<E> {
     ///
     /// # Examples
     /// ```rust
-    /// use vate::{Accessor, Report};
+    /// use vate::{path, Accessor, Boolean, Everything, Report, Validate};
     ///
-    /// let mut report: Report<()> = Report::new(Accessor::Root("parent"));
+    /// #[derive(Validate)]
+    /// struct Example {
+    ///     #[vate(Boolean(true), Boolean(false))]
+    ///     a: (),
+    /// }
     ///
-    /// report.push_child(Report::new(Accessor::Key(String::from("leaf_1"))));
-    /// report.push_child(Report::new(Accessor::Key(String::from("leaf_2"))));
-    /// report.push_child(Report::new(Accessor::Key(String::from("leaf_3"))));
+    /// let example = Example {
+    ///     a: (),
+    /// };
     ///
-    /// assert_eq!(report.count_leaves(), 3);
+    /// let mut report = Report::new(Accessor::Root("example"));
+    /// let _ = example.validate::<Everything>(&(), &mut report);
+    ///
+    /// assert_eq!(report.count_leaves(), 2);
     /// ```
     pub fn count_leaves(&self) -> usize {
         if self.children.is_empty() {
@@ -307,31 +314,131 @@ impl<E> Report<E> {
     ///
     /// # Examples
     /// ```rust
-    /// use vate::{path, Accessor, Report};
+    /// use vate::{path, Accessor, Boolean, Everything, Report, Validate};
     ///
-    /// let mut report: Report<()> = Report::new(Accessor::Root("parent"));
+    /// #[derive(Validate)]
+    /// struct Example {
+    ///     #[vate(Boolean(true), Boolean(false))]
+    ///     a: (),
+    /// }
     ///
-    /// report.push_child(Report::new(Accessor::Key(String::from("leaf_1"))));
-    /// report.push_child(Report::new(Accessor::Key(String::from("leaf_2"))));
+    /// let example = Example {
+    ///     a: (),
+    /// };
     ///
-    /// let mut child_1 = Report::new(Accessor::Key(String::from("child_1")));
-    /// child_1.push_child(Report::new(Accessor::Key(String::from("child_1_leaf_1"))));
-    /// child_1.push_child(Report::new(Accessor::Key(String::from("child_1_leaf_2"))));
+    /// let mut report = Report::new(Accessor::Root("example"));
+    /// let _ = example.validate::<Everything>(&(), &mut report);
     ///
-    /// report.push_child(child_1);
-    ///
-    /// assert_eq!(report.count_leaves_at_path(&path!(parent)), 4);
-    /// assert_eq!(report.count_leaves_at_path(&path!(parent["leaf_1"])), 1);
-    /// assert_eq!(report.count_leaves_at_path(&path!(parent["child_1"])), 2);
-    /// assert_eq!(report.count_leaves_at_path(&path!(parent["child_1"]["child_1_leaf_1"])), 1);
+    /// assert_eq!(report.count_leaves_at_path(&path!(example)), 2);
+    /// assert_eq!(report.count_leaves_at_path(&path!(example.a)), 2);
     /// ```
-    pub fn count_leaves_at_path(&self, path: impl AsRef<[Accessor]>) -> usize {
+    pub fn count_leaves_at_path(&self, path: &[Accessor]) -> usize {
         if self.children.is_empty() {
             1
         } else {
             let mut count = 0;
-            for child in self.get_children_at_path(path.as_ref()) {
+            for child in self.get_children_at_path(path) {
                 count += child.count_leaves();
+            }
+            count
+        }
+    }
+
+    /// Get the number of leaf reports at a path that are valid.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{path, Accessor, Boolean, Everything, Report, Validate};
+    ///
+    /// #[derive(Validate)]
+    /// struct Example {
+    ///     #[vate(Boolean(true), Boolean(false), Boolean(false))]
+    ///     a: (),
+    /// }
+    ///
+    /// let example = Example {
+    ///     a: (),
+    /// };
+    ///
+    /// let mut report = Report::new(Accessor::Root("example"));
+    /// let _ = example.validate::<Everything>(&(), &mut report);
+    ///
+    /// assert_eq!(report.count_leaves_at_path(&path!(example.a)), 3);
+    /// assert_eq!(report.count_valid_leaves_at_path(&path!(example.a)), 1);
+    /// ```
+    pub fn count_valid_leaves_at_path(&self, path: &[Accessor]) -> usize {
+        if self.children.is_empty() && self.is_valid() {
+            1
+        } else {
+            let mut count = 0;
+            for child in self.get_children_at_path(path) {
+                count += child.count_valid_leaves_at_path(path);
+            }
+            count
+        }
+    }
+
+    /// Get the number of leaf reports at a path that are invalid.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{path, Accessor, Boolean, Everything, Report, Validate};
+    ///
+    /// #[derive(Validate)]
+    /// struct Example {
+    ///     #[vate(Boolean(true), Boolean(true), Boolean(false))]
+    ///     a: (),
+    /// }
+    ///
+    /// let example = Example {
+    ///     a: (),
+    /// };
+    ///
+    /// let mut report = Report::new(Accessor::Root("example"));
+    /// let _ = example.validate::<Everything>(&(), &mut report);
+    ///
+    /// assert_eq!(report.count_leaves_at_path(&path!(example.a)), 3);
+    /// assert_eq!(report.count_invalid_leaves_at_path(&path!(example.a)), 1);
+    /// ```
+    pub fn count_invalid_leaves_at_path(&self, path: &[Accessor]) -> usize {
+        if self.children.is_empty() && self.is_invalid() {
+            1
+        } else {
+            let mut count = 0;
+            for child in self.get_children_at_path(path) {
+                count += child.count_invalid_leaves_at_path(path);
+            }
+            count
+        }
+    }
+
+    /// Get the number of leaf reports at a path that are valid.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use vate::{path, Accessor, Report};
+    ///
+    /// struct Error;
+    ///
+    /// let mut report = Report::new(Accessor::Root("example"));
+    ///
+    /// let mut child_report = Report::new(Accessor::Field("a"));
+    /// child_report.set_error(Error);
+    /// report.push_child(child_report);
+    ///
+    /// report.push_child(Report::new(Accessor::Field("a")));
+    /// report.push_child(Report::new(Accessor::Field("a")));
+    ///
+    /// assert_eq!(report.count_leaves_at_path(&path!(example.a)), 3);
+    /// assert_eq!(report.count_error_leaves_at_path(&path!(example.a)), 1);
+    /// ```
+    pub fn count_error_leaves_at_path(&self, path: &[Accessor]) -> usize {
+        if self.children.is_empty() && self.is_error() {
+            1
+        } else {
+            let mut count = 0;
+            for child in self.get_children_at_path(path) {
+                count += child.count_error_leaves_at_path(path);
             }
             count
         }

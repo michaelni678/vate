@@ -41,7 +41,7 @@ macro_rules! _Bundle {
         $crate::Bundle2($a, $b)
     };
     ($a:expr, $($rest:tt)*) => {
-        $crate::Bundle2($a, Bundle!($($rest)*))
+        $crate::Bundle2($a, ::vate::Bundle!($($rest)*))
     };
 }
 
