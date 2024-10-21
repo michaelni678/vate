@@ -1,6 +1,89 @@
 #[allow(unused_imports)]
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
+/// Validates a credit card number using the luhn algorithm.
+///
+/// Requires the target type to be an implementor of `AsRef<str>`.
+///
+/// Enabled with the `credit-card` feature.
+///
+/// # Examples
+/// ```rust
+/// use vate::{path, Accessor, CreditCardNumber, Everything, Report, Validate};
+///
+/// #[derive(Validate)]
+/// struct Example {
+///     #[vate(CreditCardNumber)]
+///     a: String,
+///     #[vate(CreditCardNumber)]
+///     b: String,
+/// }
+///
+/// let mut report = Report::new(Accessor::Root("example"));
+///
+/// let example = Example {
+///     a: String::from("4485199535588723"),
+///     b: String::from("2831785710398192"),
+/// };
+///
+/// let _ = example.validate::<Everything>(&(), &mut report);
+///
+/// assert!(report.is_all_valid_at_path(&path!(example.a)).unwrap());
+/// assert!(report.is_any_invalid_at_path(&path!(example.b)).unwrap());
+/// ```
+#[cfg(feature = "credit-card")]
+pub struct CreditCardNumber;
+
+#[cfg(feature = "credit-card")]
+impl<T: AsRef<str>, D, E> Validator<T, D, E> for CreditCardNumber {
+    fn run<C: Collector<E>>(
+        &self,
+        accessor: Accessor,
+        target: &T,
+        _data: &D,
+        parent_report: &mut Report<E>,
+    ) -> Result<(), Exit<E>> {
+        let mut child_report = Report::new(accessor);
+
+        let digits: Vec<u32> = target
+            .as_ref()
+            .chars()
+            .filter_map(|c| c.to_digit(10))
+            .collect();
+
+        if digits.is_empty() {
+            child_report.set_invalid();
+            child_report.set_message("is not a valid credit card number");
+        }
+
+        let checksum: u32 = digits
+            .iter()
+            .rev()
+            .enumerate()
+            .map(|(i, &digit)| {
+                if i % 2 == 1 {
+                    let doubled = digit * 2;
+                    if doubled > 9 {
+                        doubled - 9
+                    } else {
+                        doubled
+                    }
+                } else {
+                    digit
+                }
+            })
+            .sum();
+
+        if checksum % 10 == 0 {
+            child_report.set_valid();
+        } else {
+            child_report.set_invalid();
+            child_report.set_message("is not a valid credit card number");
+        }
+        C::apply(parent_report, child_report)
+    }
+}
+
 /// Validates a password is strong using zxcvbn.
 ///
 /// Requires the target type to be an implementor of `AsRef<str>`.
@@ -40,8 +123,6 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 /// };
 ///
 /// let _ = example.validate::<Everything>(&(), &mut report);
-///
-/// println!("{report:#?}");
 ///
 /// assert!(report.is_any_invalid_at_path(&path!(example.a)).unwrap());
 /// assert!(report.is_all_valid_at_path(&path!(example.b)).unwrap());

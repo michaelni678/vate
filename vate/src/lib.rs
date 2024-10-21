@@ -82,6 +82,10 @@ pub use validators::{
     },
 };
 
+#[cfg(feature = "credit-card")]
+#[doc(hidden)]
+pub use validators::miscellaneous::CreditCardNumber;
+
 #[cfg(feature = "password")]
 #[doc(hidden)]
 pub use validators::miscellaneous::PasswordStrong;

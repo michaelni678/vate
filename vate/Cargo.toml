@@ -19,8 +19,10 @@ once_cell = "1.20.1"
 [features]
 default = []
 full = [
+    "credit-card",
     "password",
     "regex",
 ]
+credit-card = []
 password = ["dep:zxcvbn"]
 regex = ["dep:regex"]
