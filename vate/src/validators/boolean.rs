@@ -111,3 +111,60 @@ impl<D, E> Validator<&bool, D, E> for BooleanFalse {
         C::apply(parent_report, child_report)
     }
 }
+
+/// Sets the child report validity to a boolean. Does not actually do any validations.
+///
+/// # Examples
+/// ```rust
+/// use vate::{path, Accessor, BooleanRaw, Everything, Report, Validate};
+///
+/// #[derive(Validate)]
+/// struct Raw {
+///     #[vate(BooleanRaw(true))]
+///     a: i32,
+///     #[vate(BooleanRaw(false))]
+///     b: i32,
+///     #[vate(BooleanRaw(self.a == self.b))]
+///     c: (),
+/// }
+///
+/// let raw = Raw {
+///     a: 1,
+///     b: 3,
+///     c: (),
+/// };
+///
+/// let mut report = Report::new(Accessor::Root("raw"));
+///
+/// let _ = raw.validate::<Everything>(&(), &mut report);
+///
+/// assert_eq!(report.get_leaves().count(), 3);
+///
+/// assert_eq!(report.get_children_at_path(&path!(raw.a)).count(), 1);
+/// assert!(report.get_children_at_path(&path!(raw.a)).all(|child| child.is_valid()));
+///
+/// assert_eq!(report.get_children_at_path(&path!(raw.b)).count(), 1);
+/// assert!(report.get_children_at_path(&path!(raw.b)).all(|child| child.is_invalid()));
+///
+/// assert_eq!(report.get_children_at_path(&path!(raw.c)).count(), 1);
+/// assert!(report.get_children_at_path(&path!(raw.c)).all(|child| child.is_invalid()));
+/// ```
+pub struct BooleanRaw(pub bool);
+
+impl<T, D, E> Validator<T, D, E> for BooleanRaw {
+    fn run<C: Collector<E>>(
+        &self,
+        accessor: Accessor,
+        _target: T,
+        _data: &D,
+        parent_report: &mut Report<E>,
+    ) -> Result<(), Exit<E>> {
+        let Self(validity) = *self;
+
+        let mut child_report = Report::new(accessor);
+
+        child_report.set_validity(Ok(validity));
+
+        C::apply(parent_report, child_report)
+    }
+}

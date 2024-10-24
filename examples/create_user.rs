@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use once_cell::sync::Lazy;
 use vate::{
     extras::Regex, path, Accessor, Bundle, CollectionIterate, Compare, InvalidsAndErrors,
-    IteratorIndexed, IteratorKeyed, Nested, OptionSomeThen, Report, StringAlphabetic,
+    IteratorIndexed, IteratorPairKeyed, Nested, OptionSomeThen, Report, StringAlphabetic,
     StringAlphanumeric, StringAscii, StringLengthRange, StringMatchesRegex, Validate,
 };
 
@@ -43,7 +43,7 @@ struct Profile {
     #[vate(CollectionIterate(IteratorIndexed(StringAscii)))]
     hobbies: Vec<String>,
     /// The user's languages mapped to fluency. Fluency should be between 1 and 10.
-    #[vate(CollectionIterate(IteratorKeyed(Bundle!(Compare!( >= 1 ), Compare!( <= 10 )))))]
+    #[vate(CollectionIterate(IteratorPairKeyed(Bundle!(Compare!( >= 1 ), Compare!( <= 10 )))))]
     languages: HashMap<String, u8>,
 }
 

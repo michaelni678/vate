@@ -38,12 +38,13 @@ pub use collectors::{Everything, FirstInvalidAndPrecedingErrors, InvalidsAndErro
 // Hide the re-exports of validators in the docs.
 #[doc(hidden)]
 pub use validators::{
-    boolean::{BooleanFalse, BooleanTrue},
+    boolean::{BooleanFalse, BooleanRaw, BooleanTrue},
     bundle::{Bundle, Bundle2},
     collection::CollectionIterate,
     compare::{Compare, CompareValues},
     iterator::{
         ExactSizeIteratorLengthEquals, IteratorIndexed, IteratorKeyed, IteratorLengthEquals,
+        IteratorPairKeyed,
     },
     nested::Nested,
     option::{OptionNone, OptionSome, OptionSomeThen},

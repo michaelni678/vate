@@ -1,8 +1,8 @@
 use proc_macro2::TokenStream as TokenStream2;
-use quote::{format_ident, quote};
+use quote::{format_ident, quote, ToTokens};
 use syn::{
     punctuated::Punctuated, Attribute, Data, DataEnum, DataStruct, DeriveInput, Fields, Generics,
-    Ident, MetaNameValue, Result, Token, Variant,
+    Ident, MetaNameValue, Result, Token, Type, Variant,
 };
 
 pub fn expand_derive_validate(input: DeriveInput) -> Result<TokenStream2> {
@@ -115,7 +115,7 @@ fn parse_outer_type_attrs(ident: &'static str, attrs: &[Attribute]) -> Result<To
         let definitions =
             list.parse_args_with(Punctuated::<MetaNameValue, Token![,]>::parse_terminated)?;
         for definition in definitions {
-            let ty = definition.value;
+            let ty: Type = syn::parse2(definition.value.into_token_stream())?;
             if definition.path.is_ident(ident) {
                 return Ok(quote!(#ty));
             }

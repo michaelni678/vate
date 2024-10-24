@@ -55,7 +55,7 @@ macro_rules! _Bundle {
 #[doc(inline)]
 pub use _Bundle as Bundle;
 
-/// Runs the two validators in fields `0` and `1`, forwarding the accessor.
+/// Runs the two validators in fields `0` and `1`, passing the accessor.
 ///
 /// There is not really any reason to use this validator directly. Use the [`Bundle`] macro instead.
 ///

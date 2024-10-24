@@ -39,7 +39,37 @@ where
 
 pub struct IteratorKeyed<V>(pub V);
 
-impl<'a, T, D, E, Key: 'a, Value: 'a, V> Validator<T, D, E> for IteratorKeyed<V>
+impl<T, D, E, V> Validator<T, D, E> for IteratorKeyed<V>
+where
+    T: Iterator,
+    T::Item: ToString,
+    V: Validator<<T as Iterator>::Item, D, E>,
+{
+    fn run<C: Collector<E>>(
+        &self,
+        accessor: Accessor,
+        mut target: T,
+        data: &D,
+        parent_report: &mut Report<E>,
+    ) -> Result<(), Exit<E>> {
+        let Self(validator) = self;
+
+        let mut child_report = Report::new(accessor);
+
+        let child_result = target.try_for_each(|key| {
+            validator.run::<C>(Accessor::Key(key.to_string()), key, data, &mut child_report)
+        });
+
+        let parent_result = C::apply(parent_report, child_report);
+
+        child_result?;
+        parent_result
+    }
+}
+
+pub struct IteratorPairKeyed<V>(pub V);
+
+impl<'a, T, D, E, Key: 'a, Value: 'a, V> Validator<T, D, E> for IteratorPairKeyed<V>
 where
     Key: ToString,
     T: Iterator<Item = (&'a Key, &'a Value)>,
