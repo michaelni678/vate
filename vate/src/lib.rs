@@ -48,8 +48,8 @@ pub use validators::{
     nested::Nested,
     option::{OptionNone, OptionSome, OptionSomeThen},
     string::{
-        StringAlphabetic, StringAlphanumeric, StringAscii, StringAsciiDigit, StringLengthEquals,
-        StringLengthRange, StringLowercase, StringUppercase,
+        StringAlphabetic, StringAlphanumeric, StringAscii, StringAsciiAlphabetic, StringAsciiDigit,
+        StringLengthEquals, StringLengthRange, StringLowercase, StringUppercase,
     },
 };
 

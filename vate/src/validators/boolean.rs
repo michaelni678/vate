@@ -1,11 +1,11 @@
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
 /// Validates a boolean is `true`.
-/// 
+///
 /// # Examples
 /// ```rust
 /// use vate::{path, Accessor, BooleanTrue, Everything, Report, Validate};
-/// 
+///
 /// /// An electronic waiver of liability.
 /// #[derive(Validate)]
 /// struct WaiverOfLiability {
@@ -16,21 +16,21 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 ///     #[vate(BooleanTrue)]
 ///     is_acknowledged: bool,
 /// }
-/// 
+///
 /// let waiver = WaiverOfLiability {
 ///     scrolled_to_bottom: true,
 ///     is_acknowledged: false,
 /// };
-/// 
+///
 /// let mut report = Report::new(Accessor::Root("waiver"));
-/// 
+///
 /// let _ = waiver.validate::<Everything>(&(), &mut report);
-/// 
+///
 /// assert_eq!(report.get_leaves().count(), 2);
-/// 
+///
 /// assert_eq!(report.get_children_at_path(&path!(waiver.scrolled_to_bottom)).count(), 1);
 /// assert!(report.get_children_at_path(&path!(waiver.scrolled_to_bottom)).all(|child| child.is_valid()));
-/// 
+///
 /// assert_eq!(report.get_children_at_path(&path!(waiver.is_acknowledged)).count(), 1);
 /// assert!(report.get_children_at_path(&path!(waiver.is_acknowledged)).all(|child| child.is_invalid()));
 /// ```
@@ -57,11 +57,11 @@ impl<D, E> Validator<&bool, D, E> for BooleanTrue {
 }
 
 /// Validates a boolean is `false`.
-/// 
+///
 /// # Examples
 /// ```rust
 /// use vate::{path, Accessor, BooleanFalse, Everything, Report, Validate};
-/// 
+///
 /// /// An application to rent an apartment.
 /// #[derive(Validate)]
 /// struct RentalApplication {
@@ -72,21 +72,21 @@ impl<D, E> Validator<&bool, D, E> for BooleanTrue {
 ///     #[vate(BooleanFalse)]
 ///     history_of_eviction: bool,
 /// }
-/// 
+///
 /// let application = RentalApplication {
 ///     criminal_record: false,
 ///     history_of_eviction: true,
 /// };
-/// 
+///
 /// let mut report = Report::new(Accessor::Root("application"));
-/// 
+///
 /// let _ = application.validate::<Everything>(&(), &mut report);
-/// 
+///
 /// assert_eq!(report.get_leaves().count(), 2);
-/// 
+///
 /// assert_eq!(report.get_children_at_path(&path!(application.criminal_record)).count(), 1);
 /// assert!(report.get_children_at_path(&path!(application.criminal_record)).all(|child| child.is_valid()));
-/// 
+///
 /// assert_eq!(report.get_children_at_path(&path!(application.history_of_eviction)).count(), 1);
 /// assert!(report.get_children_at_path(&path!(application.history_of_eviction)).all(|child| child.is_invalid()));
 /// ```

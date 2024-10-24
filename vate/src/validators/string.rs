@@ -66,6 +66,32 @@ impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAscii {
     }
 }
 
+pub struct StringAsciiAlphabetic;
+
+impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAsciiAlphabetic {
+    fn run<C: Collector<E>>(
+        &self,
+        accessor: Accessor,
+        target: T,
+        _data: &D,
+        parent_report: &mut Report<E>,
+    ) -> Result<(), Exit<E>> {
+        let mut child_report = Report::new(accessor);
+
+        if target
+            .as_ref()
+            .chars()
+            .all(|c| char::is_ascii_alphabetic(&c))
+        {
+            child_report.set_valid();
+        } else {
+            child_report.set_invalid();
+        }
+
+        C::apply(parent_report, child_report)
+    }
+}
+
 pub struct StringAsciiDigit;
 
 impl<T: AsRef<str>, D, E> Validator<T, D, E> for StringAsciiDigit {
