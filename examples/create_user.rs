@@ -114,6 +114,8 @@ fn main() {
     // done by this example do not produce any errors.
     let _ = create_user.validate::<InvalidsAndErrors>(&(), &mut report);
 
+    check_not_partially_moved(&create_user);
+
     assert_eq!(report.get_leaves().count(), 6);
 
     assert_eq!(
@@ -166,3 +168,5 @@ fn main() {
         .get_children_at_path(&path!(create_user.credentials.confirm_password))
         .all(|child| child.is_invalid()));
 }
+
+fn check_not_partially_moved<T>(_: &T) {}
