@@ -13,27 +13,8 @@ use crate::{Accessor, Collector, Exit, Report, Validator};
 /// #[vate(data = HashSet::<String>)]
 /// struct Blacklist {
 ///     /// Names of people who are not allowed to attend the dinner party.
-///     #[vate(CollectionIterate(IteratorKeyed(NotAnAttendee)))]
+///     #[vate(CollectionIterate(IteratorKeyed(|name: &String, attendees: &HashSet<String>| Ok(!attendees.contains(name)))))]
 ///     names: HashSet<String>,
-/// }
-///
-/// /// Custom validator to check if a name is not in the list of attendees.
-/// struct NotAnAttendee;
-///
-/// impl<E> Validator<&String, HashSet<String>, E> for NotAnAttendee {
-///     fn run<C: Collector<E>>(
-///         &self,
-///         accessor: Accessor,
-///         blacklisted_person: &String,
-///         attendees: &HashSet<String>,
-///         parent_report: &mut Report<E>,
-///     ) -> Result<(), Exit<E>> {
-///         let mut child_report = Report::new(accessor);
-///
-///         child_report.set_validity(Ok(!attendees.contains(blacklisted_person)));
-///
-///         C::apply(parent_report, child_report)
-///     }
 /// }
 ///
 /// let blacklist = Blacklist {
