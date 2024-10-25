@@ -2,6 +2,46 @@ use std::borrow::Cow;
 
 use crate::{Accessor, Collector, Exit, Report, Validator};
 
+/// Validates an ordering.
+///
+/// # Examples
+/// ```rust
+/// use vate::{
+///     path, Accessor, CollectionIterate, Compare, Everything,
+///     IteratorIndexed, Report, Validate,
+/// };
+///
+/// #[derive(Validate)]
+/// struct Numbers {
+///     #[vate(CollectionIterate(IteratorIndexed(Compare!( >= 0 ))))]
+///     inner: Vec<i32>,
+/// }
+///
+/// let numbers = Numbers {
+///     inner: vec![-2, -1, 0, 1, 2],
+/// };
+///
+/// let mut report = Report::new(Accessor::Root("numbers"));
+///
+/// let _ = numbers.validate::<Everything>(&(), &mut report);
+///
+/// assert_eq!(report.get_leaves().count(), 5);
+///
+/// assert_eq!(report.get_children_at_path(&path!(numbers.inner[0])).count(), 1);
+/// assert!(report.get_children_at_path(&path!(numbers.inner[0])).all(|child| child.is_invalid()));
+///
+/// assert_eq!(report.get_children_at_path(&path!(numbers.inner[1])).count(), 1);
+/// assert!(report.get_children_at_path(&path!(numbers.inner[1])).all(|child| child.is_invalid()));
+///
+/// assert_eq!(report.get_children_at_path(&path!(numbers.inner[2])).count(), 1);
+/// assert!(report.get_children_at_path(&path!(numbers.inner[2])).all(|child| child.is_valid()));
+///
+/// assert_eq!(report.get_children_at_path(&path!(numbers.inner[3])).count(), 1);
+/// assert!(report.get_children_at_path(&path!(numbers.inner[3])).all(|child| child.is_valid()));
+///
+/// assert_eq!(report.get_children_at_path(&path!(numbers.inner[4])).count(), 1);
+/// assert!(report.get_children_at_path(&path!(numbers.inner[4])).all(|child| child.is_valid()));
+/// ```
 #[doc(hidden)]
 #[macro_export]
 macro_rules! _Compare {
@@ -46,6 +86,13 @@ macro_rules! _Compare {
 #[doc(inline)]
 pub use _Compare as Compare;
 
+/// Validates an ordering.
+///
+/// There are certain situations where using this validator directly is necessary.
+/// However, in most cases you can use the [`Compare`] macro instead.
+///
+/// # Examples
+/// See the [`Compare`] macro.
 pub enum CompareValues<'a, T: Clone> {
     LT(Cow<'a, T>),
     LE(Cow<'a, T>),

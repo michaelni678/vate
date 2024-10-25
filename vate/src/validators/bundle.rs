@@ -59,14 +59,16 @@ pub use _Bundle as Bundle;
 ///
 /// There is not really any reason to use this validator directly. Use the [`Bundle`] macro instead.
 ///
-/// [`Bundle2`] can be used to represent any number of validators. The way the [`Bundle`] macro works is by
-/// expanding the list of validators into a combination of [`Bundle2`]s like so:
+/// [`Bundle2`] can be used to represent any number of validators.
+/// The way the [`Bundle`] macro works is by expanding the list of
+/// validators into a combination of [`Bundle2`]s like so:
+///
 /// ```text
 /// Bundle2(ValidatorA, Bundle2(ValidatorB, Bundle2(ValidatorC, ValidatorD)))
 /// ```
 ///
 /// # Examples
-/// See the `Bundle` macro.
+/// See the [`Bundle`] macro.
 pub struct Bundle2<V1, V2>(pub V1, pub V2);
 
 impl<T, D, E, V1, V2> Validator<T, D, E> for Bundle2<V1, V2>
