@@ -7,6 +7,7 @@ pub struct Nested;
 
 impl Nested {
     pub const VALIDATOR_NAME: &'static str = "Nested";
+
     pub const DEFAULT_VALIDATOR_VARIANT: u8 = 0;
 }
 

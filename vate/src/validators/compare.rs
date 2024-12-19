@@ -9,6 +9,7 @@ pub struct LT<T>(pub T);
 
 impl LT<()> {
     pub const VALIDATOR_NAME: &'static str = "LT";
+
     pub const DEFAULT_VALIDATOR_VARIANT: u8 = 0;
     pub const OTHER_VALUE_DETAIL_INDEX: usize = 0;
 }
@@ -55,6 +56,7 @@ pub struct LE<T>(pub T);
 
 impl LE<()> {
     pub const VALIDATOR_NAME: &'static str = "LE";
+
     pub const DEFAULT_VALIDATOR_VARIANT: u8 = 0;
     pub const OTHER_VALUE_DETAIL_INDEX: usize = 0;
 }
@@ -101,6 +103,7 @@ pub struct GT<T>(pub T);
 
 impl GT<()> {
     pub const VALIDATOR_NAME: &'static str = "GT";
+
     pub const DEFAULT_VALIDATOR_VARIANT: u8 = 0;
     pub const OTHER_VALUE_DETAIL_INDEX: usize = 0;
 }
@@ -147,6 +150,7 @@ pub struct GE<T>(pub T);
 
 impl GE<()> {
     pub const VALIDATOR_NAME: &'static str = "GE";
+
     pub const DEFAULT_VALIDATOR_VARIANT: u8 = 0;
     pub const OTHER_VALUE_DETAIL_INDEX: usize = 0;
 }
@@ -193,6 +197,7 @@ pub struct EQ<T>(pub T);
 
 impl EQ<()> {
     pub const VALIDATOR_NAME: &'static str = "EQ";
+
     pub const DEFAULT_VALIDATOR_VARIANT: u8 = 0;
     pub const OTHER_VALUE_DETAIL_INDEX: usize = 0;
 }
@@ -239,6 +244,7 @@ pub struct NE<T>(pub T);
 
 impl NE<()> {
     pub const VALIDATOR_NAME: &'static str = "NE";
+
     pub const DEFAULT_VALIDATOR_VARIANT: u8 = 0;
     pub const OTHER_VALUE_DETAIL_INDEX: usize = 0;
 }
@@ -288,6 +294,7 @@ pub struct Within<T> {
 
 impl Within<()> {
     pub const VALIDATOR_NAME: &'static str = "Within";
+
     pub const DEFAULT_VALIDATOR_VARIANT: u8 = 0;
     pub const MIN_VALUE_DETAIL_INDEX: usize = 0;
     pub const MAX_VALUE_DETAIL_INDEX: usize = 1;
