@@ -5,3 +5,4 @@
 extern crate self as vate;
 
 pub mod core;
+pub mod validators;

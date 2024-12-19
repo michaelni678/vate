@@ -4,3 +4,6 @@ members = [
     "vate",
     "vate-macros",
 ]
+
+[workspace.dependencies]
+vate = { path = "vate", features = ["full"] }

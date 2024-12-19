@@ -6,6 +6,9 @@ pub mod validating;
 pub use interpreting::*;
 pub use validating::*;
 
+// Re-export Validate derive macro.
+pub use vate_macros::Validate;
+
 /// Allows the implementor to be validated.
 pub trait Validate {
     /// Custom context type.

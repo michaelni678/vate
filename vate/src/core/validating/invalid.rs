@@ -1,7 +1,7 @@
 use std::fmt;
 
 /// Contains information regarding validations.
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct Invalid<'a> {
     /// The type ident.
     pub type_ident: TypeIdent,
@@ -13,11 +13,19 @@ pub struct Invalid<'a> {
     pub validator_idents: Vec<ValidatorIdent>,
 
     /// The details for the validators.
-    pub validator_details: Vec<Details<'a>>,
+    pub all_validator_details: Vec<Details<'a>>,
+}
+
+impl<'a> Invalid<'a> {
+    pub fn push(mut self, validator_ident: ValidatorIdent, validator_details: Details<'a>) -> Self {
+        self.validator_idents.push(validator_ident);
+        self.all_validator_details.push(validator_details);
+        self
+    }
 }
 
 /// A type ident.
-#[derive(Default, Hash, PartialEq, Eq)]
+#[derive(Default, Clone, Copy, Hash, PartialEq, Eq)]
 pub enum TypeIdent {
     /// An unspecified field ident.
     ///
@@ -47,7 +55,7 @@ impl fmt::Display for TypeIdent {
 }
 
 /// A field ident.
-#[derive(Default, Hash, PartialEq, Eq)]
+#[derive(Default, Clone, Copy, Hash, PartialEq, Eq)]
 pub enum FieldIdent {
     /// An unspecified field ident.
     ///
@@ -77,7 +85,7 @@ impl fmt::Display for FieldIdent {
 }
 
 /// A validator ident.
-#[derive(Hash, PartialEq, Eq)]
+#[derive(Default, Hash, Clone, Copy, PartialEq, Eq)]
 pub struct ValidatorIdent {
     /// The name of the validator.
     pub name: &'static str,
@@ -86,7 +94,16 @@ pub struct ValidatorIdent {
     pub variant: u8,
 }
 
+impl ValidatorIdent {
+    /// Create an instance with only name.
+    pub fn set_name(mut self, name: &'static str) -> Self {
+        self.name = name;
+        self
+    }
+}
+
 /// A validator's details.
+#[derive(Default, Clone)]
 pub struct Details<'a>(Vec<&'a dyn ToString>);
 
 impl<'a> Details<'a> {

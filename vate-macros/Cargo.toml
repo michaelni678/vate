@@ -11,6 +11,9 @@ description = "Procedural macros for vate"
 [lib]
 proc-macro = true
 
+[dev-dependencies]
+vate = { workspace = true }
+
 [dependencies]
 proc-macro2 = "1.0.86"
 quote = "1.0.37"
