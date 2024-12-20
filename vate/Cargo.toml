@@ -1,0 +1,19 @@
+[package]
+name = "vate"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/michaelni678/vate"
+readme = "../README.md"
+license = "Apache-2.0"
+keywords = ["validate", "validation", "validator"]
+description = "Data validation framework"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[features]
+full = []
+
+[dependencies]
+vate-macros = { path = "../vate-macros" }

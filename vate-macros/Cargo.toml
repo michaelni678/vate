@@ -1,0 +1,20 @@
+[package]
+name = "vate-macros"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/michaelni678/vate"
+readme = "../README.md"
+license = "Apache-2.0"
+keywords = ["validate", "validation", "validator"]
+description = "Procedural macros for vate"
+
+[lib]
+proc-macro = true
+
+[dev-dependencies]
+vate = { path = "../vate", features = ["full"] }
+
+[dependencies]
+proc-macro2 = "1.0.86"
+quote = "1.0.37"
+syn = "2.0.77"
