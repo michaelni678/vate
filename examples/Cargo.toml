@@ -9,5 +9,9 @@ serde_json = "1.0.133"
 vate = { path = "../vate", features = ["full"] }
 
 [[example]]
+name = "read_me"
+path = "read_me.rs"
+
+[[example]]
 name = "register"
 path = "register.rs"
