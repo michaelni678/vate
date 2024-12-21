@@ -332,6 +332,16 @@ where
 
 /// Processes and collects invalids.
 pub trait Report {
+    /// Check if the report is valid.
+    fn is_valid(&self) -> bool {
+        self.num_invalids() == 0
+    }
+
+    /// Check if the report is invalid.
+    fn is_invalid(&self) -> bool {
+        !self.is_valid()
+    }
+
     /// Get the number of invalids the report has pushed.
     fn num_invalids(&self) -> usize;
 
