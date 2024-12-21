@@ -6,7 +6,7 @@ repository = "https://github.com/michaelni678/vate"
 readme = "../README.md"
 license = "Apache-2.0"
 keywords = ["validate", "validation", "validator"]
-description = "Data validation framework"
+description = "Data validation crate"
 
 [package.metadata.docs.rs]
 all-features = true
