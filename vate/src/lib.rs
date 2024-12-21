@@ -5,5 +5,10 @@
 extern crate self as vate;
 
 pub mod core;
+/// Feature-dependent re-exports.
+pub mod extras {
+    #[cfg(feature = "regex")]
+    pub use regex::Regex;
+}
 mod internal;
 pub mod validators;
