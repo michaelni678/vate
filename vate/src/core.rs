@@ -286,8 +286,7 @@ impl<D> Interpreter<D> {
         field_ident: &FieldIdent,
         validator_tags: &[ValidatorTag],
     ) -> &InterpreterFunction<D> {
-        let override_function =
-            self.get_override_function(type_ident, field_ident, validator_tags);
+        let override_function = self.get_override_function(type_ident, field_ident, validator_tags);
 
         match override_function {
             Some(f) => f,
