@@ -9,7 +9,7 @@ use crate::extras::Regex;
 pub struct Alphabetic;
 
 impl Alphabetic {
-    pub const DEFAULT_VTAG: &'static str = "m=string;v=Alphabetic";
+    pub const DEFAULT_VTAG: ValidationTag = "m=string;v=Alphabetic";
     pub const TARGET_VALUE_DIDX: usize = 0;
 }
 
@@ -50,7 +50,7 @@ where
 pub struct Alphanumeric;
 
 impl Alphanumeric {
-    pub const DEFAULT_VTAG: &'static str = "m=string;v=Alphanumeric";
+    pub const DEFAULT_VTAG: ValidationTag = "m=string;v=Alphanumeric";
     pub const TARGET_VALUE_DIDX: usize = 0;
 }
 
@@ -91,7 +91,7 @@ where
 pub struct ASCII;
 
 impl ASCII {
-    pub const DEFAULT_VTAG: &'static str = "m=string;v=ASCII";
+    pub const DEFAULT_VTAG: ValidationTag = "m=string;v=ASCII";
     pub const TARGET_VALUE_DIDX: usize = 0;
 }
 
@@ -132,7 +132,7 @@ where
 pub struct Lowercase;
 
 impl Lowercase {
-    pub const DEFAULT_VTAG: &'static str = "m=string;v=Lowercase";
+    pub const DEFAULT_VTAG: ValidationTag = "m=string;v=Lowercase";
     pub const TARGET_VALUE_DIDX: usize = 0;
 }
 
@@ -173,7 +173,7 @@ where
 pub struct Uppercase;
 
 impl Uppercase {
-    pub const DEFAULT_VTAG: &'static str = "m=string;v=Uppercase";
+    pub const DEFAULT_VTAG: ValidationTag = "m=string;v=Uppercase";
     pub const TARGET_VALUE_DIDX: usize = 0;
 }
 
@@ -217,10 +217,10 @@ pub enum Length<V> {
 }
 
 impl Length<()> {
-    pub const BYTES_VTAG: &'static str = "m=string;v=Length;t=Bytes";
+    pub const BYTES_VTAG: ValidationTag = "m=string;v=Length;t=Bytes";
     pub const BYTES_TARGET_LENGTH_DIDX: usize = 0;
 
-    pub const CHARS_VTAG: &'static str = "m=string;v=Length;t=Chars";
+    pub const CHARS_VTAG: ValidationTag = "m=string;v=Length;t=Chars";
     pub const CHARS_TARGET_LENGTH_DIDX: usize = 0;
 }
 
@@ -284,7 +284,7 @@ pub struct MatchesRegex<'a>(pub &'a Regex);
 
 #[cfg(feature = "regex")]
 impl MatchesRegex<'_> {
-    pub const DEFAULT_VTAG: &'static str = "m=string;v=MatchesRegex";
+    pub const DEFAULT_VTAG: ValidationTag = "m=string;v=MatchesRegex";
     pub const TARGET_VALUE_DIDX: usize = 0;
     pub const REGEX_DIDX: usize = 0;
 }

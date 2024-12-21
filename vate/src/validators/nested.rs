@@ -6,7 +6,7 @@ use crate::core::*;
 pub struct Nested;
 
 impl Nested {
-    pub const DEFAULT_VTAG: &'static str = "m=nested;v=Nested";
+    pub const DEFAULT_VTAG: ValidationTag = "m=nested;v=Nested";
 }
 
 impl<T, C, E> Validator<&T, C, E> for Nested
