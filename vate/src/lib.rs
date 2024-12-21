@@ -11,4 +11,5 @@ pub mod extras {
     pub use regex::Regex;
 }
 mod internal;
+pub mod reports;
 pub mod validators;

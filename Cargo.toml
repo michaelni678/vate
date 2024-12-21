@@ -3,4 +3,6 @@ resolver = "2"
 members = [
     "vate",
     "vate-macros",
+
+    "examples",
 ]

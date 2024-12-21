@@ -4,6 +4,9 @@ use std::collections::HashMap;
 
 use crate::internal::catch_map::CatchMap;
 
+#[cfg(feature = "serialize")]
+use serde::Serialize;
+
 // Re-export `Validate` derive macro.
 pub use vate_macros::Validate;
 
@@ -70,6 +73,7 @@ impl<'a> Invalid<'a> {
 
 /// A type ident.
 #[derive(Hash, PartialEq, Eq, Copy, Clone)]
+#[cfg_attr(feature = "serialize", derive(Serialize))]
 pub enum TypeIdent {
     /// A struct's ident.
     ///
@@ -84,6 +88,7 @@ pub enum TypeIdent {
 
 /// A field ident.
 #[derive(Hash, PartialEq, Eq, Copy, Clone)]
+#[cfg_attr(feature = "serialize", derive(Serialize))]
 pub enum FieldIdent {
     /// A named field ident.
     ///
@@ -138,6 +143,16 @@ pub struct Interpreter<D> {
 
     /// The fallback function.
     fallback_function: InterpreterFunction<D>,
+}
+
+impl<D> Default for Interpreter<D> {
+    fn default() -> Self {
+        Self {
+            override_functions: CatchMap::default(),
+            normal_functions: HashMap::default(),
+            fallback_function: InterpreterFunction::default(),
+        }
+    }
 }
 
 impl<D> Interpreter<D> {
@@ -234,7 +249,7 @@ impl<D> Interpreter<D> {
     }
 
     /// Interpret an invalid validation.
-    pub fn interpret(&self, invalid: Invalid, data: &D) -> Option<String> {
+    pub fn interpret(&self, invalid: &Invalid, data: &D) -> Option<String> {
         let function = self.get_function(&invalid.type_ident, &invalid.field_ident, &invalid.vtags);
 
         (function.inner)(invalid, data)
@@ -244,13 +259,24 @@ impl<D> Interpreter<D> {
 /// A function for interpreting an invalid validation into a message.
 pub struct InterpreterFunction<D> {
     #[allow(clippy::type_complexity)]
-    pub inner: Box<dyn Fn(Invalid, &D) -> Option<String> + Send + Sync>,
+    pub inner: Box<dyn Fn(&Invalid, &D) -> Option<String> + Send + Sync>,
 }
 
 impl<D> Default for InterpreterFunction<D> {
     fn default() -> Self {
         Self {
             inner: Box::new(|_invalid, _data| Some(String::from("invalid"))),
+        }
+    }
+}
+
+impl<D, F> From<F> for InterpreterFunction<D>
+where
+    F: Fn(&Invalid, &D) -> Option<String> + Send + Sync + 'static,
+{
+    fn from(function: F) -> Self {
+        Self {
+            inner: Box::new(function),
         }
     }
 }
