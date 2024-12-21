@@ -20,7 +20,7 @@ where
     T: AsRef<str>,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: T,
         _context: &C,
         invalid: Invalid,
@@ -61,7 +61,7 @@ where
     T: AsRef<str>,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: T,
         _context: &C,
         invalid: Invalid,
@@ -102,7 +102,7 @@ where
     T: AsRef<str>,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: T,
         _context: &C,
         invalid: Invalid,

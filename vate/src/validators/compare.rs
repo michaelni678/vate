@@ -21,7 +21,7 @@ where
     U: Borrow<T> + ToString,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: &T,
         _context: &C,
         invalid: Invalid,
@@ -32,7 +32,7 @@ where
     where
         R: Report,
     {
-        let other = self.0;
+        let other = &self.0;
 
         if target.lt(other.borrow()) {
             Ok(ControlFlow::Continue)
@@ -40,7 +40,7 @@ where
             Ok(report.push_invalid(
                 invalid.push_validation(
                     LT::DEFAULT_VTAG,
-                    Detailer::default().set_detail(LT::OTHER_VALUE_DIDX, &other),
+                    Detailer::default().set_detail(LT::OTHER_VALUE_DIDX, other),
                 ),
                 interpreter,
                 data,
@@ -63,7 +63,7 @@ where
     U: Borrow<T> + ToString,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: &T,
         _context: &C,
         invalid: Invalid,
@@ -74,7 +74,7 @@ where
     where
         R: Report,
     {
-        let other = self.0;
+        let other = &self.0;
 
         if target.le(other.borrow()) {
             Ok(ControlFlow::Continue)
@@ -82,7 +82,7 @@ where
             Ok(report.push_invalid(
                 invalid.push_validation(
                     LE::DEFAULT_VTAG,
-                    Detailer::default().set_detail(LE::OTHER_VALUE_DIDX, &other),
+                    Detailer::default().set_detail(LE::OTHER_VALUE_DIDX, other),
                 ),
                 interpreter,
                 data,
@@ -105,7 +105,7 @@ where
     U: Borrow<T> + ToString,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: &T,
         _context: &C,
         invalid: Invalid,
@@ -116,7 +116,7 @@ where
     where
         R: Report,
     {
-        let other = self.0;
+        let other = &self.0;
 
         if target.gt(other.borrow()) {
             Ok(ControlFlow::Continue)
@@ -124,7 +124,7 @@ where
             Ok(report.push_invalid(
                 invalid.push_validation(
                     GT::DEFAULT_VTAG,
-                    Detailer::default().set_detail(GT::OTHER_VALUE_DIDX, &other),
+                    Detailer::default().set_detail(GT::OTHER_VALUE_DIDX, other),
                 ),
                 interpreter,
                 data,
@@ -147,7 +147,7 @@ where
     U: Borrow<T> + ToString,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: &T,
         _context: &C,
         invalid: Invalid,
@@ -158,7 +158,7 @@ where
     where
         R: Report,
     {
-        let other = self.0;
+        let other = &self.0;
 
         if target.ge(other.borrow()) {
             Ok(ControlFlow::Continue)
@@ -166,7 +166,7 @@ where
             Ok(report.push_invalid(
                 invalid.push_validation(
                     GE::DEFAULT_VTAG,
-                    Detailer::default().set_detail(GE::OTHER_VALUE_DIDX, &other),
+                    Detailer::default().set_detail(GE::OTHER_VALUE_DIDX, other),
                 ),
                 interpreter,
                 data,
@@ -189,7 +189,7 @@ where
     U: Borrow<T> + ToString,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: &T,
         _context: &C,
         invalid: Invalid,
@@ -200,7 +200,7 @@ where
     where
         R: Report,
     {
-        let other = self.0;
+        let other = &self.0;
 
         if target.eq(other.borrow()) {
             Ok(ControlFlow::Continue)
@@ -208,7 +208,7 @@ where
             Ok(report.push_invalid(
                 invalid.push_validation(
                     EQ::DEFAULT_VTAG,
-                    Detailer::default().set_detail(EQ::OTHER_VALUE_DIDX, &other),
+                    Detailer::default().set_detail(EQ::OTHER_VALUE_DIDX, other),
                 ),
                 interpreter,
                 data,
@@ -231,7 +231,7 @@ where
     U: Borrow<T> + ToString,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: &T,
         _context: &C,
         invalid: Invalid,
@@ -242,7 +242,7 @@ where
     where
         R: Report,
     {
-        let other = self.0;
+        let other = &self.0;
 
         if target.ne(other.borrow()) {
             Ok(ControlFlow::Continue)
@@ -250,7 +250,7 @@ where
             Ok(report.push_invalid(
                 invalid.push_validation(
                     NE::DEFAULT_VTAG,
-                    Detailer::default().set_detail(NE::OTHER_VALUE_DIDX, &other),
+                    Detailer::default().set_detail(NE::OTHER_VALUE_DIDX, other),
                 ),
                 interpreter,
                 data,
@@ -287,7 +287,7 @@ where
     U: PartialOrd<T> + ToString,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: &T,
         _context: &C,
         invalid: Invalid,
@@ -298,7 +298,7 @@ where
     where
         R: Report,
     {
-        let range = self.0;
+        let range = &self.0;
 
         if range.contains(target) {
             Ok(ControlFlow::Continue)
@@ -323,7 +323,7 @@ where
     U: PartialOrd<T> + ToString,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: &T,
         _context: &C,
         invalid: Invalid,
@@ -334,7 +334,7 @@ where
     where
         R: Report,
     {
-        let range = self.0;
+        let range = &self.0;
 
         if range.contains(target) {
             Ok(ControlFlow::Continue)
@@ -358,7 +358,7 @@ where
     U: PartialOrd<T> + ToString,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: &T,
         _context: &C,
         invalid: Invalid,
@@ -369,7 +369,7 @@ where
     where
         R: Report,
     {
-        let range = self.0;
+        let range = &self.0;
 
         if range.contains(target) {
             Ok(ControlFlow::Continue)
@@ -394,7 +394,7 @@ where
     U: PartialOrd<T> + ToString,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: &T,
         _context: &C,
         invalid: Invalid,
@@ -405,7 +405,7 @@ where
     where
         R: Report,
     {
-        let range = self.0;
+        let range = &self.0;
 
         if range.contains(target) {
             Ok(ControlFlow::Continue)
@@ -428,7 +428,7 @@ where
     U: PartialOrd<T> + ToString,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: &T,
         _context: &C,
         invalid: Invalid,
@@ -439,7 +439,7 @@ where
     where
         R: Report,
     {
-        let range = self.0;
+        let range = &self.0;
 
         if range.contains(target) {
             Ok(ControlFlow::Continue)

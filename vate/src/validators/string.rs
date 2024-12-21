@@ -18,7 +18,7 @@ where
     T: AsRef<str>,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: T,
         _context: &C,
         invalid: Invalid,
@@ -59,7 +59,7 @@ where
     T: AsRef<str>,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: T,
         _context: &C,
         invalid: Invalid,
@@ -100,7 +100,7 @@ where
     T: AsRef<str>,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: T,
         _context: &C,
         invalid: Invalid,
@@ -141,7 +141,7 @@ where
     T: AsRef<str>,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: T,
         _context: &C,
         invalid: Invalid,
@@ -182,7 +182,7 @@ where
     T: AsRef<str>,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: T,
         _context: &C,
         invalid: Invalid,
@@ -218,10 +218,10 @@ pub enum Length<V> {
 
 impl Length<()> {
     pub const BYTES_VTAG: &'static str = "m=string;v=Length;t=Bytes";
-    pub const BYTES_LENGTH_DIDX: usize = 0;
+    pub const BYTES_TARGET_LENGTH_DIDX: usize = 0;
 
     pub const CHARS_VTAG: &'static str = "m=string;v=Length;t=Chars";
-    pub const CHARS_LENGTH_DIDX: usize = 0;
+    pub const CHARS_TARGET_LENGTH_DIDX: usize = 0;
 }
 
 impl<T, C, E, V> Validator<T, C, E> for Length<V>
@@ -230,7 +230,7 @@ where
     for<'a> V: Validator<&'a usize, C, E>,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: T,
         context: &C,
         invalid: Invalid,
@@ -252,7 +252,7 @@ where
                     context,
                     invalid.push_validation(
                         Length::BYTES_VTAG,
-                        Detailer::default().set_detail(Length::BYTES_LENGTH_DIDX, &len),
+                        Detailer::default().set_detail(Length::BYTES_TARGET_LENGTH_DIDX, &len),
                     ),
                     interpreter,
                     data,
@@ -267,7 +267,7 @@ where
                     context,
                     invalid.push_validation(
                         Length::CHARS_VTAG,
-                        Detailer::default().set_detail(Length::CHARS_LENGTH_DIDX, &len),
+                        Detailer::default().set_detail(Length::CHARS_TARGET_LENGTH_DIDX, &len),
                     ),
                     interpreter,
                     data,
@@ -295,7 +295,7 @@ where
     T: AsRef<str>,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: T,
         _context: &C,
         invalid: Invalid,

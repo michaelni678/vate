@@ -31,7 +31,7 @@ where
     V2: Validator<T, C, E>,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: T,
         context: &C,
         invalid: Invalid,

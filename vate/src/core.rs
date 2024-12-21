@@ -34,7 +34,7 @@ pub trait Validate {
 pub trait Validator<T, C, E> {
     /// Runs the validator.
     fn run<D, R>(
-        self,
+        &self,
         target: T,
         context: &C,
         invalid: Invalid,

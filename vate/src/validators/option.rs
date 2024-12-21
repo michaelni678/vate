@@ -11,7 +11,7 @@ impl Something {
 
 impl<T, C, E> Validator<&Option<T>, C, E> for Something {
     fn run<D, R>(
-        self,
+        &self,
         target: &Option<T>,
         _context: &C,
         invalid: Invalid,
@@ -44,7 +44,7 @@ where
     for<'a> V: Validator<&'a T, C, E>,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: &Option<T>,
         context: &C,
         invalid: Invalid,
@@ -79,7 +79,7 @@ impl Nothing {
 
 impl<T, C, E> Validator<&Option<T>, C, E> for Nothing {
     fn run<D, R>(
-        self,
+        &self,
         target: &Option<T>,
         _context: &C,
         invalid: Invalid,

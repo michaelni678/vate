@@ -14,7 +14,7 @@ where
     T: Validate<Context = C, Error = E>,
 {
     fn run<D, R>(
-        self,
+        &self,
         target: &T,
         context: &C,
         invalid: Invalid,
