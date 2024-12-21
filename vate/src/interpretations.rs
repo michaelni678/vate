@@ -4,6 +4,7 @@ use crate::{
     core::{Interpreter, Invalid},
     validators::{
         compare::{Within, EQ, GE, GT, LE, LT, NE},
+        ip::{IPv4, IPv6, IP},
         nested::Nested,
         option::{Nothing, Something},
         string::{Alphabetic, Alphanumeric, Length, Lowercase, Uppercase, ASCII},
@@ -424,8 +425,30 @@ pub fn add_builtin_interpretations<D>(interpreter: &mut Interpreter<D>) {
 
     interpreter.set_normal_function_once(
         vec![Nothing::DEFAULT_VTAG],
+        |invalid: &Invalid, _data: &D| Some(format!("{} must not be defined", invalid.field_ident)),
+    );
+
+    interpreter.set_normal_function_once(vec![IP::DEFAULT_VTAG], |invalid: &Invalid, _data: &D| {
+        Some(format!("{} is not a valid IP address", invalid.field_ident))
+    });
+
+    interpreter.set_normal_function_once(
+        vec![IPv4::DEFAULT_VTAG],
         |invalid: &Invalid, _data: &D| {
-            Some(format!("{} must not be defined", invalid.field_ident,))
+            Some(format!(
+                "{} is not a valid IPv4 address",
+                invalid.field_ident
+            ))
+        },
+    );
+
+    interpreter.set_normal_function_once(
+        vec![IPv6::DEFAULT_VTAG],
+        |invalid: &Invalid, _data: &D| {
+            Some(format!(
+                "{} is not a valid IPv6 address",
+                invalid.field_ident
+            ))
         },
     );
 }

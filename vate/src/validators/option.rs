@@ -6,7 +6,7 @@ use crate::core::*;
 pub struct Something;
 
 impl Something {
-    pub const DEFAULT_VTAG: &'static str = "m=string;v=Something";
+    pub const DEFAULT_VTAG: &'static str = "m=option;v=Something";
 }
 
 impl<T, C, E> Validator<&Option<T>, C, E> for Something {
@@ -74,7 +74,7 @@ where
 pub struct Nothing;
 
 impl Nothing {
-    pub const DEFAULT_VTAG: &'static str = "m=string;v=Nothing";
+    pub const DEFAULT_VTAG: &'static str = "m=option;v=Nothing";
 }
 
 impl<T, C, E> Validator<&Option<T>, C, E> for Nothing {
