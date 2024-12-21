@@ -135,8 +135,8 @@ pub struct ComprehensiveReportItem {
     /// The field ident.
     pub field_ident: FieldIdent,
 
-    /// The validation tags.
-    pub vtags: Vec<ValidationTag>,
+    /// The validator tags.
+    pub vtags: Vec<ValidatorTag>,
 
     /// The interpretation.
     pub interpretation: String,

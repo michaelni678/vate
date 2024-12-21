@@ -11,28 +11,28 @@ use crate::core::*;
 pub struct Length<V>(pub V);
 
 impl Length<()> {
-    pub const VEC_VTAG: ValidationTag = "m=collection;v=Length;t=Vec";
+    pub const VEC_VTAG: ValidatorTag = "m=collection;v=Length;t=Vec";
     pub const VEC_TARGET_LENGTH_DIDX: usize = 0;
 
-    pub const VEC_DEQUE_VTAG: ValidationTag = "m=collection;v=Length;t=VecDeque";
+    pub const VEC_DEQUE_VTAG: ValidatorTag = "m=collection;v=Length;t=VecDeque";
     pub const VEC_DEQUE_TARGET_LENGTH_DIDX: usize = 0;
 
-    pub const LINKED_LIST_VTAG: ValidationTag = "m=collection;v=Length;t=LinkedList";
+    pub const LINKED_LIST_VTAG: ValidatorTag = "m=collection;v=Length;t=LinkedList";
     pub const LINKED_LIST_TARGET_LENGTH_DIDX: usize = 0;
 
-    pub const B_TREE_SET_VTAG: ValidationTag = "m=collection;v=Length;t=BTreeSet";
+    pub const B_TREE_SET_VTAG: ValidatorTag = "m=collection;v=Length;t=BTreeSet";
     pub const B_TREE_SET_TARGET_LENGTH_DIDX: usize = 0;
 
-    pub const B_TREE_MAP_VTAG: ValidationTag = "m=collection;v=Length;t=BTreeMap";
+    pub const B_TREE_MAP_VTAG: ValidatorTag = "m=collection;v=Length;t=BTreeMap";
     pub const B_TREE_MAP_TARGET_LENGTH_DIDX: usize = 0;
 
-    pub const HASH_SET_VTAG: ValidationTag = "m=collection;v=Length;t=HashSet";
+    pub const HASH_SET_VTAG: ValidatorTag = "m=collection;v=Length;t=HashSet";
     pub const HASH_SET_TARGET_LENGTH_DIDX: usize = 0;
 
-    pub const HASH_MAP_VTAG: ValidationTag = "m=collection;v=Length;t=HashMap";
+    pub const HASH_MAP_VTAG: ValidatorTag = "m=collection;v=Length;t=HashMap";
     pub const HASH_MAP_TARGET_LENGTH_DIDX: usize = 0;
 
-    pub const BINARY_HEAP_VTAG: ValidationTag = "m=collection;v=Length;t=BinaryHeap";
+    pub const BINARY_HEAP_VTAG: ValidatorTag = "m=collection;v=Length;t=BinaryHeap";
     pub const BINARY_HEAP_TARGET_LENGTH_DIDX: usize = 0;
 }
 
@@ -296,28 +296,28 @@ where
 pub struct ForEach<V>(pub V);
 
 impl ForEach<()> {
-    pub const VEC_VTAG: ValidationTag = "m=collection;v=ForEach;t=Vec";
+    pub const VEC_VTAG: ValidatorTag = "m=collection;v=ForEach;t=Vec";
     pub const VEC_TARGET_ITEM_INDEX_DIDX: usize = 0;
 
-    pub const VEC_DEQUE_VTAG: ValidationTag = "m=collection;v=ForEach;t=VecDeque";
+    pub const VEC_DEQUE_VTAG: ValidatorTag = "m=collection;v=ForEach;t=VecDeque";
     pub const VEC_DEQUE_TARGET_ITEM_INDEX_DIDX: usize = 0;
 
-    pub const LINKED_LIST_VTAG: ValidationTag = "m=collection;v=ForEach;t=LinkedList";
+    pub const LINKED_LIST_VTAG: ValidatorTag = "m=collection;v=ForEach;t=LinkedList";
     pub const LINKED_LIST_TARGET_ITEM_INDEX_DIDX: usize = 0;
 
-    pub const B_TREE_SET_VTAG: ValidationTag = "m=collection;v=ForEach;t=BTreeSet";
+    pub const B_TREE_SET_VTAG: ValidatorTag = "m=collection;v=ForEach;t=BTreeSet";
     pub const B_TREE_SET_TARGET_ITEM_INDEX_DIDX: usize = 0;
 
-    pub const B_TREE_MAP_VTAG: ValidationTag = "m=collection;v=ForEach;t=BTreeMap";
+    pub const B_TREE_MAP_VTAG: ValidatorTag = "m=collection;v=ForEach;t=BTreeMap";
     pub const B_TREE_MAP_TARGET_ITEM_INDEX_DIDX: usize = 0;
 
-    pub const HASH_SET_VTAG: ValidationTag = "m=collection;v=ForEach;t=HashSet";
+    pub const HASH_SET_VTAG: ValidatorTag = "m=collection;v=ForEach;t=HashSet";
     pub const HASH_SET_TARGET_ITEM_INDEX_DIDX: usize = 0;
 
-    pub const HASH_MAP_VTAG: ValidationTag = "m=collection;v=ForEach;t=HashMap";
+    pub const HASH_MAP_VTAG: ValidatorTag = "m=collection;v=ForEach;t=HashMap";
     pub const HASH_MAP_TARGET_ITEM_INDEX_DIDX: usize = 0;
 
-    pub const BINARY_HEAP_VTAG: ValidationTag = "m=collection;v=ForEach;t=BinaryHeap";
+    pub const BINARY_HEAP_VTAG: ValidatorTag = "m=collection;v=ForEach;t=BinaryHeap";
     pub const BINARY_HEAP_TARGET_ITEM_INDEX_DIDX: usize = 0;
 }
 
@@ -636,25 +636,25 @@ where
 pub struct Contains<T>(pub T);
 
 impl Contains<()> {
-    pub const VEC_VTAG: ValidationTag = "m=collection;v=Contains;t=Vec";
+    pub const VEC_VTAG: ValidatorTag = "m=collection;v=Contains;t=Vec";
     pub const VEC_NEEDLE_VALUE_DIDX: usize = 0;
 
-    pub const VEC_DEQUE_VTAG: ValidationTag = "m=collection;v=Contains;t=VecDeque";
+    pub const VEC_DEQUE_VTAG: ValidatorTag = "m=collection;v=Contains;t=VecDeque";
     pub const VEC_DEQUE_NEEDLE_VALUE_DIDX: usize = 0;
 
-    pub const LINKED_LIST_VTAG: ValidationTag = "m=collection;v=Contains;t=LinkedList";
+    pub const LINKED_LIST_VTAG: ValidatorTag = "m=collection;v=Contains;t=LinkedList";
     pub const LINKED_NEEDLE_VALUE_DIDX: usize = 0;
 
-    pub const B_TREE_SET_VTAG: ValidationTag = "m=collection;v=Contains;t=BTreeSet";
+    pub const B_TREE_SET_VTAG: ValidatorTag = "m=collection;v=Contains;t=BTreeSet";
     pub const B_TREE_SET_NEEDLE_VALUE_DIDX: usize = 0;
 
-    pub const B_TREE_MAP_VTAG: ValidationTag = "m=collection;v=Contains;t=BTreeMap";
+    pub const B_TREE_MAP_VTAG: ValidatorTag = "m=collection;v=Contains;t=BTreeMap";
     pub const B_TREE_MAP_NEEDLE_VALUE_DIDX: usize = 0;
 
-    pub const HASH_SET_VTAG: ValidationTag = "m=collection;v=Contains;t=HashSet";
+    pub const HASH_SET_VTAG: ValidatorTag = "m=collection;v=Contains;t=HashSet";
     pub const HASH_SET_NEEDLE_VALUE_DIDX: usize = 0;
 
-    pub const HASH_MAP_VTAG: ValidationTag = "m=collection;v=Contains;t=HashMap";
+    pub const HASH_MAP_VTAG: ValidatorTag = "m=collection;v=Contains;t=HashMap";
     pub const HASH_MAP_NEEDLE_VALUE_DIDX: usize = 0;
 }
 
@@ -893,7 +893,7 @@ where
 pub struct Among<T>(pub T);
 
 impl Among<()> {
-    pub const SLICE_VTAG: ValidationTag = "m=collection;v=Among;t=Slice";
+    pub const SLICE_VTAG: ValidatorTag = "m=collection;v=Among;t=Slice";
 
     // TODO: Implement the `Among` validator for other collections, like `&Vec`, `&HashSet`, etc.
 }

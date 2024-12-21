@@ -11,7 +11,7 @@ use crate::core::*;
 pub struct IP;
 
 impl IP {
-    pub const DEFAULT_VTAG: ValidationTag = "m=ip;v=IP";
+    pub const DEFAULT_VTAG: ValidatorTag = "m=ip;v=IP";
     pub const TARGET_VALUE_DIDX: usize = 0;
 }
 
@@ -52,7 +52,7 @@ where
 pub struct IPv4;
 
 impl IPv4 {
-    pub const DEFAULT_VTAG: ValidationTag = "m=ip;v=IPv4";
+    pub const DEFAULT_VTAG: ValidatorTag = "m=ip;v=IPv4";
     pub const TARGET_VALUE_DIDX: usize = 0;
 }
 
@@ -93,7 +93,7 @@ where
 pub struct IPv6;
 
 impl IPv6 {
-    pub const DEFAULT_VTAG: ValidationTag = "m=ip;v=IPv6";
+    pub const DEFAULT_VTAG: ValidatorTag = "m=ip;v=IPv6";
     pub const TARGET_VALUE_DIDX: usize = 0;
 }
 

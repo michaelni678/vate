@@ -55,8 +55,8 @@ pub struct Invalid<'a> {
     /// The field ident.
     pub field_ident: FieldIdent,
 
-    /// The validation tags.
-    pub vtags: Vec<ValidationTag>,
+    /// The validator tags.
+    pub vtags: Vec<ValidatorTag>,
 
     /// The detailers.
     pub detailers: Vec<Detailer<'a>>,
@@ -64,7 +64,7 @@ pub struct Invalid<'a> {
 
 impl<'a> Invalid<'a> {
     /// Push a validation.
-    pub fn push_validation(mut self, vtag: ValidationTag, detailer: Detailer<'a>) -> Self {
+    pub fn push_validation(mut self, vtag: ValidatorTag, detailer: Detailer<'a>) -> Self {
         self.vtags.push(vtag);
         self.detailers.push(detailer);
         self
@@ -119,8 +119,8 @@ impl fmt::Display for FieldIdent {
     }
 }
 
-/// A validation tag.
-pub type ValidationTag = &'static str;
+/// A validator tag.
+pub type ValidatorTag = &'static str;
 
 /// Temporarily holds a validator's details.
 #[derive(Default, Clone)]
@@ -153,11 +153,11 @@ pub struct Interpreter<D> {
     #[allow(clippy::type_complexity)]
     override_functions: CatchMap<
         TypeIdent,
-        CatchMap<FieldIdent, CatchMap<Box<[ValidationTag]>, InterpreterFunction<D>>>,
+        CatchMap<FieldIdent, CatchMap<Box<[ValidatorTag]>, InterpreterFunction<D>>>,
     >,
 
-    /// Functions mapped by validation tags.
-    normal_functions: HashMap<Box<[ValidationTag]>, InterpreterFunction<D>>,
+    /// Functions mapped by validator tags.
+    normal_functions: HashMap<Box<[ValidatorTag]>, InterpreterFunction<D>>,
 
     /// The fallback function.
     fallback_function: InterpreterFunction<D>,
@@ -181,7 +181,7 @@ impl<D> Interpreter<D> {
         &mut self,
         type_ident: Option<TypeIdent>,
         field_ident: Option<FieldIdent>,
-        validation_tags: Option<Vec<ValidationTag>>,
+        validator_tags: Option<Vec<ValidatorTag>>,
         function: impl Into<InterpreterFunction<D>>,
     ) -> Option<InterpreterFunction<D>> {
         let a = match type_ident {
@@ -196,9 +196,9 @@ impl<D> Interpreter<D> {
             None => a.get_catch_or_insert_default(),
         };
 
-        match validation_tags {
-            Some(validation_tags) => {
-                b.insert_primary(validation_tags.into_boxed_slice(), function.into())
+        match validator_tags {
+            Some(validator_tags) => {
+                b.insert_primary(validator_tags.into_boxed_slice(), function.into())
             }
             None => b.set_catch(function.into()),
         }
@@ -209,10 +209,10 @@ impl<D> Interpreter<D> {
         &mut self,
         type_ident: Option<TypeIdent>,
         field_ident: Option<FieldIdent>,
-        validation_tags: Option<Vec<ValidationTag>>,
+        validator_tags: Option<Vec<ValidatorTag>>,
         function: impl Into<InterpreterFunction<D>>,
     ) {
-        let o = self.set_override_function(type_ident, field_ident, validation_tags, function);
+        let o = self.set_override_function(type_ident, field_ident, validator_tags, function);
         assert!(o.is_none(), "Override function has been set more than once");
     }
 
@@ -221,12 +221,12 @@ impl<D> Interpreter<D> {
         &self,
         type_ident: &TypeIdent,
         field_ident: &FieldIdent,
-        validation_tags: &[ValidationTag],
+        validator_tags: &[ValidatorTag],
     ) -> Option<&InterpreterFunction<D>> {
         self.override_functions
             .get_primary_or_catch(type_ident)?
             .get_primary_or_catch(field_ident)?
-            .get_primary_or_catch(validation_tags)
+            .get_primary_or_catch(validator_tags)
     }
 
     /// Set a normal function.
@@ -234,29 +234,29 @@ impl<D> Interpreter<D> {
     /// Returns the old function if replaced.
     pub fn set_normal_function(
         &mut self,
-        validation_tags: Vec<ValidationTag>,
+        validator_tags: Vec<ValidatorTag>,
         function: impl Into<InterpreterFunction<D>>,
     ) -> Option<InterpreterFunction<D>> {
         self.normal_functions
-            .insert(validation_tags.into_boxed_slice(), function.into())
+            .insert(validator_tags.into_boxed_slice(), function.into())
     }
 
     /// Set an normal function. Panics if an old function was replaced.
     pub fn set_normal_function_once(
         &mut self,
-        validation_tags: Vec<ValidationTag>,
+        validator_tags: Vec<ValidatorTag>,
         function: impl Into<InterpreterFunction<D>>,
     ) {
-        let o = self.set_normal_function(validation_tags, function);
+        let o = self.set_normal_function(validator_tags, function);
         assert!(o.is_none(), "Normal function has been set more than once");
     }
 
     /// Get a normal function.
     pub fn get_normal_function(
         &self,
-        validation_tags: &[ValidationTag],
+        validator_tags: &[ValidatorTag],
     ) -> Option<&InterpreterFunction<D>> {
-        self.normal_functions.get(validation_tags)
+        self.normal_functions.get(validator_tags)
     }
 
     /// Set the fallback function.
@@ -284,15 +284,15 @@ impl<D> Interpreter<D> {
         &self,
         type_ident: &TypeIdent,
         field_ident: &FieldIdent,
-        validation_tags: &[ValidationTag],
+        validator_tags: &[ValidatorTag],
     ) -> &InterpreterFunction<D> {
         let override_function =
-            self.get_override_function(type_ident, field_ident, validation_tags);
+            self.get_override_function(type_ident, field_ident, validator_tags);
 
         match override_function {
             Some(f) => f,
             None => self
-                .get_normal_function(validation_tags)
+                .get_normal_function(validator_tags)
                 .unwrap_or(self.get_fallback_function()),
         }
     }

@@ -11,7 +11,7 @@ use crate::core::*;
 pub struct LT<T>(pub T);
 
 impl LT<()> {
-    pub const DEFAULT_VTAG: ValidationTag = "m=compare;v=LT";
+    pub const DEFAULT_VTAG: ValidatorTag = "m=compare;v=LT";
     pub const OTHER_VALUE_DIDX: usize = 0;
 }
 
@@ -53,7 +53,7 @@ where
 pub struct LE<T>(pub T);
 
 impl LE<()> {
-    pub const DEFAULT_VTAG: ValidationTag = "m=compare;v=LE";
+    pub const DEFAULT_VTAG: ValidatorTag = "m=compare;v=LE";
     pub const OTHER_VALUE_DIDX: usize = 0;
 }
 
@@ -95,7 +95,7 @@ where
 pub struct GT<T>(pub T);
 
 impl GT<()> {
-    pub const DEFAULT_VTAG: ValidationTag = "m=compare;v=GT";
+    pub const DEFAULT_VTAG: ValidatorTag = "m=compare;v=GT";
     pub const OTHER_VALUE_DIDX: usize = 0;
 }
 
@@ -137,7 +137,7 @@ where
 pub struct GE<T>(pub T);
 
 impl GE<()> {
-    pub const DEFAULT_VTAG: ValidationTag = "m=compare;v=GE";
+    pub const DEFAULT_VTAG: ValidatorTag = "m=compare;v=GE";
     pub const OTHER_VALUE_DIDX: usize = 0;
 }
 
@@ -179,7 +179,7 @@ where
 pub struct EQ<T>(pub T);
 
 impl EQ<()> {
-    pub const DEFAULT_VTAG: ValidationTag = "m=compare;v=EQ";
+    pub const DEFAULT_VTAG: ValidatorTag = "m=compare;v=EQ";
     pub const OTHER_VALUE_DIDX: usize = 0;
 }
 
@@ -221,7 +221,7 @@ where
 pub struct NE<T>(pub T);
 
 impl NE<()> {
-    pub const DEFAULT_VTAG: ValidationTag = "m=compare;v=NE";
+    pub const DEFAULT_VTAG: ValidatorTag = "m=compare;v=NE";
     pub const OTHER_VALUE_DIDX: usize = 0;
 }
 
@@ -263,21 +263,21 @@ where
 pub struct Within<R>(pub R);
 
 impl Within<()> {
-    pub const RANGE_VTAG: ValidationTag = "m=compare;v=Within;t=Range";
+    pub const RANGE_VTAG: ValidatorTag = "m=compare;v=Within;t=Range";
     pub const RANGE_START_VALUE_DIDX: usize = 0;
     pub const RANGE_END_VALUE_DIDX: usize = 1;
 
-    pub const RANGE_FROM_VTAG: ValidationTag = "m=compare;v=Within;t=RangeFrom";
+    pub const RANGE_FROM_VTAG: ValidatorTag = "m=compare;v=Within;t=RangeFrom";
     pub const RANGE_FROM_START_VALUE_DIDX: usize = 0;
 
-    pub const RANGE_INCLUSIVE_VTAG: ValidationTag = "m=compare;v=Within;t=RangeInclusive";
+    pub const RANGE_INCLUSIVE_VTAG: ValidatorTag = "m=compare;v=Within;t=RangeInclusive";
     pub const RANGE_INCLUSIVE_START_VALUE_DIDX: usize = 0;
     pub const RANGE_INCLUSIVE_END_VALUE_DIDX: usize = 1;
 
-    pub const RANGE_TO_VTAG: ValidationTag = "m=compare;v=Within;t=RangeTo";
+    pub const RANGE_TO_VTAG: ValidatorTag = "m=compare;v=Within;t=RangeTo";
     pub const RANGE_TO_END_VALUE_DIDX: usize = 0;
 
-    pub const RANGE_TO_INCLUSIVE_VTAG: ValidationTag = "m=compare;v=Within;t=RangeToInclusive";
+    pub const RANGE_TO_INCLUSIVE_VTAG: ValidatorTag = "m=compare;v=Within;t=RangeToInclusive";
     pub const RANGE_TO_INCLUSIVE_END_VALUE_DIDX: usize = 0;
 }
 
