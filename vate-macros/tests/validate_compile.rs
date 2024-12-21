@@ -251,3 +251,31 @@ fn unnamed_variant_enum_field_exposure() {
         A(i32, #[vate(EQ(fields.0))] i32),
     }
 }
+
+#[test]
+fn struct_context_type() {
+    #[derive(Validate)]
+    #[vate(context = i32)]
+    struct Test;
+}
+
+#[test]
+fn enum_context_type() {
+    #[derive(Validate)]
+    #[vate(context = i32)]
+    enum Test {}
+}
+
+#[test]
+fn struct_error_type() {
+    #[derive(Validate)]
+    #[vate(error = i32)]
+    struct Test;
+}
+
+#[test]
+fn enum_error_type() {
+    #[derive(Validate)]
+    #[vate(error = i32)]
+    enum Test {}
+}

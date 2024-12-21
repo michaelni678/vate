@@ -48,6 +48,8 @@ impl Report for BasicReport {
 
         self.limit -= 1;
 
+        self.num_invalids += 1;
+
         if let Some(interpretation) = interpreter.interpret(&invalid, data) {
             self.interpretations.push(interpretation);
         }
@@ -102,6 +104,8 @@ impl Report for ComprehensiveReport {
         }
 
         self.limit -= 1;
+
+        self.num_invalids += 1;
 
         if let Some(interpretation) = interpreter.interpret(&invalid, data) {
             let item = ComprehensiveReportItem {

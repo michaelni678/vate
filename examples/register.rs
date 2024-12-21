@@ -2,9 +2,10 @@
 
 use once_cell::sync::Lazy;
 use vate::{
-    core::{Interpreter, Validate},
+    core::{FieldIdent, Interpreter, Invalid, TypeIdent, Validate},
     extras::Regex,
-    reports::ComprehensiveReport,
+    interpretations::add_builtin_interpretations,
+    reports::BasicReport,
     validators::{
         bundle::Bundle,
         compare::{Within, EQ, GE},
@@ -118,9 +119,31 @@ fn main() {
     };
 
     let mut interpreter = Interpreter::default();
+    add_builtin_interpretations(&mut interpreter);
+
+    // We don't care about nested invalid messages.
+    // Make it so all `Nested` interpretations return `None`.
+    interpreter.set_normal_function(
+        vec![Nested::DEFAULT_VTAG],
+        |_invalid: &Invalid, _data: &()| None,
+    );
+
+    // The normal function for the `EQ` interpretation includes the other value (in this case,
+    // the value of `password`) in the validation message. This is undesirable in this scenario,
+    // but we don't want to set the normal function of `EQ`, since some other validations
+    // may use the `EQ` validator, and we want those validations to use the normal function.
+    // Instead, we set the override function, with a custom message!
+    interpreter.set_override_function(
+        Some(TypeIdent::Struct("Credentials")),
+        Some(FieldIdent::Named("confirm_password")),
+        Some(vec![EQ::DEFAULT_VTAG]),
+        |_invalid: &Invalid, _data: &()| {
+            Some(String::from("confirm password must match the password"))
+        },
+    );
 
     // Create a report with a high limit.
-    let mut report = ComprehensiveReport::default();
+    let mut report = BasicReport::default();
     report.limit = usize::MAX;
 
     // Validate the request.

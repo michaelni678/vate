@@ -1,6 +1,6 @@
 //! Core types and traits.
 
-use std::collections::HashMap;
+use std::{collections::HashMap, fmt, mem};
 
 use crate::internal::catch_map::CatchMap;
 
@@ -86,6 +86,15 @@ pub enum TypeIdent {
     Enum(&'static str, &'static str),
 }
 
+impl fmt::Display for TypeIdent {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Struct(ident) => write!(f, "{ident}"),
+            Self::Enum(ident, variant) => write!(f, "{ident}::{variant}"),
+        }
+    }
+}
+
 /// A field ident.
 #[derive(Hash, PartialEq, Eq, Copy, Clone)]
 #[cfg_attr(feature = "serialize", derive(Serialize))]
@@ -99,6 +108,15 @@ pub enum FieldIdent {
     ///
     /// For example, field `0` in `struct X(i32)`.
     Unnamed(usize),
+}
+
+impl fmt::Display for FieldIdent {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Named(ident) => write!(f, "{ident}"),
+            Self::Unnamed(ident) => write!(f, "{ident}"),
+        }
+    }
 }
 
 /// A validation tag.
@@ -157,13 +175,15 @@ impl<D> Default for Interpreter<D> {
 
 impl<D> Interpreter<D> {
     /// Set an override function.
+    ///
+    /// Returns the old function if replaced.
     pub fn set_override_function(
         &mut self,
         type_ident: Option<TypeIdent>,
         field_ident: Option<FieldIdent>,
         validation_tags: Option<Vec<ValidationTag>>,
         function: impl Into<InterpreterFunction<D>>,
-    ) {
+    ) -> Option<InterpreterFunction<D>> {
         let a = match type_ident {
             Some(type_ident) => self
                 .override_functions
@@ -181,7 +201,19 @@ impl<D> Interpreter<D> {
                 b.insert_primary(validation_tags.into_boxed_slice(), function.into())
             }
             None => b.set_catch(function.into()),
-        };
+        }
+    }
+
+    /// Set an override function. Panics if an old function was replaced.
+    pub fn set_override_function_once(
+        &mut self,
+        type_ident: Option<TypeIdent>,
+        field_ident: Option<FieldIdent>,
+        validation_tags: Option<Vec<ValidationTag>>,
+        function: impl Into<InterpreterFunction<D>>,
+    ) {
+        let o = self.set_override_function(type_ident, field_ident, validation_tags, function);
+        assert!(o.is_none(), "Override function has been set more than once");
     }
 
     /// Get an override function.
@@ -198,13 +230,25 @@ impl<D> Interpreter<D> {
     }
 
     /// Set a normal function.
+    ///
+    /// Returns the old function if replaced.
     pub fn set_normal_function(
         &mut self,
         validation_tags: Vec<ValidationTag>,
         function: impl Into<InterpreterFunction<D>>,
-    ) {
+    ) -> Option<InterpreterFunction<D>> {
         self.normal_functions
-            .insert(validation_tags.into_boxed_slice(), function.into());
+            .insert(validation_tags.into_boxed_slice(), function.into())
+    }
+
+    /// Set an normal function. Panics if an old function was replaced.
+    pub fn set_normal_function_once(
+        &mut self,
+        validation_tags: Vec<ValidationTag>,
+        function: impl Into<InterpreterFunction<D>>,
+    ) {
+        let o = self.set_normal_function(validation_tags, function);
+        assert!(o.is_none(), "Normal function has been set more than once");
     }
 
     /// Get a normal function.
@@ -216,8 +260,13 @@ impl<D> Interpreter<D> {
     }
 
     /// Set the fallback function.
-    pub fn set_fallback_function(&mut self, function: impl Into<InterpreterFunction<D>>) {
-        self.fallback_function = function.into();
+    ///
+    /// Returns the old function.
+    pub fn set_fallback_function(
+        &mut self,
+        function: impl Into<InterpreterFunction<D>>,
+    ) -> InterpreterFunction<D> {
+        mem::replace(&mut self.fallback_function, function.into())
     }
 
     /// Get the fallback function.
